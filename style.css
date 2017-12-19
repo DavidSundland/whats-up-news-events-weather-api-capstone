@@ -1,0 +1,59 @@
+/* http://paletton.com/ */
+
+/*
+font-family: 'Rye', cursive;
+font-family: 'Sancreek', cursive;
+font-family: 'UnifrakturCook', cursive;
+font-family: 'Pirata One', cursive;
+*/
+
+body {
+    margin: 0 2%;
+}
+
+h1 {
+    font-family: 'Sancreek', "Times New Roman", Times, serif;
+    text-align: center;
+    font-size: 48px;
+}
+
+#temperature {
+    font-size: 72px;
+}
+
+div {
+    border: 1px solid red;
+    overflow: auto;
+}
+
+.News,
+.Sports,
+.Entertainment,
+.Financial {
+    /*    float: left;*/
+    /*
+    position: relative;
+    left: 5%;
+    width: 45%;
+*/
+    background-color: yellow;
+}
+
+.weather,
+.events,
+.holidays {
+    /*
+    float: right;
+    position: relative;
+    right: 5%;
+    width: 45%;
+*/
+    background-color: pink;
+}
+
+.News img,
+.Sports img,
+.Entertainment img,
+.Financial img {
+    width: 100%;
+}
