@@ -420,16 +420,18 @@ function displayWeather(data, country) // FOR INFO ABOUT WEATHER RESULTS: http:/
     }
     let humidity = data.weatherObservation.humidity;
     let temperature = data.weatherObservation.temperature;
-    console.log("temperature typeof = ", typeof (temperature));
-    if (country === 'us' || country === 'US') {
-        temperature = (Math.round(Number(temperature) * 9 / 5) + 32).toString() + "°F";
-    } else {
-        temperature = temperature + "°C"
-    }
-    console.log(temperature);
+    //    console.log("temperature typeof = ", typeof (temperature));
     let windDir = Number(data.weatherObservation.windDirection);
     let windDirection = degreesToCardinal(windDir);
     let windSpeed = data.weatherObservation.windSpeed;
+    if (country === 'us' || country === 'US') {
+        temperature = (Math.round(Number(temperature) * 9 / 5) + 32).toString() + "°F";
+        windSpeed = (Math.round(Number(windSpeed) * .621)).toString() + " mph";
+    } else {
+        temperature = temperature + "°C"
+        windSpeed = windSpeed + " kph";
+    }
+    console.log(temperature);
     $("#weather").html(`<div id="tempBox" class="col-4"><span id="temperature">${temperature}</span></div><div class="col-8"><p id="weatherCondition">${conditions}</p><p>Wind <span id="windSpeed">${windSpeed}</span> from the <span id="windDirection">${windDirection}</span>.</p></div>`);
     console.log(clouds, conditions, humidity, temperature, windSpeed, windDirection);
 }
