@@ -1,3 +1,11 @@
+// TO-DO:  GET RID OF UNNECESSARY PUSH.  CLEAN UP DATES.  CONSOLIDATE FUNCTIONS.  FURTHER CLEAN-UP OF EVENTFUL* (INCLUDING DOING SOMETHING WITH 'NULL' RESULTS, POSSIBLY SKIPPING CRAP RESULTS, AND ADJUSTING NUMBER OF RESULTS).  MAKE SURE "net::ERR_CONNECTION_TIMED_OUT" IS NOT A CONTINUING PROBLEM. REARRANGE PAGE ORDER.
+// *EVENTFUL NOTE - EVENTS DO HAVE UNIQUE ID AND URL.  COULD RUN WITH 4 MILE (OR WHATEVER) DISTANCE, SEE IF THERE ARE ENOUGH RESULTS, AND IF NOT, RUN AGAIN, AVOIDING REDUNCANCIES LIKE IN DC SCRAPING....
+// EVENTFUL - IF DESCRIPTION AND TITLE NULL (OR REDUNDANT), IMMEDIATELY RETURN, WITH A VALUE LIKE 'SKIP' FOR EASY CULLING LATER
+
+
+
+
+
 // JavaScript file for Thinkful Capstone 1
 
 // https://www.w3schools.com/jsref/prop_win_innerheight.asp - BROWSER WINDOW WIDTH
@@ -24,7 +32,7 @@ function getDate(country) {
 }
 
 function titleCase(str) { // Capitalize first letter in every word of a string, make all others lowercase
-    console.log(str);
+    //    console.log(str);
     words = str.toLowerCase().split(' ');
 
     for (var i = 0; i < words.length; i++) {
@@ -63,7 +71,7 @@ function getLatLongFromAddress() { // UPDATE FUNCTION TO BE PROMPTED FROM USER E
 }
 
 function getNews() {
-    console.log("In getNewsApi");
+    //    console.log("In getNewsApi");
     let searchTerm = ''; // Don't need to have a search term; may consider creating one... (users will have option of entering one)
     let today = new Date();
     let endDate = today.getFullYear().toString() + '-' + (today.getMonth() + 1).toString() + '-' + today.getDate().toString(); // getMonth returns month value from 0 to 11...
@@ -102,7 +110,7 @@ function getTheNews(sources, searchTerm, startDate, endDate, section, numArts) {
             type: "GET"
         })
         .done(function (result) {
-            console.log(sources, "result = ", result);
+            //            console.log(sources, "result = ", result);
             //            runFunction(result);
             const results = result.articles.map((item, index) => renderNews(item, section));
             $('.' + section).html(`<h2>${section}</h2>`);
@@ -125,7 +133,7 @@ function getTheNews(sources, searchTerm, startDate, endDate, section, numArts) {
 //}
 
 function renderNews(result, section) {
-    console.log("In renderNews");
+    //    console.log("In renderNews");
     let returnArray = [];
     if (result["author"] === null) {
         result["author"] = result["source"]["name"];
@@ -212,24 +220,25 @@ function callPlaceBased(userLat, userLong) {
     let maxCount = 6; // Maximum number of times to run testEventfulApi
     distance = testEventfulApi(userLat, userLong, distance, eventfulDate, counter, maxCount);
     getEventfulApi(userLat, userLong, distance, eventfulDate);
-    $.getJSON // Get the user's country code; use that to pull holidays & determine whether to use metric or outdated measurements for weather
-    (
-        'http://ws.geonames.org/countryCode', {
-            lat: userLat,
-            lng: userLong,
-            username: 'dsundland',
-            type: 'JSON'
-        },
-        function (result) {
-            getHolidaysApi(result.countryCode)
-            getDate(result.countryCode);
-            getWeatherAPI(userLat, userLong, result.countryCode); // http://api.geonames.org/findNearByWeatherJSON?lat=43&lng=-2&username=demo
-            getWeatherForecastApi(userLat, userLong, result.countryCode);
-        }
-    );
+    //    $.getJSON // Get the user's country code; use that to pull holidays & determine whether to use metric or outdated measurements for weather
+    //    (
+    //        'http://ws.geonames.org/countryCode', {
+    //            lat: userLat,
+    //            lng: userLong,
+    //            username: 'dsundland',
+    //            type: 'JSON'
+    //        },
+    //        function (result) {
+    //            getHolidaysApi(result.countryCode)
+    //            getDate(result.countryCode);
+    //            getWeatherAPI(userLat, userLong, result.countryCode); // http://api.geonames.org/findNearByWeatherJSON?lat=43&lng=-2&username=demo
+    //            getWeatherForecastApi(userLat, userLong, result.countryCode);
+    //        }
+    //    );
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& &&&&&&&&&&&&&&&&&&&&&&&&& &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& &&&&&&&&&&&&&&&&&&&&&&&&&&&&& DON'T FORGET TO REINSTATE ABOVE CODE!!!!!!!!!!!!!!!!!!!!!!! #################################### ##############################################################################################################################################################################
 }
 
-function testEventfulApi(lat, long, distance, eventDate, counter, maxCount) {
+function testEventfulApi(lat, long, distance, eventDate, counter, maxCount) { // Since Eventful might not pull many results within 4 miles, test to determine necessary distance
     let query = {
         app_key: 'Jsr6ndZBQLW9qdLL',
         location: lat + ',' + long,
@@ -261,7 +270,7 @@ function testEventfulApi(lat, long, distance, eventDate, counter, maxCount) {
 }
 
 function getEventfulApi(lat, long, distance, eventDate) {
-    console.log("In getEventfulApi, eventDate = ", eventDate);
+    //    console.log("In getEventfulApi, eventDate = ", eventDate);
     var query = {
         app_key: 'Jsr6ndZBQLW9qdLL',
         // keywords: 'concert',  // Filter events, or just return all?  Can have user enter keyword... (Keyword is optional.)
@@ -292,17 +301,18 @@ function getEventfulApi(lat, long, distance, eventDate) {
 }
 
 function displayEventful(data) {
-    console.log("In displayEventful");
-    console.log(data);
+    //    console.log("In displayEventful");
+    //    console.log(data);
     const results = data.events.event.map((item, index) => renderEventful(item));
+    //    console.log(results);
     for (i = 0; i < results.length; i++) {
-        $('#events').append(results[i][0]);
+        $('#events').append(results[i]);
     }
-}
+} // ############################################################## ############################################################# ####################################################### ############################### ########################################################################## DON'T FORGET TO MODIFY FUNCTIONS TO SKIP THE WHOLLY UNNECESSARY 'PUSH' BIT ####################################################################### ########################### ######################################################################################## ###################################################################################
 
 function renderEventful(result) {
-    console.log("In renderEventful");
-    let returnArray = [];
+    //    console.log("In renderEventful");
+    //    let returnArray = [];
     let maxDescription = 200;
     let maxTitle = 150;
     let killSpaces;
@@ -334,12 +344,18 @@ function renderEventful(result) {
             result["title"] = titleCase(result["title"]);
         }
     }
-    returnArray.push(`<p>TITLE: ${result["title"]}. DESCRIPTION: ${result["description"]}. VENUE URL: ${result["venue_url"]}. VENUE NAME: ${result["venue_name"]}. START TIME: ${result["start_time"]}</p><hr>`);
-    return returnArray;
+    let dateTime = new Date(result.start_time);
+    let date = dateTime.toLocaleDateString();
+    let time = dateTime.toLocaleTimeString();
+    //    let returnHtml = `<p>TITLE: ${result["title"]}. DESCRIPTION: ${result["description"]}. VENUE URL: ${result["venue_url"]}. VENUE NAME: ${result["venue_name"]}. START TIME: ${result["start_time"]}</p><hr>`;
+    //    console.log(returnHtml);
+    //    return returnHtml;
+    return `<p><a href='${result.url}' target='_blank'>${result.title}</a>. ${result.description} At ${result.venue_name} - ${result.venue_address}, ${result.city_name}, ${result.region_abbr}.  Start time: ${time}. Date: ${date}.`;
+    //    return returnArray;
 }
 
 function getHolidaysApi(countryCode) {
-    console.log("In getHolidaysApi");
+    //    console.log("In getHolidaysApi");
     var today = new Date();
     var month = today.getMonth() + 1; // getMonth returns month value from 0 to 11; Holidays API expects values from 1 to 12
     var year = today.getFullYear() - 1; // NOTE - must pay to get current and future holidays; past holidays are free
@@ -356,7 +372,7 @@ function getHolidaysApi(countryCode) {
             type: "GET"
         })
         .done(function (result) {
-            console.log("done result = ", result);
+            //            console.log("done result = ", result);
             displayHolidays(result);
         })
         .fail(function (jqXHR, error, errorThrown) {
@@ -367,7 +383,7 @@ function getHolidaysApi(countryCode) {
 }
 
 function displayHolidays(data) {
-    console.log("In displayHolidays");
+    //    console.log("In displayHolidays");
     let killMultiDay;
     let arrayNoDuplicates = []; // For multi-day holidays, Holiday API lists same holiday multiple times. Eliminate duplicates.
     data.holidays.forEach(function (oneHoliday) {
@@ -386,7 +402,7 @@ function displayHolidays(data) {
 }
 
 function getWeatherAPI(lat, long, country) {
-    console.log("In getWeatherAPI");
+    //    console.log("In getWeatherAPI");
     const query = {
         lat: lat,
         lng: long,
@@ -399,7 +415,7 @@ function getWeatherAPI(lat, long, country) {
             type: "GET"
         })
         .done(function (result) {
-            console.log("done result = ", result);
+            //            console.log("done result = ", result);
             displayWeather(result, country);
         })
         .fail(function (jqXHR, error, errorThrown) {
@@ -411,34 +427,51 @@ function getWeatherAPI(lat, long, country) {
 
 function displayWeather(data, country) // FOR INFO ABOUT WEATHER RESULTS: http://forum.geonames.org/gforum/posts/list/28.page
 {
-    console.log("In displayWeather");
-    console.log(data);
-    let clouds = data.weatherObservation.clouds;
-    let conditions = data.weatherObservation.weatherCondition;
-    if (conditions === "n/a") {
-        conditions = "Clear skies";
+    //    console.log("In displayWeather");
+    //    console.log(data);
+    let windSpeed;
+    let windDirection;
+    let temperature;
+    let weatherCollectionDate;
+    let weatherCollectionDateTime = new Date(data.weatherObservation.datetime + " UTC");
+    let timeZone = /(\([A-Za-z\s]+\))/.exec(weatherCollectionDateTime.toString());
+    if (timeZone === null) {
+        timeZone = "";
     }
-    let humidity = data.weatherObservation.humidity;
-    let temperature = data.weatherObservation.temperature;
-    //    console.log("temperature typeof = ", typeof (temperature));
-    let windDir = Number(data.weatherObservation.windDirection);
-    let windDirection = degreesToCardinal(windDir);
-    let windSpeed = data.weatherObservation.windSpeed;
-    if (country === 'us' || country === 'US') {
-        temperature = (Math.round(Number(temperature) * 9 / 5) + 32).toString() + "°F";
-        windSpeed = (Math.round(Number(windSpeed) * .621)).toString() + " mph";
+    let weatherCollectionTime = weatherCollectionDateTime.getHours() + ":" + weatherCollectionDateTime.getMinutes() + " " + timeZone[0]; // timeZone is returning an array, so get first element
+    console.log("timeZone: ", timeZone, weatherCollectionTime);
+    if (data.weatherObservation.weatherCondition === "n/a" && data.weatherObservation.clouds === "n/a") {
+        data.weatherObservation.weatherCondition = "Clear skies";
+    } else if (data.weatherObservation.weatherCondition === "n/a") {
+        data.weatherObservation.weatherCondition = data.weatherObservation.clouds;
+    }
+    if (data.weatherObservation.windSpeed === "00") {
+        windDirection = "";
+        windSpeed = "No wind";
     } else {
-        temperature = temperature + "°C"
-        windSpeed = windSpeed + " kph";
+        windDirection = degreesToCardinal(Number(data.weatherObservation.windDirection));
+        if (country === 'us' || country === 'US' || country === 'gb' || country === 'GB') {
+            windSpeed = (Math.round(Number(data.weatherObservation.windSpeed) * .621)).toString() + " mph from the ";
+        } else {
+            windSpeed = data.weatherObservation.windSpeed + " kph from the ";
+        }
     }
-    console.log(temperature);
-    $("#weather").html(`<div id="tempBox" class="col-4"><span id="temperature">${temperature}</span></div><div class="col-8"><p id="weatherCondition">${conditions}</p><p>Wind <span id="windSpeed">${windSpeed}</span> from the <span id="windDirection">${windDirection}</span>.</p></div>`);
-    console.log(clouds, conditions, humidity, temperature, windSpeed, windDirection);
+    if (country === 'us' || country === 'US') {
+        temperature = (Math.round(Number(data.weatherObservation.temperature) * 9 / 5) + 32).toString() + " °F";
+        weatherCollectionDate = MonthNames[weatherCollectionDateTime.getMonth()] + " " + weatherCollectionDateTime.getDate;
+    } else {
+        temperature = data.weatherObservation.temperature + " °C";
+        weatherCollectionDate = weatherCollectionDateTime.getDate + " " + MonthNames[weatherCollectionDateTime.getMonth()];
+    }
+    console.log("data.weatherObservation.temperature: ", data.weatherObservation.temperature, "temperature", temperature, "data.weatherObservation.windSpeed", data.weatherObservation.windSpeed, "windSpeed", windSpeed);
+    $("#weather").html(`<div id="tempBox" class="col-4"><span id="temperature">${temperature}</span></div><div class="col-8"><p id="weatherCondition">${titleCase(data.weatherObservation.weatherCondition)}</p><p>Wind <span id="windSpeed">${windSpeed}</span> from the <span id="windDirection">${windDirection}</span>.</p><p>Humidity: ${data.weatherObservation.humidity}%</p></div>`);
+    $("#stationName").html(data.weatherObservation.stationName);
+    $("#weatherDateTime").html(weatherCollectionTime);
 }
 
 function degreesToCardinal(windDir) {
     if (windDir >= 348.75 || windDir <= 11.25) {
-        return "N";
+        return "north";
     } else if (windDir <= 33.75) {
         return "NNE";
     } else if (windDir <= 56.25) {
@@ -446,7 +479,7 @@ function degreesToCardinal(windDir) {
     } else if (windDir <= 78.75) {
         return "ENE";
     } else if (windDir <= 101.25) {
-        return "E";
+        return "east";
     } else if (windDir <= 123.75) {
         return "ESE";
     } else if (windDir <= 146.25) {
@@ -454,7 +487,7 @@ function degreesToCardinal(windDir) {
     } else if (windDir <= 168.75) {
         return "SSE";
     } else if (windDir <= 191.25) {
-        return "S";
+        return "south";
     } else if (windDir <= 213.75) {
         return "SSW";
     } else if (windDir <= 236.25) {
@@ -462,7 +495,7 @@ function degreesToCardinal(windDir) {
     } else if (windDir <= 258.75) {
         return "WSW";
     } else if (windDir <= 281.25) {
-        return "W";
+        return "west";
     } else if (windDir <= 303.75) {
         return "WNW";
     } else if (windDir <= 326.25) {
@@ -473,7 +506,7 @@ function degreesToCardinal(windDir) {
 }
 
 function getWeatherForecastApi(lat, long, country) {
-    console.log("In getWeatherForecastApi");
+    //    console.log("In getWeatherForecastApi");
     var query = {
         lat: lat,
         lon: long,
@@ -486,7 +519,7 @@ function getWeatherForecastApi(lat, long, country) {
             type: "GET"
         })
         .done(function (result) {
-            console.log("done result = ", result);
+            //            console.log("done result = ", result);
             displayWeatherForecast(result, country);
         })
         .fail(function (jqXHR, error, errorThrown) {
@@ -497,16 +530,36 @@ function getWeatherForecastApi(lat, long, country) {
 }
 
 function displayWeatherForecast(data, country) {
-    console.log("In displayWeatherForecast");
-    console.log(data);
-    const results = data.list.map((item, index) => renderWeatherForecast(item));
-    console.log("Forecast results:", results);
+    //    console.log("In displayWeatherForecast");
+    //    console.log(data);
+    const results = data.list.map((item, index) => renderWeatherForecast(item, country));
+    //    console.log("Forecast results:", results);
+    //    $('.' + section).html(`<h2>${section}</h2>`);
+    $("#forecast").html("");
+    for (i = 0; i < results.length; i++) {
+        $("#forecast").append(results[i][0]);
+    }
 }
 
-function renderWeatherForecast(result) {
-    console.log("In renderWeatherForecast");
+function renderWeatherForecast(result, country) {
+    //    console.log("In renderWeatherForecast");
     let returnArray = [];
-    returnArray.push(result["dt_txt"], result["main"]["temp"], result["weather"]["0"]["description"]);
+    let temperature;
+    let weatherDate;
+    let weatherDateTime = new Date(result.dt_txt + " UTC");
+    let weatherTime = weatherDateTime.getHours() + ":" + weatherDateTime.getMinutes();
+    if (country === 'us' || country === 'US') {
+        temperature = (Math.round(Number(result.main.temp - 273.15) * 9 / 5 + 32)).toString() + " °F";
+        weatherDate = MonthNames[weatherDateTime.getMonth()] + " " + weatherDateTime.getDate();
+    } else {
+        temperature = (Math.round(Number(result.main.temp) - 273.15)).toString() + " °C";
+        weatherDate = weatherDateTime.getDate() + " " + MonthNames[weatherDateTime.getMonth()];
+    }
+    weatherDate = weatherDateTime.toLocaleDateString();
+    weatherTime = weatherDateTime.toLocaleTimeString();
+    let description = result["weather"]["0"]["description"];
+    //    console.log("WHAT IS GOING ON WITH WEATHER DATE?", weatherDate, "###", MonthNames[weatherDateTime.getMonth()], "###", weatherDateTime.getMonth(), "###", weatherDateTime.getDate);
+    returnArray.push(`<p>${weatherDate} at ${weatherTime}: ${temperature} with ${description}</p>`);
     // console.log("renderWeatherForecast Array: ", returnArray);
     return returnArray;
 }
