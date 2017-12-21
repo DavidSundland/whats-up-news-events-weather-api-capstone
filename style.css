@@ -19,6 +19,10 @@ h1 {
     font-weight: 700;
 }
 
+body + img {
+    max-width: 200px;
+}
+
 #temperature {
     font-size: 72px;
 }
