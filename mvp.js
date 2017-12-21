@@ -3,7 +3,7 @@
 // EVENTFUL - IF DESCRIPTION AND TITLE NULL (OR REDUNDANT), IMMEDIATELY RETURN, WITH A VALUE LIKE 'SKIP' FOR EASY CULLING LATER
 
 
-
+// git add . ; git commit -m 'REPLACE-ME'; git pull origin master; git push --set-upstream origin master
 
 
 // JavaScript file for Thinkful Capstone 1
@@ -23,9 +23,9 @@ function getDate(country) {
     let today = new Date();
     let headingDate;
     if (country === 'us' || country === 'US') {
-        headingDate = MONTHNAMES[today.getMonth()] + " " + today.getDate().toString() + ", " + today.getFullYear();
+        headingDate = MonthNames[today.getMonth()] + " " + today.getDate().toString() + ", " + today.getFullYear() + ",";
     } else {
-        headingDate = today.getDate().toString() + " " + MONTHNAMES[today.getMonth()] + " " + today.getFullYear();
+        headingDate = today.getDate().toString() + " " + MonthNames[today.getMonth()] + " " + today.getFullYear() + ",";
     }
     $('.insert-date').html(headingDate);
     $('.insert-month').html(MonthNames[today.getMonth()]);
@@ -83,7 +83,7 @@ function getNews() {
     let numNewsArts = 3;
     getTheNews(newsSources, searchTerm, startDate, endDate, "News", numNewsArts);
     let sportsSources = 'talksport,bleacher-report,nfl-news,nhl-news,the-sport-bible';
-    let numSportsArts = 2;
+    let numSportsArts = 3;
     getTheNews(sportsSources, searchTerm, startDate, endDate, "Sports", numSportsArts);
     let entertainmentSources = 'entertainment-weekly,mtv-news';
     let numEntertainmentArts = 2;
@@ -130,8 +130,12 @@ function renderNews(result, section) {
     if (result["author"] === null) {
         result["author"] = result["source"]["name"];
     }
-    result["author"] = titleCase(result["author"]); // A lot of author names are all caps; correct that offense.
-    return `<div class="row"><div class="col-5"><img src='${result["urlToImage"]}'></div><div class="col-7"><span class="title"><a href='${result["url"]}' target='_blank'>${result["title"]}</a></span>, by <span class="author">${result["author"]}</span?>. <span class="description">${result["description"]}.</span>`;
+    try {
+        result["author"] = titleCase(result["author"]); // A lot of author names are all caps; correct that offense.
+    } catch (err) {
+        console.log("Could not get titleCase for author - no author or source name?", err);
+    }
+    return `<div class="row"><img src='${result["urlToImage"]}'><span class="title"><a href='${result["url"]}' target='_blank'>${result["title"]}</a></span>, by <span class="author">${result["author"]}</span?>. <span class="description">${result["description"]}</span></div>`;
 }
 
 //function displayNews(data) {
@@ -529,27 +533,37 @@ function getWeatherForecastApi(lat, long, country) {
 function displayWeatherForecast(data, country) {
     const results = data.list.map((item, index) => renderWeatherForecast(item, country));
     $("#forecast").html("");
-    for (i = 0; i < results.length; i++) {
+    for (i = 0; i < 24; i++) { // Forecast yields 40+ results; 24 is plenty
         $("#forecast").append(results[i]);
+        console.log(results[i]);
     }
 }
 
 function renderWeatherForecast(result, country) {
     let temperature;
-    let weatherDate;
+    //    let weatherDate;
     let weatherDateTime = new Date(result.dt_txt + " UTC");
-    let weatherTime = weatherDateTime.getHours() + ":" + weatherDateTime.getMinutes();
+    //    let weatherTime = weatherDateTime.getHours() + ":" + weatherDateTime.getMinutes();
     if (country === 'us' || country === 'US') {
-        temperature = (Math.round(Number(result.main.temp - 273.15) * 9 / 5 + 32)).toString() + " °F";
-        weatherDate = MonthNames[weatherDateTime.getMonth()] + " " + weatherDateTime.getDate();
+        temperature = (Math.round(Number(result.main.temp - 273.15) * 9 / 5 + 32)).toString() + "°F";
+        //        weatherDate = MonthNames[weatherDateTime.getMonth()] + " " + weatherDateTime.getDate();
     } else {
-        temperature = (Math.round(Number(result.main.temp) - 273.15)).toString() + " °C";
-        weatherDate = weatherDateTime.getDate() + " " + MonthNames[weatherDateTime.getMonth()];
+        temperature = (Math.round(Number(result.main.temp) - 273.15)).toString() + "°C";
+        //        weatherDate = weatherDateTime.getDate() + " " + MonthNames[weatherDateTime.getMonth()];
     }
-    weatherDate = weatherDateTime.toLocaleDateString();
-    weatherTime = weatherDateTime.toLocaleTimeString();
+    let weatherDate = weatherDateTime.toLocaleDateString();
+    let weatherTimeLong = weatherDateTime.toLocaleTimeString();
+    let timeParts = weatherTimeLong.split(":");
+    let weatherTime;
+    if (weatherTimeLong.indexOf("M") === -1) { // if the time does not include "AM" or "PM"
+        weatherTime = timeParts[0] + timeParts[1]; // get rid of secons
+    } else {
+
+        weatherTime = timeParts[0] + ":" + timeParts[1] + timeParts[2].split(' ')[1] // Get rid of seconds, but keep AM or PM
+    }
     let description = result["weather"]["0"]["description"];
-    return `<p>${weatherDate} at ${weatherTime}: ${temperature} with ${description}</p>`;
+    let returnHtml = `<span class="secondaryInfo">${weatherDate} at </span>${weatherTime} - ${temperature}, ${description}<br>`;
+    return returnHtml;
 }
 
 $(getNews);

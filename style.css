@@ -1,29 +1,58 @@
 /* http://paletton.com/ */
 
 /*
-font-family: 'Rye', cursive;
-font-family: 'Sancreek', cursive;
-font-family: 'UnifrakturCook', cursive;
-font-family: 'Pirata One', cursive;
+font-family: 'Montserrat', sans-serif;
+font-family: 'Raleway', sans-serif;
 */
 
 body {
     margin: 0 2%;
+    font-size: 20px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
 }
 
 h1 {
-    font-family: 'UnifrakturCook', "Times New Roman", Times, serif;
+    font-family: 'Raleway', sans-serif;
     text-align: center;
     font-size: 48px;
+    font-weight: 700;
 }
 
 #temperature {
     font-size: 72px;
 }
 
+.secondaryInfo {
+    font-size: .8em;
+}
+
+.tertiaryInfo {
+    font-size: .6em;
+}
+
+#forecast {
+    column-count: 2;
+    font-size: .8em;
+}
+
+/*
+img {
+    max-width: 60%;
+    float: left;
+}
+*/
+
+/*
+.forecastDate {
+    font-size: .8em;
+}
+*/
+
 div {
     border: 1px solid red;
     overflow: auto;
+    padding: 10px;
 }
 
 .News,
@@ -37,6 +66,8 @@ div {
     width: 45%;
 */
     background-color: yellow;
+    max-height: 1000px;
+    overflow: scroll;
 }
 
 .weather,
