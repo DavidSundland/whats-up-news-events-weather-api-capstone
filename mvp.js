@@ -18,6 +18,11 @@ const WEATHERURL = 'http://api.geonames.org/findNearByWeatherJSON';
 const WEATHERFORECASTURL = 'http://api.openweathermap.org/data/2.5/forecast';
 const MonthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const MONTHNAMES = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
+let newsSources = 'the-washington-post,associated-press,al-jazeera-english,bbc-news,the-new-york-times,politico,the-economist';
+let sportsSources = 'talksport,bleacher-report,nfl-news,nhl-news,the-sport-bible';
+let entertainmentSources = 'entertainment-weekly,mtv-news';
+let financialSources = 'financial-post,financial-times,fortune,business-insider';
+
 
 function getDate(country) {
     let today = new Date();
@@ -70,30 +75,54 @@ function getLatLongFromAddress() { // UPDATE FUNCTION TO BE PROMPTED FROM USER E
     });
 }
 
-function getNews() {
-    //    console.log("In getNewsApi");
-    let searchTerm = ''; // Don't need to have a search term; may consider creating one... (users will have option of entering one)
+function querySubmit() {
+    //    console.log("newsQuerySubmit");
+    $('.newsSearchForm').submit(event => {
+        event.preventDefault();
+        const queryTarget = $(event.currentTarget).find('.js-query');
+        searchTerm = queryTarget.val();
+        queryTarget.val(""); // clear out the input
+        $("input").attr("placeholder", " Enter a new search item");
+        getNews(searchTerm, newsSources, "News");
+    });
+    $('.sportsSearchForm').submit(event => {
+        event.preventDefault();
+        const queryTarget = $(event.currentTarget).find('.js-query');
+        searchTerm = queryTarget.val();
+        queryTarget.val(""); // clear out the input
+        $("input").attr("placeholder", " Enter a new search item");
+        getNews(searchTerm, sportsSources, "Sports");
+    });
+    $('.entertainmentSearchForm').submit(event => {
+        event.preventDefault();
+        const queryTarget = $(event.currentTarget).find('.js-query');
+        searchTerm = queryTarget.val();
+        queryTarget.val(""); // clear out the input
+        $("input").attr("placeholder", " Enter a new search item");
+        getNews(searchTerm, entertainmentSources, "Entertainment");
+    });
+    $('.financialSearchForm').submit(event => {
+        event.preventDefault();
+        const queryTarget = $(event.currentTarget).find('.js-query');
+        searchTerm = queryTarget.val();
+        queryTarget.val(""); // clear out the input
+        $("input").attr("placeholder", " Enter a new search item");
+        getNews(searchTerm, financialSources, "Financial");
+    });
+}
+
+
+function getNews(searchTerm, sources, category) {
     let today = new Date();
     let endDate = today.getFullYear().toString() + '-' + (today.getMonth() + 1).toString() + '-' + today.getDate().toString(); // getMonth returns month value from 0 to 11...
     let before = new Date(today);
     let beforeDifference = 0; // TEST PAGE WITH RESULTS FROM TODAY ONLY; IF NOT ENOUGH RESULTS, CHANGE INCREMENT
     before.setDate(today.getDate() - beforeDifference);
     let startDate = before.getFullYear().toString() + '-' + (before.getMonth() + 1).toString() + '-' + before.getDate().toString();
-    let newsSources = 'the-washington-post,associated-press,al-jazeera-english,bbc-news,the-new-york-times,politico,the-economist';
-    let numNewsArts = 4;
-    getTheNews(newsSources, searchTerm, startDate, endDate, "News", numNewsArts);
-    let sportsSources = 'talksport,bleacher-report,nfl-news,nhl-news,the-sport-bible';
-    let numSportsArts = 4;
-    getTheNews(sportsSources, searchTerm, startDate, endDate, "Sports", numSportsArts);
-    let entertainmentSources = 'entertainment-weekly,mtv-news';
-    let numEntertainmentArts = 4;
-    getTheNews(entertainmentSources, searchTerm, startDate, endDate, "Entertainment", numEntertainmentArts);
-    let financialSources = 'financial-post,financial-times,fortune,business-insider';
-    let numFinancialArts = 4;
-    getTheNews(financialSources, searchTerm, startDate, endDate, "Financial", numFinancialArts);
+    getTheNews(sources, searchTerm, startDate, endDate, category);
 }
 
-function getTheNews(sources, searchTerm, startDate, endDate, section, numArts) {
+function getTheNews(sources, searchTerm, startDate, endDate, section) {
     const query = {
         q: searchTerm,
         sources: sources,
@@ -114,7 +143,7 @@ function getTheNews(sources, searchTerm, startDate, endDate, section, numArts) {
             //            runFunction(result);
             const results = result.articles.map((item, index) => renderNews(item, section));
             $('.' + section).html(`<div class = "newsHeader"><h2>${section}</h2></div>`);
-            for (i = 0; i < numArts; i++) {
+            for (i = 0; i < results.length; i++) {
                 $('.' + section).append(results[i]);
             }
         })
@@ -566,19 +595,10 @@ function renderWeatherForecast(result, country) {
     return returnHtml;
 }
 
-//function newsQuerySubmit() {
-        //    console.log("In watchSubmit");
-        //    $('.js-search-form').submit(event => {
-        //        event.preventDefault();
-        //        const queryTarget = $(event.currentTarget).find('.js-query');
-        //        SEARCH_TERM = queryTarget.val();
-        //        queryTarget.val(""); // clear out the input
-        //        $("input").attr("placeholder", " Enter a new search item");
-        //        //        getDataFromApi(SEARCH_TERM, displaySearchData);
-        //    });
-        //}
-
-$(getNews);
+$(getNews("", newsSources, "News"));
+$(getNews("", sportsSources, "Sports"));
+$(getNews("", entertainmentSources, "Entertainment"));
+$(getTheNews("", financialSources, "Financial"));
 $(getPlaceBased);
-//$(newsQuerySubmit);
+$(querySubmit);
 //$(getLatLongFromAddress);
