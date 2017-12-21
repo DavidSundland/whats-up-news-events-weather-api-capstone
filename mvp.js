@@ -1,7 +1,7 @@
 // TO-DO:  GET RID OF UNNECESSARY PUSH.  CLEAN UP DATES.  CONSOLIDATE FUNCTIONS.  FURTHER CLEAN-UP OF EVENTFUL* (INCLUDING DOING SOMETHING WITH 'NULL' RESULTS, POSSIBLY SKIPPING CRAP RESULTS, AND ADJUSTING NUMBER OF RESULTS).  MAKE SURE "net::ERR_CONNECTION_TIMED_OUT" IS NOT A CONTINUING PROBLEM. REARRANGE PAGE ORDER.  ADD FOOTER
 // *EVENTFUL NOTE - EVENTS DO HAVE UNIQUE ID AND URL.  COULD RUN WITH 4 MILE (OR WHATEVER) DISTANCE, SEE IF THERE ARE ENOUGH RESULTS, AND IF NOT, RUN AGAIN, AVOIDING REDUNCANCIES LIKE IN DC SCRAPING....
 // EVENTFUL - IF DESCRIPTION AND TITLE NULL (OR REDUNDANT), IMMEDIATELY RETURN, WITH A VALUE LIKE 'SKIP' FOR EASY CULLING LATER
-
+// LOOK AT DARK SKY API
 
 // git add . ; git commit -m 'REPLACE-ME'; git pull origin master; git push --set-upstream origin master
 
@@ -111,6 +111,40 @@ function querySubmit() {
     });
 }
 
+function seeMore() {
+    $("#moreNews").click(function () {
+        $(".News").toggleClass("seeMore");
+        if ($("#moreNews").html() === "See More") {
+            $("#moreNews").html("Remove Scrollbar");
+        } else {
+            $("#moreNews").html("See More");
+        }
+    });
+    $("#moreSports").click(function () {
+        $(".Sports").toggleClass("seeMore");
+        if ($("#moreSports").html() === "See More") {
+            $("#moreSports").html("Remove Scrollbar");
+        } else {
+            $("#moreSports").html("See More");
+        }
+    });
+    $("#moreEntertainment").click(function () {
+        $(".Entertainment").toggleClass("seeMore");
+        if ($("#moreEntertainment").html() === "See More") {
+            $("#moreEntertainment").html("Remove Scrollbar");
+        } else {
+            $("#moreEntertainment").html("See More");
+        }
+    });
+    $("#moreFinancial").click(function () {
+        $(".Financial").toggleClass("seeMore");
+        if ($("#moreFinancial").html() === "See More") {
+            $("#moreFinancial").html("Remove Scrollbar");
+        } else {
+            $("#moreFinancial").html("See More");
+        }
+    });
+}
 
 function getNews(searchTerm, sources, category) {
     let today = new Date();
@@ -562,16 +596,29 @@ function getWeatherForecastApi(lat, long, country) {
 function displayWeatherForecast(data, country) {
     const results = data.list.map((item, index) => renderWeatherForecast(item, country));
     $("#forecast").html("");
-    for (i = 0; i < 24; i++) { // Forecast yields 40+ results; 24 is plenty
-        $("#forecast").append(results[i]);
+    for (i = 0; i < results.length; i++) {
+        if (results[i] !== undefined) {
+            $("#forecast").append(results[i]);
+        }
         //        console.log(results[i]);
     }
 }
 
 function renderWeatherForecast(result, country) {
     let temperature;
-    //    let weatherDate;
+    let weatherDate;
+    let weatherTime;
+    let today = new Date();
     let weatherDateTime = new Date(result.dt_txt + " UTC");
+    if (weatherDateTime.getHours() === 1 || weatherDateTime.getHours() === 4 || weatherDateTime.getHours() === 10 || weatherDateTime.getHours() === 16 || weatherDateTime.getHours() === 22) {
+        return; // skip unwanted values; return undefined
+    } else if (weatherDateTime.getHours() === 7) {
+        weatherTime = "morning";
+    } else if (weatherDateTime.getHours() === 13) {
+        weatherTime = "mid-day";
+    } else {
+        weatherTime = "evening";
+    }
     //    let weatherTime = weatherDateTime.getHours() + ":" + weatherDateTime.getMinutes();
     if (country === 'us' || country === 'US') {
         temperature = (Math.round(Number(result.main.temp - 273.15) * 9 / 5 + 32)).toString() + "°F";
@@ -580,18 +627,24 @@ function renderWeatherForecast(result, country) {
         temperature = (Math.round(Number(result.main.temp) - 273.15)).toString() + "°C";
         //        weatherDate = weatherDateTime.getDate() + " " + MonthNames[weatherDateTime.getMonth()];
     }
-    let weatherDate = weatherDateTime.toLocaleDateString();
-    let weatherTimeLong = weatherDateTime.toLocaleTimeString();
-    let timeParts = weatherTimeLong.split(":");
-    let weatherTime;
-    if (weatherTimeLong.indexOf("M") === -1) { // if the time does not include "AM" or "PM"
-        weatherTime = timeParts[0] + timeParts[1]; // get rid of secons
+    if (weatherDateTime.getDate() === today.getDate()) { // Don't need to compare full date, because forecast is only for next 5 days
+        weatherDate = "Today";
+    } else if (weatherDateTime.getDate() === today.getDate() + 1) {
+        weatherDate = "Tomorrow";
     } else {
-
-        weatherTime = timeParts[0] + ":" + timeParts[1] + timeParts[2].split(' ')[1] // Get rid of seconds, but keep AM or PM
+        weatherDate = weatherDateTime.toLocaleDateString();
     }
+    //    let weatherTimeLong = weatherDateTime.toLocaleTimeString();
+    //    let timeParts = weatherTimeLong.split(":");
+    //    let weatherTime;
+    //    if (weatherTimeLong.indexOf("M") === -1) { // if the time does not include "AM" or "PM"
+    //        weatherTime = timeParts[0] + timeParts[1]; // get rid of secons
+    //    } else {
+    //
+    //        weatherTime = timeParts[0] + ":" + timeParts[1] + timeParts[2].split(' ')[1] // Get rid of seconds, but keep AM or PM
+    //    }
     let description = result["weather"]["0"]["description"];
-    let returnHtml = `<span class="secondaryInfo">${weatherDate} at </span>${weatherTime} - ${temperature}, ${description}<br>`;
+    let returnHtml = `${weatherDate} in the ${weatherTime} - ${temperature}, with ${description}<br>`;
     return returnHtml;
 }
 
@@ -601,4 +654,5 @@ $(getNews("", entertainmentSources, "Entertainment"));
 $(getTheNews("", financialSources, "Financial"));
 $(getPlaceBased);
 $(querySubmit);
+$(seeMore);
 //$(getLatLongFromAddress);
