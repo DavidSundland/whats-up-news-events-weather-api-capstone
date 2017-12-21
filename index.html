@@ -7,12 +7,15 @@
     <link rel="stylesheet" type="text/css" href="grid.css" />
     <link rel="stylesheet" type="text/css" href="style.css " />
     <link href="https://fonts.googleapis.com/css?family=Kanit|Montserrat|Open+Sans:600|Quicksand|Raleway|Roboto:700" rel="stylesheet">
+    <link rel="icon" href="https://github.com/DavidSundland/whats-up-news-events-weather-api-capstone/blob/master/images/snapshot-favicon.png?raw=true" type="image/png">
 </head>
 
 <body>
     <main>
         <img src="https://github.com/DavidSundland/whats-up-news-events-weather-api-capstone/blob/master/images/snapshot-logo.png?raw=true" id="logo">
-        <h1>Snapshot - <span class="insert-date ">Today's</span> Edition</h1>
+        <header>
+            <h1>Snapshot - <span class="insert-date ">Today's</span> Edition</h1>
+        </header>
         <div class="row">
             <h2>Weather</h2>
             <div class="col-4 weather">
@@ -27,7 +30,7 @@
                 <p>Humidity: 41%</p>
             </div>
             </span>
-            <div class="tertiaryInfo">
+            <div class="tertiaryInfo row">
                 <p>Information collected at <span id="stationName">Washington DC, Reagan National Airport</span> at <span id="weatherDateTime">2:22 pm</span>.</p>
             </div>
         </div>
@@ -39,8 +42,11 @@
         </div>
         </div>
         <div class="row">
-            <div class="News col-6">
-                <h2>News</h2>
+            <div class="News col-5-plus">
+                <div class="newsHeader">
+                    <h2>News</h2>
+                </div>
+                <!--                <div class="scrollBox">-->
                 <div class="row">
                     <img src="https://static01.nyt.com/images/2017/12/14/world/14MAY01/14MAY01-facebookJumbo-v2.jpg">
                     <span class="title"><a href="https://www.nytimes.com/2017/12/14/world/europe/theresa-may-brexit-conservative-party.html" target="_blank">Theresa May, Once a ‘Dead Woman Walking,’ Reaches a First Finish Line</a></span>, by <span class="author">ELLEN BARRY</span>. <span class="description">Theresa May with her husband, Philip, outside 10 Downing Street in London the day after a general election in June. The vote, which she had called, left her in office but destroyed much of her political capital.</span>
@@ -62,7 +68,8 @@
                     <!--                    </div>-->
                 </div>
             </div>
-            <div class="Sports col-6">
+            <div class="col-1-no-mobile middleBuffer"></div>
+            <div class="Sports col-5-plus">
                 <h2>Sports</h2>
                 <div class="row">
                     <!--                    <div class="col-6">-->
@@ -81,7 +88,8 @@
                     <!--                    </div>-->
                 </div>
             </div>
-            <div class="Entertainment col-6">
+            <div class="row separator"></div>
+            <div class="Entertainment col-5-plus">
                 <h2>Entertainment</h2>
                 <div class="row">
                     <img src="https://timedotcom.files.wordpress.com/2017/11/patronus-bed-spread.jpg?quality=85">
@@ -92,7 +100,8 @@
                     <span class="title"><a href="http://ew.com/tv/2017/12/14/seth-meyers-omarosa-white-house-exit/" target="_blank">Seth Meyers on Omarosa's White House exit: Any room she's in 'becomes a Situation Room' - EW.com (blog)</a></span>, by <span class="author">Oliver Gettell</span>. <span class="description">TIME Seth Meyers on Omarosa's White House exit: Any room she's in 'becomes a Situation Room' EW.com (blog) Former Apprentice contestant Omarosa Manigault Newman has been making headlines of late, first for finding herself on the receiving end of that show's c…</span></p>
                 </div>
             </div>
-            <div class="Financial col-6">
+            <div class="col-1-no-mobile middleBuffer"></div>
+            <div class="Financial col-5-plus">
                 <h2>Financial</h2>
                 <div class="row">
                     <img src="http://static3.businessinsider.com/image/5a332e354aa6b54d008b522f-1190-625/white-nationalist-accused-of-killing-a-protester-in-charlottesville-is-charged-with-first-degree-murder.jpg">
@@ -112,6 +121,7 @@
                 <p class="js-holiday-results"></p>
             </div>
         </div>
+
     </main>
 
     <script src="https://code.jquery.com/jquery-3.2.1.min.js "></script>

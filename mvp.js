@@ -1,4 +1,4 @@
-// TO-DO:  GET RID OF UNNECESSARY PUSH.  CLEAN UP DATES.  CONSOLIDATE FUNCTIONS.  FURTHER CLEAN-UP OF EVENTFUL* (INCLUDING DOING SOMETHING WITH 'NULL' RESULTS, POSSIBLY SKIPPING CRAP RESULTS, AND ADJUSTING NUMBER OF RESULTS).  MAKE SURE "net::ERR_CONNECTION_TIMED_OUT" IS NOT A CONTINUING PROBLEM. REARRANGE PAGE ORDER.
+// TO-DO:  GET RID OF UNNECESSARY PUSH.  CLEAN UP DATES.  CONSOLIDATE FUNCTIONS.  FURTHER CLEAN-UP OF EVENTFUL* (INCLUDING DOING SOMETHING WITH 'NULL' RESULTS, POSSIBLY SKIPPING CRAP RESULTS, AND ADJUSTING NUMBER OF RESULTS).  MAKE SURE "net::ERR_CONNECTION_TIMED_OUT" IS NOT A CONTINUING PROBLEM. REARRANGE PAGE ORDER.  ADD FOOTER
 // *EVENTFUL NOTE - EVENTS DO HAVE UNIQUE ID AND URL.  COULD RUN WITH 4 MILE (OR WHATEVER) DISTANCE, SEE IF THERE ARE ENOUGH RESULTS, AND IF NOT, RUN AGAIN, AVOIDING REDUNCANCIES LIKE IN DC SCRAPING....
 // EVENTFUL - IF DESCRIPTION AND TITLE NULL (OR REDUNDANT), IMMEDIATELY RETURN, WITH A VALUE LIKE 'SKIP' FOR EASY CULLING LATER
 
@@ -80,16 +80,16 @@ function getNews() {
     before.setDate(today.getDate() - beforeDifference);
     let startDate = before.getFullYear().toString() + '-' + (before.getMonth() + 1).toString() + '-' + before.getDate().toString();
     let newsSources = 'the-washington-post,associated-press,al-jazeera-english,bbc-news,the-new-york-times,politico,the-economist';
-    let numNewsArts = 3;
+    let numNewsArts = 4;
     getTheNews(newsSources, searchTerm, startDate, endDate, "News", numNewsArts);
     let sportsSources = 'talksport,bleacher-report,nfl-news,nhl-news,the-sport-bible';
-    let numSportsArts = 3;
+    let numSportsArts = 4;
     getTheNews(sportsSources, searchTerm, startDate, endDate, "Sports", numSportsArts);
     let entertainmentSources = 'entertainment-weekly,mtv-news';
-    let numEntertainmentArts = 2;
+    let numEntertainmentArts = 4;
     getTheNews(entertainmentSources, searchTerm, startDate, endDate, "Entertainment", numEntertainmentArts);
     let financialSources = 'financial-post,financial-times,fortune,business-insider';
-    let numFinancialArts = 2;
+    let numFinancialArts = 4;
     getTheNews(financialSources, searchTerm, startDate, endDate, "Financial", numFinancialArts);
 }
 
@@ -113,7 +113,7 @@ function getTheNews(sources, searchTerm, startDate, endDate, section, numArts) {
             //            console.log(sources, "result = ", result);
             //            runFunction(result);
             const results = result.articles.map((item, index) => renderNews(item, section));
-            $('.' + section).html(`<h2>${section}</h2>`);
+            $('.' + section).html(`<div class = "newsHeader"><h2>${section}</h2></div>`);
             for (i = 0; i < numArts; i++) {
                 $('.' + section).append(results[i]);
             }
@@ -535,7 +535,7 @@ function displayWeatherForecast(data, country) {
     $("#forecast").html("");
     for (i = 0; i < 24; i++) { // Forecast yields 40+ results; 24 is plenty
         $("#forecast").append(results[i]);
-        console.log(results[i]);
+        //        console.log(results[i]);
     }
 }
 
@@ -566,6 +566,19 @@ function renderWeatherForecast(result, country) {
     return returnHtml;
 }
 
+//function newsQuerySubmit() {
+        //    console.log("In watchSubmit");
+        //    $('.js-search-form').submit(event => {
+        //        event.preventDefault();
+        //        const queryTarget = $(event.currentTarget).find('.js-query');
+        //        SEARCH_TERM = queryTarget.val();
+        //        queryTarget.val(""); // clear out the input
+        //        $("input").attr("placeholder", " Enter a new search item");
+        //        //        getDataFromApi(SEARCH_TERM, displaySearchData);
+        //    });
+        //}
+
 $(getNews);
 $(getPlaceBased);
+//$(newsQuerySubmit);
 //$(getLatLongFromAddress);
