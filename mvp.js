@@ -706,10 +706,10 @@ function getWeatherForecastApi(lat, long, country) {
 
 function displayWeatherForecast(data, country) {
     const results = data.list.map((item, index) => renderWeatherForecast(item, country));
-    $("#forecast").html("");
+    $(".forecast").html("");
     for (i = 0; i < results.length; i++) {
         if (results[i] !== undefined) {
-            $("#forecast").append(results[i]);
+            $(".forecast").append(results[i]);
         }
         //        console.log(results[i]);
     }
