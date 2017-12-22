@@ -99,10 +99,12 @@ div {
 }
 
 .seeMore {
-    height: 1000px;
+    /*    height: 1000px;*/
     overflow: auto;
+    /*
     border: 10px pink dashed;
     border-radius: 100px;
+*/
 }
 
 .middleBuffer {

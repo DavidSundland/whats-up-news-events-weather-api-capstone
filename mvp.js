@@ -13,7 +13,7 @@
 const NEWSURL = '//newsapi.org/v2/everything';
 const NEWSAPI = '5fbeb324e35042e09cc7df22185fe8e6';
 const EVENTFULURL = '//api.eventful.com/json/events/search';
-const HOLIDAYURL = '//holidayapi.com/v1/holidays';
+const HOLIDAYURL = 'https://holidayapi.com/v1/holidays';
 const WEATHERURL = '//api.geonames.org/findNearByWeatherJSON';
 const WEATHERFORECASTURL = '//api.openweathermap.org/data/2.5/forecast';
 const MonthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -468,7 +468,7 @@ function displayHolidays(data) {
         }
     });
     for (i = 0; i < arrayNoDuplicates.length; i++) {
-        $('.js-holiday-results').append(`<a href='https://www.google.fi/search?q=${arrayNoDuplicates[i]}' target='_blank'>${arrayNoDuplicates[i]}</a><br>`);
+        $('.js-holiday-results').append(`<a href='//www.google.fi/search?q=${arrayNoDuplicates[i]}' target='_blank'>${arrayNoDuplicates[i]}</a><br>`);
     }
 }
 
