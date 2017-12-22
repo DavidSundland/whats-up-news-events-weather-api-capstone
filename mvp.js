@@ -62,21 +62,35 @@ function sentenceCase(str) { // Capitalize first letter in every sentence, make 
     return sentences.join('. ');
 }
 
-function getLatLongFromAddress() { // UPDATE FUNCTION TO BE PROMPTED FROM USER ENTRY AND COLLECT INFORMATION FROM WEB PAGE **********************************
+function getLatLongFromAddress() {
+    console.log("getLatLongFromAddress started");
     var geocoder = new google.maps.Geocoder();
-    var address = "3645 13th st nw washington dc";
+    let address;
+    //    var address = "3645 13th st nw washington dc";
+    $('.newLocation').submit(event => {
+        console.log("New location submitted");
+        event.preventDefault();
+        const queryTarget = $(event.currentTarget).find('.js-query');
+        address = queryTarget.val();
+        console.log("Location submitted: ", address);
+        queryTarget.val(""); // clear out the input
+        $("input").attr("placeholder", " Enter a new search address");
+        geocoder.geocode({
+            'address': address
+        }, function (results, status) {
 
-    geocoder.geocode({
-        'address': address
-    }, function (results, status) {
-
-        if (status == google.maps.GeocoderStatus.OK) {
-            var latitude = results[0].geometry.location.lat();
-            var longitude = results[0].geometry.location.lng();
-            alert("Lat: " + latitude + ", Long: " + longitude);
-        }
+            if (status == google.maps.GeocoderStatus.OK) {
+                var latitude = results[0].geometry.location.lat();
+                var longitude = results[0].geometry.location.lng();
+                console.log("Lat: " + latitude + ", Long: " + longitude);
+                callPlaceBased(latitude, longitude);
+            } else {
+                alert("Uh-oh, something went wrong!");
+            }
+        });
     });
 }
+
 
 function querySubmit() {
     //    console.log("newsQuerySubmit");
@@ -148,17 +162,12 @@ function seeMore() {
         }
     });
     $("#moreWeather").click(function () {
-        $(".mainInfo").toggleClass("seeMore");
+        $("#weather").children(".mainInfo").toggleClass("seeMore");
         if ($("#moreWeather").html() === "Show More") {
             $("#moreWeather").html("Remove Scrollbar");
         } else {
             $("#moreWeather").html("Show More");
         }
-    });
-
-    $('.js-buttonHole').on('click', 'button', function(event)
-                           {
-        getDataFromApi(SEARCH_TERM, displaySearchData);
     });
 
     $("#moreForecast").click(function () {
@@ -170,14 +179,14 @@ function seeMore() {
         }
     });
 
-//    $("#moreForecast").click(function () {
-//        $("#forecast").toggleClass("seeMore");
-//        if ($("#moreForecast").html() === "Show More") {
-//            $("#moreForecast").html("Remove Scrollbar");
-//        } else {
-//            $("#moreForecast").html("Show More");
-//        }
-//    });
+    //    $("#moreForecast").click(function () {
+    //        $("#forecast").toggleClass("seeMore");
+    //        if ($("#moreForecast").html() === "Show More") {
+    //            $("#moreForecast").html("Remove Scrollbar");
+    //        } else {
+    //            $("#moreForecast").html("Show More");
+    //        }
+    //    });
 }
 
 function getNews(searchTerm, sources, category) {
@@ -434,6 +443,7 @@ function displayEventful(data) {
     //    console.log("In displayEventful");
     //    console.log(data);
     const results = data.events.event.map((item, index) => renderEventful(item));
+    $('#events').html(""); // clear out old results, if applicable.
     //    console.log(results);
     for (i = 0; i < results.length; i++) {
         if (results[i] !== undefined) { // renderEventful will run an empty return if events are of too poor quality
@@ -611,7 +621,7 @@ function displayWeather(data, country) {
         //        weatherCollectionDate = weatherCollectionDateTime.getDate + " " + MonthNames[weatherCollectionDateTime.getMonth()];
     }
     $("#weather").html(`
-        <div id="weather">
+        <div class="weather">
             <div id="tempBox" class="col-5">
                 <span id="temperature">${temperature}</span>
             </div>
@@ -747,6 +757,6 @@ $(getNews("", sportsSources, "Sports"));
 $(getNews("", entertainmentSources, "Entertainment"));
 $(getNews("", financialSources, "Financial"));
 $(getPlaceBased);
-//$(querySubmit);
+$(querySubmit);
 $(seeMore);
-//$(getLatLongFromAddress);
+$(getLatLongFromAddress);
