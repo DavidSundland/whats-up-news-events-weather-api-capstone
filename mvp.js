@@ -63,16 +63,16 @@ function sentenceCase(str) { // Capitalize first letter in every sentence, make 
 }
 
 function getLatLongFromAddress() {
-    console.log("getLatLongFromAddress started");
+//    console.log("getLatLongFromAddress started");
     var geocoder = new google.maps.Geocoder();
     let address;
     //    var address = "3645 13th st nw washington dc";
     $('.newLocation').submit(event => {
-        console.log("New location submitted");
+//        console.log("New location submitted");
         event.preventDefault();
         const queryTarget = $(event.currentTarget).find('.js-query');
         address = queryTarget.val();
-        console.log("Location submitted: ", address);
+//        console.log("Location submitted: ", address);
         queryTarget.val(""); // clear out the input
         $("input").attr("placeholder", " Enter a new search address");
         geocoder.geocode({
@@ -82,7 +82,7 @@ function getLatLongFromAddress() {
             if (status == google.maps.GeocoderStatus.OK) {
                 var latitude = results[0].geometry.location.lat();
                 var longitude = results[0].geometry.location.lng();
-                console.log("Lat: " + latitude + ", Long: " + longitude);
+//                console.log("Lat: " + latitude + ", Long: " + longitude);
                 callPlaceBased(latitude, longitude);
             } else {
                 alert("Uh-oh, something went wrong!");
@@ -360,7 +360,7 @@ function callPlaceBased(userLat, userLong) {
                 sensor: false
             },
             function (result) {
-                console.log("Google attempt: ", result);
+//                console.log("Google attempt: ", result);
                 let countryCode;
                 for (i = 0; i < result["results"][0]["address_components"].length; i++) {
                     if (result["results"][0]["address_components"][i]["types"][0] === "country") { // Location of country code in array varies, depending on amount of info about that location
@@ -436,7 +436,7 @@ function getEventfulApi(lat, long, distance, eventStartDate, eventEndDate, query
             type: "GET"
         })
         .done(function (result) {
-            console.log("getEventfulApi done result = ", result);
+//            console.log("getEventfulApi done result = ", result);
             displayEventful(result);
         })
         .fail(function (jqXHR, error, errorThrown) {
@@ -546,7 +546,7 @@ function displayHolidays(data) { // CAN'T USE?  API NOT SECURE
 }
 
 function getWeatherAPI(lat, long, country) {
-    console.log("in getWeatherAPI");
+//    console.log("in getWeatherAPI");
     var query = {
         lat: lat,
         lon: long,
@@ -716,6 +716,7 @@ function displayWeatherForecast(data, country) {
 }
 
 function renderWeatherForecast(result, country) {
+//    console.log("in renderWeatherForecast, result: ", result);
     let temperature;
     let weatherDate;
     let weatherTime;
