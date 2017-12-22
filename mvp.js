@@ -287,20 +287,29 @@ function callPlaceBased(userLat, userLong) {
     let maxCount = 6; // Maximum number of times to run testEventfulApi
     distance = testEventfulApi(userLat, userLong, distance, eventfulStartDate, eventfulEndDate, counter, maxCount);
     getEventfulApi(userLat, userLong, distance, eventfulStartDate, eventfulEndDate, eventfulQuery, 1);
-    try { // Geonames site was briefly down during site testing, so putting in failsafe
+    //    try { Geonames site was yielding security issues, so went alternative route
+    //        $.getJSON // Get the user's country code; use that to pull holidays & determine whether to use metric or outdated measurements for weather
+    //        (
+    //            '//ws.geonames.org/countryCode', {
+    //                lat: userLat,
+    //                lng: userLong,
+    //                username: 'dsundland',
+    //                type: 'JSON'
+    //            },
+    try {
         $.getJSON // Get the user's country code; use that to pull holidays & determine whether to use metric or outdated measurements for weather
         (
-            '//ws.geonames.org/countryCode', {
-                lat: userLat,
-                lng: userLong,
-                username: 'dsundland',
-                type: 'JSON'
+            'https://maps.googleapis.com/maps/api/geocode/json', {
+                latlng: userLat + "," + userLong,
+                sensor: false
             },
             function (result) {
-                getHolidaysApi(result.countryCode);
-                getDate(result.countryCode);
-                getWeatherAPI(userLat, userLong, result.countryCode); // //api.geonames.org/findNearByWeatherJSON?lat=43&lng=-2&username=demo
-                getWeatherForecastApi(userLat, userLong, result.countryCode);
+                //                console.log("Google attempt: ", result);
+                let countryCode = result["results"][0]["address_components"][5]["short_name"];
+                getHolidaysApi(countryCode);
+                getDate(countryCode);
+                getWeatherAPI(userLat, userLong, countryCode); // //api.geonames.org/findNearByWeatherJSON?lat=43&lng=-2&username=demo
+                getWeatherForecastApi(userLat, userLong, countryCode);
             }
         );
     } catch (err) {
