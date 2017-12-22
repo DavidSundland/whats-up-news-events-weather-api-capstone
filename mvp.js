@@ -161,15 +161,22 @@ function seeMore() {
             $("#moreFinancial").html("See More");
         }
     });
+    //    $("#moreWeather").click(function () {
+    //        $("#weather").children(".mainInfo").toggleClass("seeMore");
+    //        if ($("#moreWeather").html() === "Show More") {
+    //            $("#moreWeather").html("Remove Scrollbar");
+    //        } else {
+    //            $("#moreWeather").html("Show More");
+    //        }
+    //    });
     $("#moreWeather").click(function () {
-        $("#weather").children(".mainInfo").toggleClass("seeMore");
+        $(".mainInfo").toggleClass("seeMore");
         if ($("#moreWeather").html() === "Show More") {
             $("#moreWeather").html("Remove Scrollbar");
         } else {
             $("#moreWeather").html("Show More");
         }
     });
-
     $("#moreForecast").click(function () {
         $("#forecast").toggleClass("seeMore");
         if ($("#moreForecast").html() === "Show More") {
