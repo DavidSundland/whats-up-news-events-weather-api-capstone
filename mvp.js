@@ -10,12 +10,12 @@
 
 // https://www.w3schools.com/jsref/prop_win_innerheight.asp - BROWSER WINDOW WIDTH
 
-const NEWSURL = 'https://newsapi.org/v2/everything';
+const NEWSURL = '//newsapi.org/v2/everything';
 const NEWSAPI = '5fbeb324e35042e09cc7df22185fe8e6';
-const EVENTFULURL = 'http://api.eventful.com/json/events/search';
-const HOLIDAYURL = 'https://holidayapi.com/v1/holidays';
-const WEATHERURL = 'http://api.geonames.org/findNearByWeatherJSON';
-const WEATHERFORECASTURL = 'http://api.openweathermap.org/data/2.5/forecast';
+const EVENTFULURL = '//api.eventful.com/json/events/search';
+const HOLIDAYURL = '//holidayapi.com/v1/holidays';
+const WEATHERURL = '//api.geonames.org/findNearByWeatherJSON';
+const WEATHERFORECASTURL = '//api.openweathermap.org/data/2.5/forecast';
 const MonthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const MONTHNAMES = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
 let newsSources = 'the-washington-post,associated-press,al-jazeera-english,bbc-news,the-new-york-times,politico,the-economist';
@@ -289,7 +289,7 @@ function callPlaceBased(userLat, userLong) {
     try { // Geonames site was briefly down during site testing, so putting in failsafe
         $.getJSON // Get the user's country code; use that to pull holidays & determine whether to use metric or outdated measurements for weather
         (
-            'http://ws.geonames.org/countryCode', {
+            '//ws.geonames.org/countryCode', {
                 lat: userLat,
                 lng: userLong,
                 username: 'dsundland',
@@ -298,7 +298,7 @@ function callPlaceBased(userLat, userLong) {
             function (result) {
                 getHolidaysApi(result.countryCode);
                 getDate(result.countryCode);
-                getWeatherAPI(userLat, userLong, result.countryCode); // http://api.geonames.org/findNearByWeatherJSON?lat=43&lng=-2&username=demo
+                getWeatherAPI(userLat, userLong, result.countryCode); // //api.geonames.org/findNearByWeatherJSON?lat=43&lng=-2&username=demo
                 getWeatherForecastApi(userLat, userLong, result.countryCode);
             }
         );
@@ -306,7 +306,7 @@ function callPlaceBased(userLat, userLong) {
         console.log("Geonames country code threw error: ", err);
         getHolidaysApi("US");
         getDate("US");
-        getWeatherAPI(userLat, userLong, "US"); // http://api.geonames.org/findNearByWeatherJSON?lat=43&lng=-2&username=demo
+        getWeatherAPI(userLat, userLong, "US"); // //api.geonames.org/findNearByWeatherJSON?lat=43&lng=-2&username=demo
         getWeatherForecastApi(userLat, userLong, "US");
     }
 }
@@ -494,7 +494,7 @@ function getWeatherAPI(lat, long, country) {
         });
 }
 
-function displayWeather(data, country) // FOR INFO ABOUT WEATHER RESULTS: http://forum.geonames.org/gforum/posts/list/28.page
+function displayWeather(data, country) // FOR INFO ABOUT WEATHER RESULTS: //forum.geonames.org/gforum/posts/list/28.page
 {
     let windSpeed;
     let windDirection;
