@@ -63,7 +63,7 @@ h1 {
 }
 
 /*
-#forecast {
+.forecast {
     column-count: 2;
     font-size: .8em;
 }*/
@@ -124,7 +124,7 @@ div {
 
 #tempBox,
 .mainInfo,
-#forecast {
+.forecast {
     height: 200px;
     overflow: hidden;
 }
