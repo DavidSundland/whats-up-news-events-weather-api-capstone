@@ -18,27 +18,28 @@
         </header>
         <div class="row">
             <h2 class="col-12">Weather</h2>
-            <div class="col-4 weather">
-                <h3>Now</h3>
-                <div id="weather">
-                    <div id="tempBox">
-                        <span id="temperature">70°F</span>
-                    </div>
-                    <div class="mainInfo">
-                        <p>Few Clouds</p>
-                        <p>Wind 4 mph from the NNW.</p>
-                        <p>Humidity: 41%</p>
+            <div class="col-6">
+                <div class="weather">
+                    <h3>Now</h3>
+                    <div id="weather">
+                        <div id="tempBox" class="col-5">
+                            <span id="temperature">44°F</span>
+                        </div>
+                        <div class="mainInfo col-7">
+                            <p>Broken Clouds</p>
+                            <p>Wind 4 mph from the south.</p>
+                            <p>Humidity: 41%</p>
+                        </div>
                     </div>
                 </div>
-                <div class="tertiaryInfo row">
-                    <p>Information collected at <span id="stationName">Washington DC, Reagan National Airport</span> at <span id="weatherDateTime">2:22 pm</span>.</p>
-                </div>
+                <div id="moreWeather">Show More</div>
             </div>
-            <div class="col-8">
+            <div class="col-6">
                 <h3>Forecast</h3>
                 <div id="forecast">
                 </div>
             </div>
+            <button id="moreForecast">Show More</button>
         </div>
 
         <div class="row">

@@ -3,6 +3,9 @@
 // EVENTFUL - IF DESCRIPTION AND TITLE NULL (OR REDUNDANT), IMMEDIATELY RETURN, WITH A VALUE LIKE 'SKIP' FOR EASY CULLING LATER
 // LOOK AT DARK SKY API
 
+
+// CHECK SECURITY STATUS VIA GIT.  GET RID OF HOLIDAYS?  CLEAN UP HTML STRUCTURE.  KILL UNNECESSARY HTML ONCE STRUCTURE CLEAN.  SHRINK WEATHER DISPLAY, MAKE SURE RESPONSIVE.
+
 // git add . ; git commit -m 'REPLACE-ME'; git pull origin master; git push --set-upstream origin master
 
 
@@ -10,12 +13,12 @@
 
 // https://www.w3schools.com/jsref/prop_win_innerheight.asp - BROWSER WINDOW WIDTH
 
-const NEWSURL = '//newsapi.org/v2/everything';
+const NEWSURL = 'https://newsapi.org/v2/everything';
 const NEWSAPI = '5fbeb324e35042e09cc7df22185fe8e6';
-const EVENTFULURL = '//api.eventful.com/json/events/search';
+const EVENTFULURL = 'https://api.eventful.com/json/events/search';
 const HOLIDAYURL = 'https://holidayapi.com/v1/holidays';
-const WEATHERURL = '//api.geonames.org/findNearByWeatherJSON';
-const WEATHERFORECASTURL = '//api.openweathermap.org/data/2.5/forecast';
+const WEATHERURL = 'https://api.geonames.org/findNearByWeatherJSON';
+const WEATHERFORECASTURL = 'https://api.openweathermap.org/data/2.5/forecast';
 const MonthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const MONTHNAMES = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
 let newsSources = 'the-washington-post,associated-press,al-jazeera-english,bbc-news,the-new-york-times,politico,the-economist';
@@ -144,6 +147,37 @@ function seeMore() {
             $("#moreFinancial").html("See More");
         }
     });
+    $("#moreWeather").click(function () {
+        $(".mainInfo").toggleClass("seeMore");
+        if ($("#moreWeather").html() === "Show More") {
+            $("#moreWeather").html("Remove Scrollbar");
+        } else {
+            $("#moreWeather").html("Show More");
+        }
+    });
+
+    $('.js-buttonHole').on('click', 'button', function(event)
+                           {
+        getDataFromApi(SEARCH_TERM, displaySearchData);
+    });
+
+    $("#moreForecast").click(function () {
+        $("#forecast").toggleClass("seeMore");
+        if ($("#moreForecast").html() === "Show More") {
+            $("#moreForecast").html("Remove Scrollbar");
+        } else {
+            $("#moreForecast").html("Show More");
+        }
+    });
+
+//    $("#moreForecast").click(function () {
+//        $("#forecast").toggleClass("seeMore");
+//        if ($("#moreForecast").html() === "Show More") {
+//            $("#moreForecast").html("Remove Scrollbar");
+//        } else {
+//            $("#moreForecast").html("Show More");
+//        }
+//    });
 }
 
 function getNews(searchTerm, sources, category) {
@@ -178,7 +212,9 @@ function getTheNews(sources, searchTerm, startDate, endDate, section) {
             const results = result.articles.map((item, index) => renderNews(item, section));
             $('.' + section).html(`<div class = "newsHeader"><h2>${section}</h2></div>`);
             for (i = 0; i < results.length; i++) {
-                $('.' + section).append(results[i]);
+                if (results[i] !== undefined) {
+                    $('.' + section).append(results[i]);
+                }
             }
         })
         .fail(function (jqXHR, error, errorThrown) {
@@ -198,7 +234,10 @@ function renderNews(result, section) {
     } catch (err) {
         console.log("Could not get titleCase for author - no author or source name?", err);
     }
-    result["urlToImage"] = result["urlToImage"].replace(/http\:/g, "https:");
+    if (result["urlToImage"] === null || result["urlToImage"] === undefined || result["urlToImage"].length < 6) {
+        return; // If no image, have empty return (don't bother printing to screen)
+    }
+    result["urlToImage"] = result["urlToImage"].replace("http:", "https:");
     return `<div class="row"><img src='${result["urlToImage"]}'><span class="title"><a href='${result["url"]}' target='_blank'>${result["title"]}</a></span>, by <span class="author">${result["author"]}</span?>. <span class="description">${result["description"]}</span></div>`;
 }
 
@@ -301,11 +340,18 @@ function callPlaceBased(userLat, userLong) {
         (
             'https://maps.googleapis.com/maps/api/geocode/json', {
                 latlng: userLat + "," + userLong,
+                key: "AIzaSyAa9jFz1GClkj8pW9ytY6tB70hVFj1RGYQ",
                 sensor: false
             },
             function (result) {
-                //                console.log("Google attempt: ", result);
-                let countryCode = result["results"][0]["address_components"][5]["short_name"];
+                console.log("Google attempt: ", result);
+                let countryCode;
+                for (i = 0; i < result["results"][0]["address_components"].length; i++) {
+                    if (result["results"][0]["address_components"][i]["types"][0] === "country") { // Location of country code in array varies, depending on amount of info about that location
+                        countryCode = result["results"][0]["address_components"][i]["short_name"];
+                        break;
+                    }
+                }
                 //                getHolidaysApi(countryCode);
                 getDate(countryCode);
                 getWeatherAPI(userLat, userLong, countryCode); // //api.geonames.org/findNearByWeatherJSON?lat=43&lng=-2&username=demo
@@ -478,7 +524,7 @@ function displayHolidays(data) { // CAN'T USE?  API NOT SECURE
         }
     });
     for (i = 0; i < arrayNoDuplicates.length; i++) {
-        $('.js-holiday-results').append(`<a href='//www.google.fi/search?q=${arrayNoDuplicates[i]}' target='_blank'>${arrayNoDuplicates[i]}</a><br>`);
+        $('.js-holiday-results').append(`<a href='https://www.google.fi/search?q=${arrayNoDuplicates[i]}' target='_blank'>${arrayNoDuplicates[i]}</a><br>`);
     }
 }
 
@@ -501,14 +547,14 @@ function getWeatherAPI(lat, long, country) {
         //        username: 'dsundland'
         //    };
         //    var result = $.ajax({
-        //            url: WEATHERURL,
+        //            url: WEATHERURL,  // FOR INFO ABOUT WEATHER RESULTS: //forum.geonames.org/gforum/posts/list/28.page
         //            data: query,
         //            dataType: "jsonp",
         //            type: "GET"
         //        })
         .done(function (result) {
-            //            displayWeather(result, country);  // *MARK* NEED TO MODIFY DISPLAYWEATHER WITH NEW RESULTS; CONVERT FROM KELVIN, ETC.
-            console.log(result, result.main.humidity, result.main.temp, result.wind.deg, result.wind.speed, result.weather[0].description);
+            displayWeather(result, country); // *MARK* NEED TO MODIFY DISPLAYWEATHER WITH NEW RESULTS; CONVERT FROM KELVIN, ETC.
+            //            console.log(result, result.main.humidity, result.main.temp, result.wind.deg, result.wind.speed, result.weather[0].description);
         })
         .fail(function (jqXHR, error, errorThrown) {
             console.log(jqXHR);
@@ -517,46 +563,71 @@ function getWeatherAPI(lat, long, country) {
         });
 }
 
-function displayWeather(data, country) // FOR INFO ABOUT WEATHER RESULTS: //forum.geonames.org/gforum/posts/list/28.page
-{
+function displayWeather(data, country) {
+    console.log(data, country);
     let windSpeed;
-    let windDirection;
+    let windTest;
     let temperature;
-    let weatherCollectionDate;
-    let weatherCollectionDateTime = new Date(data.weatherObservation.datetime + " UTC");
-    let timeZone = /(\([A-Za-z\s]+\))/.exec(weatherCollectionDateTime.toString());
-    if (timeZone === null) {
-        timeZone = "";
-    }
-    let weatherCollectionTime = weatherCollectionDateTime.getHours() + ":" + weatherCollectionDateTime.getMinutes() + " " + timeZone[0]; // timeZone is returning an array, so get first element
-    console.log("timeZone: ", timeZone, weatherCollectionTime);
-    if (data.weatherObservation.weatherCondition === "n/a" && data.weatherObservation.clouds === "n/a") {
-        data.weatherObservation.weatherCondition = "Clear skies";
-    } else if (data.weatherObservation.weatherCondition === "n/a") {
-        data.weatherObservation.weatherCondition = data.weatherObservation.clouds;
-    }
-    if (data.weatherObservation.windSpeed === "00") {
-        windDirection = "";
-        windSpeed = "No wind";
-    } else {
-        windDirection = degreesToCardinal(Number(data.weatherObservation.windDirection));
-        if (country === 'us' || country === 'US' || country === 'gb' || country === 'GB') {
-            windSpeed = (Math.round(Number(data.weatherObservation.windSpeed) * .621)).toString() + " mph from the ";
+    //    let weatherCollectionDate;
+    //    let weatherCollectionDateTime = new Date(data.weatherObservation.datetime + " UTC");
+    //    let timeZone = /(\([A-Za-z\s]+\))/.exec(weatherCollectionDateTime.toString());
+    //    if (timeZone === null) {
+    //        timeZone = "";
+    //    }
+    //    let weatherCollectionTime = weatherCollectionDateTime.getHours() + ":" + weatherCollectionDateTime.getMinutes() + " " + timeZone[0]; // timeZone is returning an array, so get first element
+    //    console.log("timeZone: ", timeZone, weatherCollectionTime);
+    //    if (data.weatherObservation.weatherCondition === "n/a" && data.weatherObservation.clouds === "n/a") {
+    //        data.weatherObservation.weatherCondition = "Clear skies";
+    //    } else if (data.weatherObservation.weatherCondition === "n/a") {
+    //        data.weatherObservation.weatherCondition = data.weatherObservation.clouds;
+    //    }
+    let sunrise = new Date(data.sys.sunrise);
+    let sunriseTime = sunrise.toLocaleTimeString();
+    let sunset = new Date(data.sys.sunset);
+    let sunsetTime = sunset.toLocaleTimeString();
+    let windDirection = degreesToCardinal(Number(data.wind.deg));
+    if (country === 'us' || country === 'US' || country === 'gb' || country === 'GB') {
+        windTest = Math.round(Number(data.wind.speed) * .621);
+        if (windTest === 0) {
+            windDirection = "";
+            windSpeed = "No wind";
         } else {
-            windSpeed = data.weatherObservation.windSpeed + " kph from the ";
+            windSpeed = windTest.toString() + " mph";
+        }
+    } else {
+        windTest = Math.round(Number(data.wind.speed));
+        if (windTest === 0) {
+            windDirection = "";
+            windSpeed = "No wind";
+        } else {
+            windSpeed = windTest.toString() + " kph";
         }
     }
     if (country === 'us' || country === 'US') {
-        temperature = (Math.round(Number(data.weatherObservation.temperature) * 9 / 5) + 32).toString() + " °F";
-        weatherCollectionDate = MonthNames[weatherCollectionDateTime.getMonth()] + " " + weatherCollectionDateTime.getDate;
+        temperature = (Math.round(Number(data.main.temp - 273.15) * 9 / 5 + 32)).toString() + "°F";
+        //        weatherCollectionDate = MonthNames[weatherCollectionDateTime.getMonth()] + " " + weatherCollectionDateTime.getDate;
     } else {
-        temperature = data.weatherObservation.temperature + " °C";
-        weatherCollectionDate = weatherCollectionDateTime.getDate + " " + MonthNames[weatherCollectionDateTime.getMonth()];
+        temperature = (Math.round(Number(data.main.temp) - 273.15)).toString() + "°C";
+        //        weatherCollectionDate = weatherCollectionDateTime.getDate + " " + MonthNames[weatherCollectionDateTime.getMonth()];
     }
-    $("#weather").html(`<div id="tempBox" class="col-4"><span id="temperature">${temperature}</span></div><div class="col-8"><p id="weatherCondition">${titleCase(data.weatherObservation.weatherCondition)}</p><p>Wind <span id="windSpeed">${windSpeed}</span> from the <span id="windDirection">${windDirection}</span>.</p><p>Humidity: ${data.weatherObservation.humidity}%</p></div>`);
-    $("#stationName").html(data.weatherObservation.stationName);
-    $("#weatherDateTime").html(weatherCollectionTime);
+    $("#weather").html(`
+        <div id="weather">
+            <div id="tempBox" class="col-5">
+                <span id="temperature">${temperature}</span>
+            </div>
+            <div class="mainInfo col-7">
+                <p>${titleCase(data.weather[0].description)}</p>
+                <p>Wind ${windSpeed} from the ${windDirection}.</p>
+                <p>Humidity: ${data.main.humidity}%</p>
+                <p>Sunrise: ${sunriseTime}</p>
+                <p>Sunset: ${sunsetTime}</p>
+            </div>
+        </div>
+        `);
+    //    $("#stationName").html(data.weatherObservation.stationName);
+    //    $("#weatherDateTime").html(weatherCollectionTime);
 }
+
 
 function degreesToCardinal(windDir) {
     if (windDir >= 348.75 || windDir <= 11.25) {
@@ -636,11 +707,11 @@ function renderWeatherForecast(result, country) {
     if (weatherDateTime.getHours() === 1 || weatherDateTime.getHours() === 4 || weatherDateTime.getHours() === 10 || weatherDateTime.getHours() === 16 || weatherDateTime.getHours() === 22) {
         return; // skip unwanted values; return undefined
     } else if (weatherDateTime.getHours() === 7) {
-        weatherTime = "morning";
+        weatherTime = "morn";
     } else if (weatherDateTime.getHours() === 13) {
-        weatherTime = "mid-day";
+        weatherTime = "noon";
     } else {
-        weatherTime = "evening";
+        weatherTime = "eve";
     }
     //    let weatherTime = weatherDateTime.getHours() + ":" + weatherDateTime.getMinutes();
     if (country === 'us' || country === 'US') {
@@ -651,11 +722,11 @@ function renderWeatherForecast(result, country) {
         //        weatherDate = weatherDateTime.getDate() + " " + MonthNames[weatherDateTime.getMonth()];
     }
     if (weatherDateTime.getDate() === today.getDate()) { // Don't need to compare full date, because forecast is only for next 5 days
-        weatherDate = "Today";
+        weatherDate = "Today,";
     } else if (weatherDateTime.getDate() === today.getDate() + 1) {
         weatherDate = "Tomorrow";
     } else {
-        weatherDate = weatherDateTime.toLocaleDateString();
+        weatherDate = weatherDateTime.toLocaleDateString() + ",";
     }
     //    let weatherTimeLong = weatherDateTime.toLocaleTimeString();
     //    let timeParts = weatherTimeLong.split(":");
@@ -667,7 +738,7 @@ function renderWeatherForecast(result, country) {
     //        weatherTime = timeParts[0] + ":" + timeParts[1] + timeParts[2].split(' ')[1] // Get rid of seconds, but keep AM or PM
     //    }
     let description = result["weather"]["0"]["description"];
-    let returnHtml = `${weatherDate}, ${weatherTime} - ${temperature}, with ${description}<br>`;
+    let returnHtml = `${weatherDate} ${weatherTime} - ${temperature}, ${description}<br>`;
     return returnHtml;
 }
 
@@ -676,6 +747,6 @@ $(getNews("", sportsSources, "Sports"));
 $(getNews("", entertainmentSources, "Entertainment"));
 $(getNews("", financialSources, "Financial"));
 $(getPlaceBased);
-$(querySubmit);
+//$(querySubmit);
 $(seeMore);
 //$(getLatLongFromAddress);
