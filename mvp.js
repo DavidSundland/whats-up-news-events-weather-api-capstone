@@ -198,6 +198,7 @@ function renderNews(result, section) {
     } catch (err) {
         console.log("Could not get titleCase for author - no author or source name?", err);
     }
+    result["urlToImage"] = result["urlToImage"].replace(/http\:/g, "https:");
     return `<div class="row"><img src='${result["urlToImage"]}'><span class="title"><a href='${result["url"]}' target='_blank'>${result["title"]}</a></span>, by <span class="author">${result["author"]}</span?>. <span class="description">${result["description"]}</span></div>`;
 }
 
