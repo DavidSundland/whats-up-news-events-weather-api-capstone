@@ -306,7 +306,7 @@ function callPlaceBased(userLat, userLong) {
             function (result) {
                 //                console.log("Google attempt: ", result);
                 let countryCode = result["results"][0]["address_components"][5]["short_name"];
-                getHolidaysApi(countryCode);
+                //                getHolidaysApi(countryCode);
                 getDate(countryCode);
                 getWeatherAPI(userLat, userLong, countryCode); // //api.geonames.org/findNearByWeatherJSON?lat=43&lng=-2&username=demo
                 getWeatherForecastApi(userLat, userLong, countryCode);
@@ -314,7 +314,7 @@ function callPlaceBased(userLat, userLong) {
         );
     } catch (err) {
         console.log("Geonames country code threw error: ", err);
-        getHolidaysApi("US");
+        //        getHolidaysApi("US");
         getDate("US");
         getWeatherAPI(userLat, userLong, "US"); // //api.geonames.org/findNearByWeatherJSON?lat=43&lng=-2&username=demo
         getWeatherForecastApi(userLat, userLong, "US");
@@ -439,7 +439,7 @@ function renderEventful(result) {
     return `<p><a href='${result.url}' target='_blank'>${result.title}</a>. ${result.description} At ${result.venue_name} - ${result.venue_address}, ${result.city_name}, ${result.region_abbr}.  Start time: ${time}. Date: ${date}.`;
 }
 
-function getHolidaysApi(countryCode) {
+function getHolidaysApi(countryCode) { // CAN'T USE?  API NOT SECURE
     var today = new Date();
     var month = today.getMonth() + 1; // getMonth returns month value from 0 to 11; Holidays API expects values from 1 to 12
     var year = today.getFullYear() - 1; // NOTE - must pay to get current and future holidays; past holidays are free
@@ -465,7 +465,7 @@ function getHolidaysApi(countryCode) {
         });
 }
 
-function displayHolidays(data) {
+function displayHolidays(data) { // CAN'T USE?  API NOT SECURE
     let killMultiDay;
     let arrayNoDuplicates = []; // For multi-day holidays, Holiday API lists same holiday multiple times. Eliminate duplicates.
     data.holidays.forEach(function (oneHoliday) {
@@ -483,19 +483,32 @@ function displayHolidays(data) {
 }
 
 function getWeatherAPI(lat, long, country) {
-    const query = {
+    console.log("in getWeatherAPI");
+    var query = {
         lat: lat,
-        lng: long,
-        username: 'dsundland'
+        lon: long,
+        APPID: 'cc21048cfb33fe1fa22a186dd7158b89'
     };
     var result = $.ajax({
-            url: WEATHERURL,
+            url: "https://api.openweathermap.org/data/2.5/weather",
             data: query,
             dataType: "jsonp",
             type: "GET"
         })
+        //    const query = {
+        //        lat: lat,
+        //        lng: long,
+        //        username: 'dsundland'
+        //    };
+        //    var result = $.ajax({
+        //            url: WEATHERURL,
+        //            data: query,
+        //            dataType: "jsonp",
+        //            type: "GET"
+        //        })
         .done(function (result) {
-            displayWeather(result, country);
+            //            displayWeather(result, country);  // *MARK* NEED TO MODIFY DISPLAYWEATHER WITH NEW RESULTS; CONVERT FROM KELVIN, ETC.
+            console.log(result, result.main.humidity, result.main.temp, result.wind.deg, result.wind.speed, result.weather[0].description);
         })
         .fail(function (jqXHR, error, errorThrown) {
             console.log(jqXHR);
@@ -654,7 +667,7 @@ function renderWeatherForecast(result, country) {
     //        weatherTime = timeParts[0] + ":" + timeParts[1] + timeParts[2].split(' ')[1] // Get rid of seconds, but keep AM or PM
     //    }
     let description = result["weather"]["0"]["description"];
-    let returnHtml = `${weatherDate} in the ${weatherTime} - ${temperature}, with ${description}<br>`;
+    let returnHtml = `${weatherDate}, ${weatherTime} - ${temperature}, with ${description}<br>`;
     return returnHtml;
 }
 
