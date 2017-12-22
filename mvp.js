@@ -651,7 +651,7 @@ function renderWeatherForecast(result, country) {
 $(getNews("", newsSources, "News"));
 $(getNews("", sportsSources, "Sports"));
 $(getNews("", entertainmentSources, "Entertainment"));
-$(getTheNews("", financialSources, "Financial"));
+$(getNews("", financialSources, "Financial"));
 $(getPlaceBased);
 $(querySubmit);
 $(seeMore);
