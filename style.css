@@ -110,14 +110,7 @@ div {
     overflow: hidden;
 }
 
-.seeMore {
-    /*    height: 1000px;*/
-    overflow: scroll;
-    /*
-    border: 10px pink dashed;
-    border-radius: 100px;
-*/
-}
+
 
 .middleBuffer {
     background-color: black;
@@ -161,4 +154,13 @@ div {
 .Entertainment img,
 .Financial img {
     width: 100%;
+}
+
+.seeMore {
+    /*    height: 1000px;*/
+    overflow: scroll;
+    /*
+    border: 10px pink dashed;
+    border-radius: 100px;
+    */
 }
