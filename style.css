@@ -156,6 +156,12 @@ div {
     width: 100%;
 }
 
+.showMore {
+    text-align: center;
+    border: 1000px ridged cornflowerblue;
+    background-color: cornflowerblue
+}
+
 .seeMore {
     /*    height: 1000px;*/
     overflow: scroll;
