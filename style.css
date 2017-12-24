@@ -39,6 +39,7 @@ h1 {
     z-index: 3;
 }
 
+
 #tempBox {
     margin: auto;
     /*    display: block;*/
@@ -156,10 +157,12 @@ div {
     width: 100%;
 }
 
+
 .showMore {
     text-align: center;
-    border: 1000px ridged cornflowerblue;
-    background-color: cornflowerblue
+    border: 5px ridge cornflowerblue;
+    background-color: cornflowerblue;
+    cursor: pointer;
 }
 
 .seeMore {

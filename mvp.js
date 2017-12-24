@@ -85,7 +85,7 @@ function getLatLongFromAddress() {
                 //                console.log("Lat: " + latitude + ", Long: " + longitude);
                 callPlaceBased(latitude, longitude);
             } else {
-                alert("Uh-oh, something went wrong!");
+                alert("Uh-oh, Google did not like the address which you entered!");
             }
         });
     });
@@ -227,9 +227,13 @@ function getTheNews(sources, searchTerm, startDate, endDate, section) {
             //            runFunction(result);
             const results = result.articles.map((item, index) => renderNews(item, section));
             $('.' + section).html(`<div class = "newsHeader"><h2>${section}</h2></div>`);
-            for (i = 0; i < results.length; i++) {
-                if (results[i] !== undefined) {
-                    $('.' + section).append(results[i]);
+            if (results.length === 0) {
+                $('.' + section).append(`<div class="row"><img src='https://lapita.net/wp-content/uploads/2017/10/%E0%B8%95%E0%B8%B4%E0%B8%94%E0%B8%9B%E0%B8%B1%E0%B8%8D%E0%B8%AB%E0%B8%B2.jpg'><span class="description">Well, this is embarrassing!  We found a grand total of zero (yes, zero!) results.  Sigh.</span></div>`);
+            } else {
+                for (i = 0; i < results.length; i++) {
+                    if (results[i] !== undefined) {
+                        $('.' + section).append(results[i]);
+                    }
                 }
             }
         })
@@ -354,7 +358,7 @@ function callPlaceBased(userLat, userLong) {
     try {
         $.getJSON // Get the user's country code; use that to pull holidays & determine whether to use metric or outdated measurements for weather
         (
-            'https://maps.googleapis.com/maps/api/geocode/json', {
+            'https: //maps.googleapis.com/maps/api/geocode/json', {
                 latlng: userLat + "," + userLong,
                 key: "AIzaSyAa9jFz1GClkj8pW9ytY6tB70hVFj1RGYQ",
                 sensor: false
@@ -452,18 +456,39 @@ function displayEventful(data) {
     const results = data.events.event.map((item, index) => renderEventful(item));
     $('#events').html(""); // clear out old results, if applicable.
     //    console.log(results);
-    for (i = 0; i < results.length; i++) {
+    if (results.length === 0) {
+        $('#events').append(`<p>Don't you hate it when absolutely nothing is happening?  We found no Eventful events (none!) within 128 miles of your location today.</p>`);
+    }
+    for (i = results.length - 1; i >= 0; i--) { // run events loop backwards, since stored in reverse chrono order
         if (results[i] !== undefined) { // renderEventful will run an empty return if events are of too poor quality
-            $('#events').append(results[i]);
+            if (i % 2 === 0) { // alternate classes so that background colors can alternate
+                $('#events').append(`<p class = "even">${results[i]}</p>`);
+            } else {
+                $('#events').append(`<p class = "odd">${results[i]}</p>`);
+            }
         }
     }
+}
+
+function textCleanup(text, maxLength) {
+    text.replace(/\<p\>/g, " ").replace(/\<\/p\>/g, " ").replace(/\<br\>/g, "").replace(/\<hr\>/g, "").replace(/\<b\>/g, "").replace(/\<\/b\>/, "").replace(/\<strong\>/, "").replace(/\<\/strong\>/, ""); // Remove HTML tags that are commonly found within results
+    text.replace(/\_+/g, '_').replace(/\-/g, '-').replace(/\s+/g, ' '); // Remove abusive use of underscores, hyphens, & white space
+    if (text.length > maxLength) {
+        text = text.substring(0, maxLength) + "..."; // shorten excessive descriptions
+    }
+    killSpaces = text.replace(/\s/g, ''); // Create copy of text w/ no white space...
+    if (/[A-Z]{10,}/.exec(killSpaces)) // If result has 10 or more capital letters in a row, let's eliminate that ALL CAPS abuse
+    {
+        text = sentenceCase(text);
+    }
+    return text;
 }
 
 function renderEventful(result) {
     //    console.log("In renderEventful");
     //    let returnArray = [];
     if ((result["title"] === null || result["title"].length < 5) && (result["description"] === null || result["description"].length < 5)) {
-        return; // if there is no title or description, or if both are preposterously short, return with no value
+        return; // if there is no title or description, or if both are preposterously short, return with no value (skip the event)
     }
     let maxDescription = 200;
     let maxTitle = 150;
@@ -474,32 +499,17 @@ function renderEventful(result) {
     if (result["description"] === null) {
         maxTitle += 50; // If there is no description, allow longer title
     } else {
-        result["description"].replace(/\_+/g, '_'); // Remove abusive use of underscores
-        result["description"].replace(/\-/g, '-'); // Remove abusive use of hyphens
-        result["description"].replace(/\s+/g, ' '); // Remove abusive use of white space
-        if (result["description"].length > maxDescription) {
-            result["description"] = result["description"].substring(0, maxDescription) + "..."; // shorten excessive descriptions
-        }
-        killSpaces = result["description"].replace(/\s/g, ''); // Create copy of description w/ no white space...
-        if (/[A-Z]{10,}/.exec(killSpaces)) // If result has 10 or more capital letters in a row, let's eliminate that ALL CAPS abuse
-        {
-            result["description"] = sentenceCase(result["description"]);
-        }
+        //        console.log("in renderEventful description else, result['description'] = ", result["description"]);
+        result["description"] = textCleanup(result["description"], maxDescription);
     }
     if (result["title"] !== null) {
-        if (result["title"].length > maxTitle) {
-            result["title"] = result["title"].substring(0, maxTitle) + "..."; // shorten excessive titles
-        }
-        killSpaces = result["title"].replace(/\s/g, ''); // Create copy of title w/ no white space...
-        if (/[A-Z]{10,}/.exec(killSpaces)) // If result has 10 or more capital letters in a row, let's eliminate that ALL CAPS abuse
-        {
-            result["title"] = titleCase(result["title"]);
-        }
+        result["title"] = textCleanup(result["title"], maxTitle);
     }
     let dateTime = new Date(result.start_time);
     let date = dateTime.toLocaleDateString();
     let time = dateTime.toLocaleTimeString();
-    return `<p><a href='${result.url}' target='_blank'>${result.title}</a>. ${result.description} At ${result.venue_name} - ${result.venue_address}, ${result.city_name}, ${result.region_abbr}.  Start time: ${time}. Date: ${date}.`;
+    console.log("venue name: ", result.venue_name, "venue address: ", result.venue_address);
+    return `<a href='${result.url}' target='_blank'>${result.title}</a>. ${result.description} At ${result.venue_name} - ${result.venue_address}, ${result.city_name}, ${result.region_abbr}.  Start time: ${time}. Date: ${date}.`;
 }
 
 function getHolidaysApi(countryCode) { // CAN'T USE?  API NOT SECURE
