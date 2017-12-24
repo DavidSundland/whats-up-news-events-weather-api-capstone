@@ -7,6 +7,7 @@
 // CHECK SECURITY STATUS VIA GIT.  GET RID OF HOLIDAYS?  CLEAN UP HTML STRUCTURE.  KILL UNNECESSARY HTML ONCE STRUCTURE CLEAN.  SHRINK WEATHER DISPLAY, MAKE SURE RESPONSIVE.
 
 // git add . ; git commit -m 'REPLACE-ME'; git pull origin master; git push --set-upstream origin master
+// https://davidsundland.github.io/whats-up-news-events-weather-api-capstone/
 
 
 // JavaScript file for Thinkful Capstone 1
@@ -358,7 +359,7 @@ function callPlaceBased(userLat, userLong) {
     try {
         $.getJSON // Get the user's country code; use that to pull holidays & determine whether to use metric or outdated measurements for weather
         (
-            'https: //maps.googleapis.com/maps/api/geocode/json', {
+            'https://maps.googleapis.com/maps/api/geocode/json', {
                 latlng: userLat + "," + userLong,
                 key: "AIzaSyAa9jFz1GClkj8pW9ytY6tB70hVFj1RGYQ",
                 sensor: false
