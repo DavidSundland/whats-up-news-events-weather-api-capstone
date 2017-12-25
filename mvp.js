@@ -106,7 +106,7 @@ function querySubmit() {
         searchTerm = queryTarget.val();
         queryTarget.val(""); // clear out the input
         $("input").attr("placeholder", " Enter a new search item");
-        getNews(searchTerm, newsSources, "News");
+        getNews(searchTerm, newsSources, "News", "relevancy", "first");
     });
     $('.sportsSearchForm').submit(event => {
         event.preventDefault();
@@ -114,7 +114,7 @@ function querySubmit() {
         searchTerm = queryTarget.val();
         queryTarget.val(""); // clear out the input
         $("input").attr("placeholder", " Enter a new search item");
-        getNews(searchTerm, sportsSources, "Sports");
+        getNews(searchTerm, sportsSources, "Sports", "relevancy", "first");
     });
     $('.entertainmentSearchForm').submit(event => {
         event.preventDefault();
@@ -122,7 +122,7 @@ function querySubmit() {
         searchTerm = queryTarget.val();
         queryTarget.val(""); // clear out the input
         $("input").attr("placeholder", " Enter a new search item");
-        getNews(searchTerm, entertainmentSources, "Entertainment");
+        getNews(searchTerm, entertainmentSources, "Entertainment", "relevancy", "first");
     });
     $('.financialSearchForm').submit(event => {
         event.preventDefault();
@@ -130,7 +130,7 @@ function querySubmit() {
         searchTerm = queryTarget.val();
         queryTarget.val(""); // clear out the input
         $("input").attr("placeholder", " Enter a new search item");
-        getNews(searchTerm, financialSources, "Financial");
+        getNews(searchTerm, financialSources, "Financial", "relevancy", "first");
     });
     $('.eventsSearchForm').submit(event => {
         event.preventDefault();
@@ -206,26 +206,110 @@ function seeMore() {
             $("#moreEvents").html("See More");
         }
     });
+    $('.News').on('click', '#NewsNext', function () {
+        getNews("", newsSources, "News", "", "next");
+    });
+    $('.Sports').on('click', '#SportsNext', function () {
+        getNews("", sportsSources, "Sports", "", "next");
+    });
+    $('.Entertainment').on('click', '#EntertainmentNext', function () {
+        getNews("", entertainmentSources, "Entertainment", "", "next");
+    });
+    $('.Financial').on('click', '#FinancialNext', function () {
+        getNews("", financialSources, "Financial", "", "next");
+    });
+    $('.News').on('click', '#NewsPrev', function () {
+        getNews("", newsSources, "News", "", "prev");
+    });
+    $('.Sports').on('click', '#SportsPrev', function () {
+        getNews("", sportsSources, "Sports", "", "prev");
+    });
+    $('.Entertainment').on('click', '#EntertainmentPrev', function () {
+        getNews("", entertainmentSources, "Entertainment", "", "prev");
+    });
+    $('.Financial').on('click', '#FinancialPrev', function () {
+        getNews("", financialSources, "Financial", "", "prev");
+    });
 }
 
-function getNews(searchTerm, sources, category) {
-    console.log("in getNews");
+function getNews(searchTerm, sources, category, sortBy, call) {
+    //    console.log("in getNews");
     let endDate = TODAY.getFullYear().toString() + '-' + (TODAY.getMonth() + 1).toString() + '-' + TODAY.getDate().toString(); // getMonth returns month value from 0 to 11...
     let before = new Date(TODAY);
     let beforeDifference = 0; // TEST PAGE WITH RESULTS FROM TODAY ONLY; IF NOT ENOUGH RESULTS, CHANGE INCREMENT
     before.setDate(TODAY.getDate() - beforeDifference);
     let startDate = before.getFullYear().toString() + '-' + (before.getMonth() + 1).toString() + '-' + before.getDate().toString();
-    getTheNews(sources, searchTerm, startDate, endDate, category);
+    getTheNews(sources, searchTerm, startDate, endDate, category, sortBy, call);
 }
 
-function getTheNews(sources, searchTerm, startDate, endDate, section) {
+function getTheNews(sources, searchTerm, startDate, endDate, section, sortBy, call) { // Documentation - https://newsapi.org/docs
     console.log("in getTheNews");
+    if (getTheNews.pageNumber === undefined) { // if undefined, then first time function has been run
+        getTheNews.pageNumber = 1;
+        getTheNews.newsQuery = "";
+        getTheNews.sportsQuery = "";
+        getTheNews.financialQuery = "";
+        getTheNews.entertainmentQuery = "";
+        getTheNews.newsSort = "popularity";
+        getTheNews.sportsSort = "popularity";
+        getTheNews.financialSort = "popularity";
+        getTheNews.entertainmentSort = "popularity";
+    } else if (call === "first") {
+        getTheNews.pageNumber = 1;
+    } else if (call === "next") {
+        getTheNews.pageNumber++;
+    } else {
+        getTheNews.pageNumber--;
+    }
+    if (searchTerm === "") { // load previous search term, if any
+        if (section === "News") {
+            searchTerm = getTheNews.newsQuery;
+        } else if (section === "Sports") {
+            searchTerm = getTheNews.sportsQuery;
+        } else if (section === "Financial") {
+            searchTerm = getTheNews.financialQuery;
+        } else {
+            searchTerm = getTheNews.entertainmentQuery;
+        }
+    } else { // store the search term for future use
+        if (section === "News") {
+            getTheNews.newsQuery = searchTerm;
+        } else if (section === "Sports") {
+            getTheNews.sportsQuery = searchTerm;
+        } else if (section === "Financial") {
+            getTheNews.financialQuery = searchTerm;
+        } else {
+            getTheNews.entertainmentQuery = searchTerm;
+        }
+    }
+    if (sortBy === "") { // load previous sort by term, if any
+        if (section === "News") {
+            sortBy = getTheNews.newsSort;
+        } else if (section === "Sports") {
+            sortBy = getTheNews.sportsSort;
+        } else if (section === "Financial") {
+            sortBy = getTheNews.financialSort;
+        } else {
+            sortBy = getTheNews.entertainmentSort;
+        }
+    } else { // store the sort by for future use
+        if (section === "News") {
+            getTheNews.newsSort = sortBy;
+        } else if (section === "Sports") {
+            getTheNews.sportsSort = sortBy;
+        } else if (section === "Financial") {
+            getTheNews.financialSort = sortBy;
+        } else {
+            getTheNews.entertainmentSort = sortBy;
+        }
+    }
     const query = {
         q: searchTerm,
         sources: sources,
         from: startDate,
         to: endDate,
-        sortBy: 'popularity',
+        sortBy: sortBy,
+        page: getTheNews.pageNumber,
         language: 'en',
         apiKey: NEWSAPI
     };
@@ -236,7 +320,7 @@ function getTheNews(sources, searchTerm, startDate, endDate, section) {
             type: "GET"
         })
         .done(function (result) {
-            //            console.log(sources, "result = ", result);
+            console.log(sources, "result = ", result);
             //            runFunction(result);
             const results = result.articles.map((item, index) => renderNews(item, section));
             $('.' + section).html(`<div class = "newsHeader"><h2>${section}</h2></div>`);
@@ -249,6 +333,18 @@ function getTheNews(sources, searchTerm, startDate, endDate, section) {
                     }
                 }
             }
+            if (result.totalResults > getTheNews.pageNumber * 20 && getTheNews.pageNumber === 1) { // 20 results are returned per page
+                buttonId = section + 'Next';
+                $('.' + section).append(`<div class="row next"><button id="${buttonId}">Load More Results</button></div>`);
+                //                console.log("In if, result.totalResults: ", result.totalResults, "page number: ", getTheNews.pageNumber, "button: ", buttonId);
+            } else if (result.totalResults > getTheNews.pageNumber * 20) {
+                buttonId = section + 'Next';
+                buttonPrev = section + 'Prev';
+                $('.' + section).append(`<div class="row nextPrev"><button id="${buttonPrev}">Load Previous Results</button><button id="${buttonId}">Load More Results</button></div>`);
+            } else if (getTheNews.pageNumber !== 1) {
+                buttonPrev = section + 'Prev';
+                $('.' + section).append(`<div class="row nextPrev"><button id="${buttonPrev}">Load Previous Results</button></div>`);
+            } // note - remaining possibility is 1st page but # results <= 20, in which case don't have prev or next button
         })
         .fail(function (jqXHR, error, errorThrown) {
             console.log(jqXHR);
@@ -347,7 +443,7 @@ function getPlaceBased() {
     }
     console.log("about to run navigator");
     navigator.geolocation.getCurrentPosition(success, error, {
-        timeout: 10000
+        timeout: 5000 // If don't succeed in getting position within 5 seconds, give up
     });
 }
 
@@ -495,7 +591,7 @@ function displayEventful(data) {
 }
 
 function textCleanup(text, maxLength) {
-    console.log("in textCleanup");
+    //    console.log("in textCleanup");
     text.replace(/\<p\>/g, " ").replace(/\<\/p\>/g, " ").replace(/\<br\>/g, "").replace(/\<hr\>/g, "").replace(/\<b\>/g, "").replace(/\<\/b\>/, "").replace(/\<strong\>/, "").replace(/\<\/strong\>/, ""); // Remove HTML tags that are commonly found within results
     text.replace(/\_+/g, '_').replace(/\-/g, '-').replace(/\s+/g, ' '); // Remove abusive use of underscores, hyphens, & white space
     if (text.length > maxLength) {
@@ -510,7 +606,7 @@ function textCleanup(text, maxLength) {
 }
 
 function renderEventful(result) {
-    console.log("In renderEventful", result);
+    //    console.log("In renderEventful", result);
     if ((result["title"] === null || result["title"].length < 5) && (result["description"] === null || result["description"].length < 5)) {
         return; // if there is no title or description, or if both are preposterously short, return with no value (skip the event)
     }
@@ -606,7 +702,7 @@ function getWeatherAPI(lat, long, country) {
         //            type: "GET"
         //        })
         .done(function (result) {
-            displayWeather(result, country); // *MARK* NEED TO MODIFY DISPLAYWEATHER WITH NEW RESULTS; CONVERT FROM KELVIN, ETC.
+            displayWeather(result, country);
             //            console.log(result, result.main.humidity, result.main.temp, result.wind.deg, result.wind.speed, result.weather[0].description);
         })
         .fail(function (jqXHR, error, errorThrown) {
@@ -797,10 +893,10 @@ function renderWeatherForecast(result, country) {
     return returnHtml;
 }
 
-$(getNews("", newsSources, "News"));
-$(getNews("", sportsSources, "Sports"));
-$(getNews("", entertainmentSources, "Entertainment"));
-$(getNews("", financialSources, "Financial"));
+$(getNews("", newsSources, "News", "", "first"));
+$(getNews("", sportsSources, "Sports", "", "first"));
+$(getNews("", entertainmentSources, "Entertainment", "", "first"));
+$(getNews("", financialSources, "Financial", "", "first"));
 $(getPlaceBased);
 $(querySubmit);
 $(seeMore);
