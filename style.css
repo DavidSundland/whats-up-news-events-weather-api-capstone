@@ -95,7 +95,8 @@ div {
 .News,
 .Sports,
 .Entertainment,
-.Financial {
+.Financial,
+.events {
     /*    float: left;*/
     /*
     position: relative;

@@ -26,22 +26,25 @@ let newsSources = 'the-washington-post,associated-press,al-jazeera-english,bbc-n
 let sportsSources = 'talksport,bleacher-report,nfl-news,nhl-news,the-sport-bible';
 let entertainmentSources = 'entertainment-weekly,mtv-news';
 let financialSources = 'financial-post,financial-times,fortune,business-insider';
+let GLOBALLAT = "38.89";
+let GLOBALLONG = "-77.034";
+let TODAY = new Date();
 
 
 function getDate(country) {
-    let today = new Date();
+    console.log("in getDate");
     let headingDate;
     if (country === 'us' || country === 'US') {
-        headingDate = MonthNames[today.getMonth()] + " " + today.getDate().toString() + ", " + today.getFullYear() + ",";
+        headingDate = MonthNames[TODAY.getMonth()] + " " + TODAY.getDate().toString() + ", " + TODAY.getFullYear() + ",";
     } else {
-        headingDate = today.getDate().toString() + " " + MonthNames[today.getMonth()] + " " + today.getFullYear() + ",";
+        headingDate = TODAY.getDate().toString() + " " + MonthNames[TODAY.getMonth()] + " " + TODAY.getFullYear() + ",";
     }
     $('.insert-date').html(headingDate);
-    $('.insert-month').html(MonthNames[today.getMonth()]);
+    $('.insert-month').html(MonthNames[TODAY.getMonth()]);
 }
 
 function titleCase(str) { // Capitalize first letter in every word of a string, make all others lowercase
-    //    console.log(str);
+    //    console.log("in titleCase");
     words = str.toLowerCase().split(' ');
 
     for (var i = 0; i < words.length; i++) {
@@ -53,8 +56,8 @@ function titleCase(str) { // Capitalize first letter in every word of a string, 
 }
 
 function sentenceCase(str) { // Capitalize first letter in every sentence, make all others lowercase
+    //    console.log("in sentenceCase");
     sentences = str.toLowerCase().split('. ');
-
     for (var i = 0; i < sentences.length; i++) {
         var letters = sentences[i].split('');
         letters[0] = letters[0].toUpperCase();
@@ -64,7 +67,7 @@ function sentenceCase(str) { // Capitalize first letter in every sentence, make 
 }
 
 function getLatLongFromAddress() {
-    //    console.log("getLatLongFromAddress started");
+    console.log("getLatLongFromAddress started");
     var geocoder = new google.maps.Geocoder();
     let address;
     //    var address = "3645 13th st nw washington dc";
@@ -83,6 +86,8 @@ function getLatLongFromAddress() {
             if (status == google.maps.GeocoderStatus.OK) {
                 var latitude = results[0].geometry.location.lat();
                 var longitude = results[0].geometry.location.lng();
+                GLOBALLAT = latitude;
+                GLOBALLONG = longitude;
                 //                console.log("Lat: " + latitude + ", Long: " + longitude);
                 callPlaceBased(latitude, longitude);
             } else {
@@ -94,7 +99,7 @@ function getLatLongFromAddress() {
 
 
 function querySubmit() {
-    //    console.log("newsQuerySubmit");
+    console.log("newsQuerySubmit");
     $('.newsSearchForm').submit(event => {
         event.preventDefault();
         const queryTarget = $(event.currentTarget).find('.js-query');
@@ -127,13 +132,28 @@ function querySubmit() {
         $("input").attr("placeholder", " Enter a new search item");
         getNews(searchTerm, financialSources, "Financial");
     });
+    $('.eventsSearchForm').submit(event => {
+        event.preventDefault();
+        const queryTarget = $(event.currentTarget).find('.js-query');
+        eventfulQuery = queryTarget.val();
+        queryTarget.val(""); // clear out the input
+        $("input").attr("placeholder", " Enter a new search item");
+        let eventfulStartDate = TODAY.getFullYear().toString() + (TODAY.getMonth() + 1).toString() + TODAY.getDate().toString() + "00"; // eventful date format is:  YYYYMMDD00
+        let eventfulEndDate = eventfulStartDate; // for first call, only search for today
+        let distance = 4; // Initial search distance for Eventful (4 miles - a reasonable distance for a big city)
+        let counter = 1;
+        let maxCount = 6; // Maximum number of times to run testEventfulApi
+        distance = testEventfulApi(GLOBALLAT, GLOBALLONG, distance, eventfulStartDate, eventfulEndDate, eventfulQuery, counter, maxCount);
+        getEventfulApi(GLOBALLAT, GLOBALLONG, distance, eventfulStartDate, eventfulEndDate, eventfulQuery, 1);
+    });
 }
 
 function seeMore() {
+    console.log("in seeMore");
     $("#moreNews").click(function () {
         $(".News").toggleClass("seeMore");
         if ($("#moreNews").html() === "See More") {
-            $("#moreNews").html("Remove Scrollbar");
+            $("#moreNews").html("Remove Scrolling");
         } else {
             $("#moreNews").html("See More");
         }
@@ -149,7 +169,7 @@ function seeMore() {
     $("#moreEntertainment").click(function () {
         $(".Entertainment").toggleClass("seeMore");
         if ($("#moreEntertainment").html() === "See More") {
-            $("#moreEntertainment").html("Remove Scrollbar");
+            $("#moreEntertainment").html("Remove Scrolling");
         } else {
             $("#moreEntertainment").html("See More");
         }
@@ -162,18 +182,10 @@ function seeMore() {
             $("#moreFinancial").html("See More");
         }
     });
-    //    $("#moreWeather").click(function () {
-    //        $("#weather").children(".mainInfo").toggleClass("seeMore");
-    //        if ($("#moreWeather").html() === "Show More") {
-    //            $("#moreWeather").html("Remove Scrollbar");
-    //        } else {
-    //            $("#moreWeather").html("Show More");
-    //        }
-    //    });
     $("#moreWeather").click(function () {
         $(".mainInfo").toggleClass("seeMore");
         if ($("#moreWeather").html() === "Show More") {
-            $("#moreWeather").html("Remove Scrollbar");
+            $("#moreWeather").html("Remove Scrolling");
         } else {
             $("#moreWeather").html("Show More");
         }
@@ -181,33 +193,33 @@ function seeMore() {
     $("#moreForecast").click(function () {
         $(".forecast").toggleClass("seeMore");
         if ($("#moreForecast").html() === "Show More") {
-            $("#moreForecast").html("Remove Scrollbar");
+            $("#moreForecast").html("Remove Scrolling");
         } else {
             $("#moreForecast").html("Show More");
         }
     });
-
-    //    $("#moreForecast").click(function () {
-    //        $("#forecast").toggleClass("seeMore");
-    //        if ($("#moreForecast").html() === "Show More") {
-    //            $("#moreForecast").html("Remove Scrollbar");
-    //        } else {
-    //            $("#moreForecast").html("Show More");
-    //        }
-    //    });
+    $("#moreEvents").click(function () {
+        $(".events").toggleClass("seeMore");
+        if ($("#moreEvents").html() === "See More") {
+            $("#moreEvents").html("Remove Scrolling");
+        } else {
+            $("#moreEvents").html("See More");
+        }
+    });
 }
 
 function getNews(searchTerm, sources, category) {
-    let today = new Date();
-    let endDate = today.getFullYear().toString() + '-' + (today.getMonth() + 1).toString() + '-' + today.getDate().toString(); // getMonth returns month value from 0 to 11...
-    let before = new Date(today);
+    console.log("in getNews");
+    let endDate = TODAY.getFullYear().toString() + '-' + (TODAY.getMonth() + 1).toString() + '-' + TODAY.getDate().toString(); // getMonth returns month value from 0 to 11...
+    let before = new Date(TODAY);
     let beforeDifference = 0; // TEST PAGE WITH RESULTS FROM TODAY ONLY; IF NOT ENOUGH RESULTS, CHANGE INCREMENT
-    before.setDate(today.getDate() - beforeDifference);
+    before.setDate(TODAY.getDate() - beforeDifference);
     let startDate = before.getFullYear().toString() + '-' + (before.getMonth() + 1).toString() + '-' + before.getDate().toString();
     getTheNews(sources, searchTerm, startDate, endDate, category);
 }
 
 function getTheNews(sources, searchTerm, startDate, endDate, section) {
+    console.log("in getTheNews");
     const query = {
         q: searchTerm,
         sources: sources,
@@ -312,40 +324,49 @@ function renderNews(result, section) {
 //}
 
 function getPlaceBased() {
+    console.log("in getPlaceBased");
     if (!navigator.geolocation) {
+        console.log("in !navigator.geolocation");
         navNoGo();
         return;
     }
 
     function error() {
+        console.log("in getPlaceBased error");
         navNoGo();
         return;
     }
 
     function success(position) {
+        console.log("in getPlaceBased success");
         let userLat = position.coords.latitude;
         let userLong = position.coords.longitude;
+        GLOBALLAT = userLat;
+        GLOBALLONG = userLong;
         callPlaceBased(userLat, userLong);
     }
-    navigator.geolocation.getCurrentPosition(success, error);
+    console.log("about to run navigator");
+    navigator.geolocation.getCurrentPosition(success, error, {
+        timeout: 10000
+    });
 }
 
 function navNoGo() {
-    let userLat = "38.89";
-    let userLong = "-77.034";
+    console.log("in navNoGo");
+    alert("Uh-oh! We could not automatically determine your location, so place-based results are defaulting to Washingon, DC. You can manually enter a different location if you'd like.")
     console.log("Geolocation is not supported by this browser.");
-    callPlaceBased(userLat, userLong);
+    callPlaceBased(GLOBALLAT, GLOBALLONG);
 }
 
 function callPlaceBased(userLat, userLong) {
-    let today = new Date();
-    let eventfulStartDate = today.getFullYear().toString() + (today.getMonth() + 1).toString() + today.getDate().toString() + "00"; // eventful date format is:  YYYYMMDD00
+    console.log("in callPlaceBased");
+    let eventfulStartDate = TODAY.getFullYear().toString() + (TODAY.getMonth() + 1).toString() + TODAY.getDate().toString() + "00"; // eventful date format is:  YYYYMMDD00
     let eventfulEndDate = eventfulStartDate; // for first call, only search for today
     let eventfulQuery = ""; // search all events initially
     let distance = 4; // Initial search distance for Eventful (4 miles - a reasonable distance for a big city)
     let counter = 1;
     let maxCount = 6; // Maximum number of times to run testEventfulApi
-    distance = testEventfulApi(userLat, userLong, distance, eventfulStartDate, eventfulEndDate, counter, maxCount);
+    distance = testEventfulApi(userLat, userLong, distance, eventfulStartDate, eventfulEndDate, eventfulQuery, counter, maxCount);
     getEventfulApi(userLat, userLong, distance, eventfulStartDate, eventfulEndDate, eventfulQuery, 1);
     //    try { Geonames site was yielding security issues, so went alternative route
     //        $.getJSON // Get the user's country code; use that to pull holidays & determine whether to use metric or outdated measurements for weather
@@ -388,9 +409,11 @@ function callPlaceBased(userLat, userLong) {
     }
 }
 
-function testEventfulApi(lat, long, distance, eventStartDate, eventEndDate, counter, maxCount) { // Since Eventful might not pull many results within 4 miles, test to determine necessary distance
+function testEventfulApi(lat, long, distance, eventStartDate, eventEndDate, eventfulQuery, counter, maxCount) { // Since Eventful might not pull many results within 4 miles, test to determine necessary distance
+    console.log("in testEventfulApi");
     let query = {
         app_key: 'Jsr6ndZBQLW9qdLL',
+        keywords: eventfulQuery,
         location: lat + ',' + long,
         //        location: "39.597462" + ',' + "-111.439893",  // FOR TESTING - LOCATION IN REMOTE PART OF UTAH
         //        keywords: 'happiness',
@@ -408,7 +431,7 @@ function testEventfulApi(lat, long, distance, eventStartDate, eventEndDate, coun
             if (result.events.event.length < 5 && counter < maxCount) {
                 distance *= 2;
                 counter++;
-                testEventfulApi(lat, long, distance, eventDate, counter, maxCount);
+                testEventfulApi(lat, long, distance, eventStartDate, eventEndDate, eventfulQuery, counter, maxCount); // keep running test until # results found or maxCount reached
             }
         })
         .fail(function (jqXHR, error, errorThrown) {
@@ -421,7 +444,7 @@ function testEventfulApi(lat, long, distance, eventStartDate, eventEndDate, coun
 
 
 function getEventfulApi(lat, long, distance, eventStartDate, eventEndDate, query, pageNumber) {
-    //    console.log("In getEventfulApi, eventDate = ", eventDate);
+    console.log("In getEventfulApi");
     var query = {
         app_key: 'Jsr6ndZBQLW9qdLL',
         keywords: query,
@@ -452,26 +475,27 @@ function getEventfulApi(lat, long, distance, eventStartDate, eventEndDate, query
 }
 
 function displayEventful(data) {
-    //    console.log("In displayEventful");
+    console.log("In displayEventful");
     //    console.log(data);
     const results = data.events.event.map((item, index) => renderEventful(item));
-    $('#events').html(""); // clear out old results, if applicable.
+    $('.events').html(""); // clear out old results, if applicable.
     //    console.log(results);
     if (results.length === 0) {
-        $('#events').append(`<p>Don't you hate it when absolutely nothing is happening?  We found no Eventful events (none!) within 128 miles of your location today.</p>`);
+        $('.events').append(`<p>Don't you hate it when absolutely nothing is happening?  We found no Eventful events (none!) within 128 miles of your location today.</p>`);
     }
     for (i = results.length - 1; i >= 0; i--) { // run events loop backwards, since stored in reverse chrono order
         if (results[i] !== undefined) { // renderEventful will run an empty return if events are of too poor quality
             if (i % 2 === 0) { // alternate classes so that background colors can alternate
-                $('#events').append(`<p class = "even">${results[i]}</p>`);
+                $('.events').append(`<p class = "even">${results[i]}</p>`);
             } else {
-                $('#events').append(`<p class = "odd">${results[i]}</p>`);
+                $('.events').append(`<p class = "odd">${results[i]}</p>`);
             }
         }
     }
 }
 
 function textCleanup(text, maxLength) {
+    console.log("in textCleanup");
     text.replace(/\<p\>/g, " ").replace(/\<\/p\>/g, " ").replace(/\<br\>/g, "").replace(/\<hr\>/g, "").replace(/\<b\>/g, "").replace(/\<\/b\>/, "").replace(/\<strong\>/, "").replace(/\<\/strong\>/, ""); // Remove HTML tags that are commonly found within results
     text.replace(/\_+/g, '_').replace(/\-/g, '-').replace(/\s+/g, ' '); // Remove abusive use of underscores, hyphens, & white space
     if (text.length > maxLength) {
@@ -486,8 +510,7 @@ function textCleanup(text, maxLength) {
 }
 
 function renderEventful(result) {
-    //    console.log("In renderEventful");
-    //    let returnArray = [];
+    console.log("In renderEventful", result);
     if ((result["title"] === null || result["title"].length < 5) && (result["description"] === null || result["description"].length < 5)) {
         return; // if there is no title or description, or if both are preposterously short, return with no value (skip the event)
     }
@@ -499,6 +522,7 @@ function renderEventful(result) {
     }
     if (result["description"] === null) {
         maxTitle += 50; // If there is no description, allow longer title
+        result["description"] = "";
     } else {
         //        console.log("in renderEventful description else, result['description'] = ", result["description"]);
         result["description"] = textCleanup(result["description"], maxDescription);
@@ -514,9 +538,9 @@ function renderEventful(result) {
 }
 
 function getHolidaysApi(countryCode) { // CAN'T USE?  API NOT SECURE
-    var today = new Date();
-    var month = today.getMonth() + 1; // getMonth returns month value from 0 to 11; Holidays API expects values from 1 to 12
-    var year = today.getFullYear() - 1; // NOTE - must pay to get current and future holidays; past holidays are free
+    console.log("in getHolidaysApi");
+    var month = TODAY.getMonth() + 1; // getMonth returns month value from 0 to 11; Holidays API expects values from 1 to 12
+    var year = TODAY.getFullYear() - 1; // NOTE - must pay to get current and future holidays; past holidays are free
     var query = {
         country: countryCode,
         year: year,
@@ -540,6 +564,7 @@ function getHolidaysApi(countryCode) { // CAN'T USE?  API NOT SECURE
 }
 
 function displayHolidays(data) { // CAN'T USE?  API NOT SECURE
+    console.log("in displayHolidays");
     let killMultiDay;
     let arrayNoDuplicates = []; // For multi-day holidays, Holiday API lists same holiday multiple times. Eliminate duplicates.
     data.holidays.forEach(function (oneHoliday) {
@@ -557,7 +582,7 @@ function displayHolidays(data) { // CAN'T USE?  API NOT SECURE
 }
 
 function getWeatherAPI(lat, long, country) {
-    //    console.log("in getWeatherAPI");
+    console.log("in getWeatherAPI");
     var query = {
         lat: lat,
         lon: long,
@@ -592,7 +617,7 @@ function getWeatherAPI(lat, long, country) {
 }
 
 function displayWeather(data, country) {
-    console.log(data, country);
+    console.log("in displayWeather", data, country);
     let windSpeed;
     let windTest;
     let temperature;
@@ -694,6 +719,7 @@ function degreesToCardinal(windDir) {
 }
 
 function getWeatherForecastApi(lat, long, country) {
+    console.log("in getWeatherForecastApi");
     var query = {
         lat: lat,
         lon: long,
@@ -716,6 +742,7 @@ function getWeatherForecastApi(lat, long, country) {
 }
 
 function displayWeatherForecast(data, country) {
+    console.log("in displayWeatherForecast");
     const results = data.list.map((item, index) => renderWeatherForecast(item, country));
     $(".forecast").html("");
     for (i = 0; i < results.length; i++) {
@@ -731,7 +758,6 @@ function renderWeatherForecast(result, country) {
     let temperature;
     let weatherDate;
     let weatherTime;
-    let today = new Date();
     let weatherDateTime = new Date(result.dt_txt + " UTC");
     if (weatherDateTime.getHours() === 1 || weatherDateTime.getHours() === 4 || weatherDateTime.getHours() === 10 || weatherDateTime.getHours() === 16 || weatherDateTime.getHours() === 22) {
         return; // skip unwanted values; return undefined
@@ -750,9 +776,9 @@ function renderWeatherForecast(result, country) {
         temperature = (Math.round(Number(result.main.temp) - 273.15)).toString() + "°C";
         //        weatherDate = weatherDateTime.getDate() + " " + MonthNames[weatherDateTime.getMonth()];
     }
-    if (weatherDateTime.getDate() === today.getDate()) { // Don't need to compare full date, because forecast is only for next 5 days
+    if (weatherDateTime.getDate() === TODAY.getDate()) { // Don't need to compare full date, because forecast is only for next 5 days
         weatherDate = "Today,";
-    } else if (weatherDateTime.getDate() === today.getDate() + 1) {
+    } else if (weatherDateTime.getDate() === TODAY.getDate() + 1) {
         weatherDate = "Tomorrow";
     } else {
         weatherDate = weatherDateTime.toLocaleDateString() + ",";

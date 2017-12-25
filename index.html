@@ -106,7 +106,13 @@
         </div>
         <div class="row">
             <h2>Events</h2>
-            <span id="events"></span>
+            <div class="events col-12"></div>
+            <form action="#" class="eventsSearchForm">
+                <label for="eventsQuery"></label>
+                <input type="text" class="js-query" placeholder=" &nbsp; Enter an events search term">
+                <button type="submit">Search</button>
+            </form>
+            <div id="moreEvents" class="showMore">See More</div>
         </div>
         <!--
             <form action="#" class="eventsSearchForm">
@@ -115,10 +121,12 @@
 <button type="submit">Search</button>
 </form>
 -->
+        <!--
         <div class="holidays row">
             <h2><span class="insert-month"></span> Holidays</h2>
             <p class="js-holiday-results"></p>
         </div>
+-->
 
 
     </main>
