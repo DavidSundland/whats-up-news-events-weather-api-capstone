@@ -78,7 +78,7 @@ function getLatLongFromAddress() {
         address = queryTarget.val();
         //        console.log("Location submitted: ", address);
         queryTarget.val(""); // clear out the input
-        $("input").attr("placeholder", " Enter a new search address");
+        $(".newLocation input").attr("placeholder", address); // Put address in search box as placeholder so search term is shown on page
         geocoder.geocode({
             'address': address
         }, function (results, status) {
@@ -105,7 +105,7 @@ function querySubmit() {
         const queryTarget = $(event.currentTarget).find('.js-query');
         searchTerm = queryTarget.val();
         queryTarget.val(""); // clear out the input
-        $("input").attr("placeholder", " Enter a new search item");
+        $(".newsSearchForm input").attr("placeholder", " Enter a new search item");
         getNews(searchTerm, newsSources, "News", "relevancy", "first");
     });
     $('.sportsSearchForm').submit(event => {
@@ -113,7 +113,7 @@ function querySubmit() {
         const queryTarget = $(event.currentTarget).find('.js-query');
         searchTerm = queryTarget.val();
         queryTarget.val(""); // clear out the input
-        $("input").attr("placeholder", " Enter a new search item");
+        $(".sportsSearchForm input").attr("placeholder", " Enter a new search item");
         getNews(searchTerm, sportsSources, "Sports", "relevancy", "first");
     });
     $('.entertainmentSearchForm').submit(event => {
@@ -121,7 +121,7 @@ function querySubmit() {
         const queryTarget = $(event.currentTarget).find('.js-query');
         searchTerm = queryTarget.val();
         queryTarget.val(""); // clear out the input
-        $("input").attr("placeholder", " Enter a new search item");
+        $(".entertainmentSearchForm input").attr("placeholder", " Enter a new search item");
         getNews(searchTerm, entertainmentSources, "Entertainment", "relevancy", "first");
     });
     $('.financialSearchForm').submit(event => {
@@ -129,22 +129,26 @@ function querySubmit() {
         const queryTarget = $(event.currentTarget).find('.js-query');
         searchTerm = queryTarget.val();
         queryTarget.val(""); // clear out the input
-        $("input").attr("placeholder", " Enter a new search item");
+        $(".financialSearchForm input").attr("placeholder", " Enter a new search item");
         getNews(searchTerm, financialSources, "Financial", "relevancy", "first");
     });
     $('.eventsSearchForm').submit(event => {
+        console.log("eventsSearchForm triggered");
         event.preventDefault();
         const queryTarget = $(event.currentTarget).find('.js-query');
         eventfulQuery = queryTarget.val();
         queryTarget.val(""); // clear out the input
-        $("input").attr("placeholder", " Enter a new search item");
-        let eventfulStartDate = TODAY.getFullYear().toString() + (TODAY.getMonth() + 1).toString() + TODAY.getDate().toString() + "00"; // eventful date format is:  YYYYMMDD00
-        let eventfulEndDate = eventfulStartDate; // for first call, only search for today
-        let distance = 4; // Initial search distance for Eventful (4 miles - a reasonable distance for a big city)
+        $(".eventsSearchForm input").attr("placeholder", " Enter a new search item");
         let counter = 1;
         let maxCount = 6; // Maximum number of times to run testEventfulApi
-        distance = testEventfulApi(GLOBALLAT, GLOBALLONG, distance, eventfulStartDate, eventfulEndDate, eventfulQuery, counter, maxCount);
-        getEventfulApi(GLOBALLAT, GLOBALLONG, distance, eventfulStartDate, eventfulEndDate, eventfulQuery, 1);
+        let distance = callPlaceBased.distance;
+        console.log("Coupla items pulled from other function: ", distance, callPlaceBased.eventfulStartDate);
+        //        distance = testEventfulApi(GLOBALLAT, GLOBALLONG, distance, callPlaceBased.eventfulStartDate, callPlaceBased.eventfulEndDate, eventfulQuery, counter, maxCount);
+        //        if (distance === undefined) {
+        //            $('.events').html(`<p>Don't you hate it when absolutely nothing is happening?  We found no Eventful events (none!) within 128 miles of your location today.</p>`);
+        //        } else {
+        getEventfulApi(GLOBALLAT, GLOBALLONG, distance, callPlaceBased.eventfulStartDate, callPlaceBased.eventfulEndDate, eventfulQuery, "first");
+        //        }
     });
 }
 
@@ -155,13 +159,14 @@ function seeMore() {
         if ($("#moreNews").html() === "See More") {
             $("#moreNews").html("Remove Scrolling");
         } else {
+            window.location.hash = "NewsName";
             $("#moreNews").html("See More");
         }
     });
     $("#moreSports").click(function () {
         $(".Sports").toggleClass("seeMore");
         if ($("#moreSports").html() === "See More") {
-            $("#moreSports").html("Remove Scrollbar");
+            $("#moreSports").html("Remove Scrolling");
         } else {
             $("#moreSports").html("See More");
         }
@@ -177,7 +182,7 @@ function seeMore() {
     $("#moreFinancial").click(function () {
         $(".Financial").toggleClass("seeMore");
         if ($("#moreFinancial").html() === "See More") {
-            $("#moreFinancial").html("Remove Scrollbar");
+            $("#moreFinancial").html("Remove Scrolling");
         } else {
             $("#moreFinancial").html("See More");
         }
@@ -230,6 +235,12 @@ function seeMore() {
     $('.Financial').on('click', '#FinancialPrev', function () {
         getNews("", financialSources, "Financial", "", "prev");
     });
+    $('.events').on('click', '#eventsPrev', function () {
+        getEventfulApi(GLOBALLAT, GLOBALLONG, callPlaceBased.distance, callPlaceBased.eventfulStartDate, callPlaceBased.eventfulEndDate, "", "prev");
+    });
+    $('.events').on('click', '#eventsNext', function () {
+        getEventfulApi(GLOBALLAT, GLOBALLONG, callPlaceBased.distance, callPlaceBased.eventfulStartDate, callPlaceBased.eventfulEndDate, "", "next");
+    });
 }
 
 function getNews(searchTerm, sources, category, sortBy, call) {
@@ -261,7 +272,7 @@ function getTheNews(sources, searchTerm, startDate, endDate, section, sortBy, ca
     } else {
         getTheNews.pageNumber--;
     }
-    if (searchTerm === "") { // load previous search term, if any
+    if (searchTerm === "") { // if function called w/o new search term, load previous search term, if any
         if (section === "News") {
             searchTerm = getTheNews.newsQuery;
         } else if (section === "Sports") {
@@ -322,8 +333,9 @@ function getTheNews(sources, searchTerm, startDate, endDate, section, sortBy, ca
         .done(function (result) {
             console.log(sources, "result = ", result);
             //            runFunction(result);
+            jumpName = section + "Name";
             const results = result.articles.map((item, index) => renderNews(item, section));
-            $('.' + section).html(`<div class = "newsHeader"><h2>${section}</h2></div>`);
+            $('.' + section).html(`<div class = "newsHeader" name = "${jumpName}"><h2>${section}</h2></div>`);
             if (results.length === 0) {
                 $('.' + section).append(`<div class="row"><img src='https://lapita.net/wp-content/uploads/2017/10/%E0%B8%95%E0%B8%B4%E0%B8%94%E0%B8%9B%E0%B8%B1%E0%B8%8D%E0%B8%AB%E0%B8%B2.jpg'><span class="description">Well, this is embarrassing!  We found a grand total of zero (yes, zero!) results.  Sigh.</span></div>`);
             } else {
@@ -421,6 +433,11 @@ function renderNews(result, section) {
 
 function getPlaceBased() {
     console.log("in getPlaceBased");
+    if (getPlaceBased.lat === undefined) {
+        getPlaceBased.lat = "";
+        getPlaceBased.lon = ""; // if lat undefined, then both undefined
+    }
+
     if (!navigator.geolocation) {
         console.log("in !navigator.geolocation");
         navNoGo();
@@ -443,7 +460,7 @@ function getPlaceBased() {
     }
     console.log("about to run navigator");
     navigator.geolocation.getCurrentPosition(success, error, {
-        timeout: 5000 // If don't succeed in getting position within 5 seconds, give up
+        //        timeout: 5000 // If don't succeed in getting position within 5 seconds, give up
     });
 }
 
@@ -456,14 +473,20 @@ function navNoGo() {
 
 function callPlaceBased(userLat, userLong) {
     console.log("in callPlaceBased");
-    let eventfulStartDate = TODAY.getFullYear().toString() + (TODAY.getMonth() + 1).toString() + TODAY.getDate().toString() + "00"; // eventful date format is:  YYYYMMDD00
-    let eventfulEndDate = eventfulStartDate; // for first call, only search for today
+    callPlaceBased.eventfulStartDate = TODAY.getFullYear().toString() + (TODAY.getMonth() + 1).toString() + TODAY.getDate().toString() + "00"; // eventful date format is:  YYYYMMDD00
+    callPlaceBased.eventfulEndDate = callPlaceBased.eventfulStartDate; // for first call, only search for today
     let eventfulQuery = ""; // search all events initially
-    let distance = 4; // Initial search distance for Eventful (4 miles - a reasonable distance for a big city)
+    callPlaceBased.distance = 4; // Initial search distance for Eventful (4 miles - a reasonable distance for a big city)
     let counter = 1;
     let maxCount = 6; // Maximum number of times to run testEventfulApi
-    distance = testEventfulApi(userLat, userLong, distance, eventfulStartDate, eventfulEndDate, eventfulQuery, counter, maxCount);
-    getEventfulApi(userLat, userLong, distance, eventfulStartDate, eventfulEndDate, eventfulQuery, 1);
+    //    console.log("before call, distance = ", callPlaceBased.distance, "All variables = ", userLat, userLong, callPlaceBased.distance, callPlaceBased.eventfulStartDate, callPlaceBased.eventfulEndDate, eventfulQuery, counter, maxCount);
+    //    callPlaceBased.distance = testEventfulApi(userLat, userLong, callPlaceBased.distance, callPlaceBased.eventfulStartDate, callPlaceBased.eventfulEndDate, eventfulQuery, counter, maxCount);
+    //    console.log("after call, distance = ", callPlaceBased.distance)
+    //    if (callPlaceBased.distance === undefined) {
+    //        $('.events').html(`<p>Don't you hate it when absolutely nothing is happening?  We found no Eventful events (none!) within ${callPlaceBased.distance} miles of your location today.</p>`);
+    //    } else {
+    getEventfulApi(userLat, userLong, callPlaceBased.distance, callPlaceBased.eventfulStartDate, callPlaceBased.eventfulEndDate, eventfulQuery, "first");
+    //    }
     //    try { Geonames site was yielding security issues, so went alternative route
     //        $.getJSON // Get the user's country code; use that to pull holidays & determine whether to use metric or outdated measurements for weather
     //        (
@@ -506,7 +529,7 @@ function callPlaceBased(userLat, userLong) {
 }
 
 function testEventfulApi(lat, long, distance, eventStartDate, eventEndDate, eventfulQuery, counter, maxCount) { // Since Eventful might not pull many results within 4 miles, test to determine necessary distance
-    console.log("in testEventfulApi");
+    console.log("in testEventfulApi.  deets:", lat, long, distance, eventStartDate, eventEndDate, counter, maxCount);
     let query = {
         app_key: 'Jsr6ndZBQLW9qdLL',
         keywords: eventfulQuery,
@@ -524,10 +547,24 @@ function testEventfulApi(lat, long, distance, eventStartDate, eventEndDate, even
             type: "GET"
         })
         .done(function (result) {
-            if (result.events.event.length < 5 && counter < maxCount) {
+            if ((result.events === null || result.events === undefined) && counter < maxCount) {
+                console.log("In testEVent if, and result.events =", result.events);
                 distance *= 2;
                 counter++;
                 testEventfulApi(lat, long, distance, eventStartDate, eventEndDate, eventfulQuery, counter, maxCount); // keep running test until # results found or maxCount reached
+            } else if (result.events.event.length < 5 && counter < maxCount) {
+                console.log("In testEvent else if, and result.events = ", result.events);
+                distance *= 2;
+                counter++;
+                testEventfulApi(lat, long, distance, eventStartDate, eventEndDate, eventfulQuery, counter, maxCount); // keep running test until # results found or maxCount reached
+            } else {
+                if (result.events === null || result.events === undefined) { // if the test has not yielded any results, return nothing
+                    console.log("result.events was null");
+                    return;
+                } else {
+                    console.log("supposedly, result.events was ", result.events, "and distance was", distance);
+                    return distance;
+                }
             }
         })
         .fail(function (jqXHR, error, errorThrown) {
@@ -535,19 +572,32 @@ function testEventfulApi(lat, long, distance, eventStartDate, eventEndDate, even
             console.log(error);
             console.log(errorThrown);
         });
-    return distance;
 }
 
-
-function getEventfulApi(lat, long, distance, eventStartDate, eventEndDate, query, pageNumber) {
-    console.log("In getEventfulApi");
+function getEventfulApi(lat, long, distance, eventStartDate, eventEndDate, searchTerm, call) {
+    console.log("In getEventfulApi.  Passed values: ", lat, long, distance, eventStartDate, eventEndDate, searchTerm, call);
+    if (getEventfulApi.pageNumber === undefined) { // if undefined, then first time function has been run
+        getEventfulApi.pageNumber = 1;
+        getEventfulApi.query = "";
+    } else if (call === "first") {
+        getEventfulApi.pageNumber = 1;
+    } else if (call === "next") {
+        getEventfulApi.pageNumber++;
+    } else {
+        getEventfulApi.pageNumber--;
+    }
+    if (searchTerm === "") { // if function called w/o new search term, load previous search term, if any
+        searchTerm = getEventfulApi.query;
+    } else { // store the search term for future use
+        getEventfulApi.query = searchTerm;
+    }
     var query = {
         app_key: 'Jsr6ndZBQLW9qdLL',
-        keywords: query,
+        keywords: searchTerm,
         location: lat + ',' + long,
         date: eventStartDate + "-" + eventEndDate, // Could be This%20Week, Future, Today, or date in form YYYYMMDD00-YYYYMMDD00
-        page_size: 10,
-        page_number: pageNumber,
+        page_size: 20,
+        page_number: getEventfulApi.pageNumber,
         ex_category: 'other,sales,business',
         sort_order: 'date',
         sort_direction: 'descending', // Pull in descending date order to avoid events that have start and end dates that are months apart
@@ -560,8 +610,8 @@ function getEventfulApi(lat, long, distance, eventStartDate, eventEndDate, query
             type: "GET"
         })
         .done(function (result) {
-            //            console.log("getEventfulApi done result = ", result);
-            displayEventful(result);
+            console.log("getEventfulApi done result = ", result);
+            displayEventful(result, getEventfulApi.pageNumber);
         })
         .fail(function (jqXHR, error, errorThrown) {
             console.log(jqXHR);
@@ -570,29 +620,38 @@ function getEventfulApi(lat, long, distance, eventStartDate, eventEndDate, query
         });
 }
 
-function displayEventful(data) {
-    console.log("In displayEventful");
-    //    console.log(data);
-    const results = data.events.event.map((item, index) => renderEventful(item));
-    $('.events').html(""); // clear out old results, if applicable.
-    //    console.log(results);
-    if (results.length === 0) {
-        $('.events').append(`<p>Don't you hate it when absolutely nothing is happening?  We found no Eventful events (none!) within 128 miles of your location today.</p>`);
-    }
-    for (i = results.length - 1; i >= 0; i--) { // run events loop backwards, since stored in reverse chrono order
-        if (results[i] !== undefined) { // renderEventful will run an empty return if events are of too poor quality
-            if (i % 2 === 0) { // alternate classes so that background colors can alternate
-                $('.events').append(`<p class = "even">${results[i]}</p>`);
-            } else {
-                $('.events').append(`<p class = "odd">${results[i]}</p>`);
+function displayEventful(data, pageNumber) {
+    console.log("In displayEventful.  Data received:", data);
+    if (data.total_items === "0") {
+        $('.events').html(`<p>Don't you hate it when absolutely nothing is happening?  We found no Eventful events (none!) within 128 miles of your location today.</p>`);
+    } else {
+        const results = data.events.event.map((item, index) => renderEventful(item));
+        $('.events').html(""); // clear out old results, if applicable.
+        //    console.log(results);
+        for (i = results.length - 1; i >= 0; i--) { // run events loop backwards, since stored in reverse chrono order
+            if (results[i] !== undefined) { // renderEventful will run an empty return if events are of too poor quality
+                if (i % 2 === 0) { // alternate classes so that background colors can alternate
+                    $('.events').append(`<p class = "even">${results[i]}</p>`);
+                } else {
+                    $('.events').append(`<p class = "odd">${results[i]}</p>`);
+                }
             }
         }
+        //    console.log("About to if.  total_items: ", data.total_items, "total items alternative: ", data.events.total_items);
+        if (Number(data.page_count) > pageNumber && pageNumber === 1) {
+            $('.events').append('<div class="row next"><button id="eventsNext">Load More Results</button></div>');
+            console.log("In if");
+        } else if (Number(data.page_count) > pageNumber) {
+            $('.events').append('<div class="row nextPrev"><button id="eventsPrev">Load Previous Results</button><button id="eventsNext">Load More Results</button></div>');
+        } else if (pageNumber !== 1) {
+            $('.events').append('<div class="row nextPrev"><button id="eventsPrev">Load Previous Results</button></div>');
+        } // note - remaining possibility is 1st page but # results <= 20, in which case don't have prev or next button
     }
 }
 
 function textCleanup(text, maxLength) {
     //    console.log("in textCleanup");
-    text.replace(/\<p\>/g, " ").replace(/\<\/p\>/g, " ").replace(/\<br\>/g, "").replace(/\<hr\>/g, "").replace(/\<b\>/g, "").replace(/\<\/b\>/, "").replace(/\<strong\>/, "").replace(/\<\/strong\>/, ""); // Remove HTML tags that are commonly found within results
+    text.replace(/\<p\>/g, " ").replace(/\<\/p\>/g, " ").replace(/\<br\>/g, "").replace(/\<hr\>/g, "").replace(/\<b\>/g, "").replace(/\<\/b\>/g, "").replace(/\<strong\>/g, "").replace(/\<\/strong\>/g, ""); // Remove HTML tags that are commonly found within results
     text.replace(/\_+/g, '_').replace(/\-/g, '-').replace(/\s+/g, ' '); // Remove abusive use of underscores, hyphens, & white space
     if (text.length > maxLength) {
         text = text.substring(0, maxLength) + "..."; // shorten excessive descriptions
@@ -629,7 +688,7 @@ function renderEventful(result) {
     let dateTime = new Date(result.start_time);
     let date = dateTime.toLocaleDateString();
     let time = dateTime.toLocaleTimeString();
-    console.log("venue name: ", result.venue_name, "venue address: ", result.venue_address);
+    //    console.log("venue name: ", result.venue_name, "venue address: ", result.venue_address);
     return `<a href='${result.url}' target='_blank'>${result.title}</a>. ${result.description} At ${result.venue_name} - ${result.venue_address}, ${result.city_name}, ${result.region_abbr}.  Start time: ${time}. Date: ${date}.`;
 }
 

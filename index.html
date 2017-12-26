@@ -16,7 +16,7 @@
         <header>
             <h1>Snapshot - <span class="insert-date ">Today's</span> Edition</h1>
         </header>
-        <div class="row">
+        <div class="row weatherContainer">
             <h2 class="col-12">Weather</h2>
             <div class="col-6">
                 <div class="weather row">
@@ -36,13 +36,13 @@
             </div>
             <div class="col-6">
                 <h3>Forecast</h3>
-                <div class="forecast">Please wait a moment as the results load.
+                <div class="forecast">Please wait a moment as the location is found and the results load.
                 </div>
                 <div id="moreForecast" class="showMore">Show More</div>
             </div>
         </div>
 
-        <div class="row" id="newLocationRow">
+        <div class="row searchBar" id="newLocationRow">
             <form action="#" class="newLocation">
                 <label for="newLocation"></label>
                 <input type="text" class="js-query" placeholder=" &nbsp; Address of new location">
@@ -56,63 +56,71 @@
             <div class="col-6">
                 <div class="News">
                 </div>
-                <form action="#" class="newsSearchForm">
-                    <label for="newsQuery"></label>
-                    <input type="text" class="js-query" placeholder=" &nbsp; Enter a news search term">
-                    <button type="submit">Search</button>
-                </form>
                 <div id="moreNews" class="showMore">See More</div>
+                <div class="searchBar">
+                    <form action="#" class="newsSearchForm">
+                        <label for="newsQuery"></label>
+                        <input type="text" class="js-query" placeholder=" &nbsp; Enter a news search term">
+                        <button type="submit">Search</button>
+                    </form>
+                </div>
             </div>
             <!--            <div class="col-1-no-mobile middleBuffer"></div>-->
             <!--            <div class="col-5-plus">-->
             <div class="col-6">
                 <div class="Sports">
                 </div>
-                <form action="#" class="sportsSearchForm">
-                    <label for="sportsQuery"></label>
-                    <input type="text" class="js-query" placeholder=" &nbsp; Enter a sports search term">
-                    <button type="submit">Search</button>
-                </form>
                 <div id="moreSports" class="showMore">See More</div>
+                <div class="searchBar">
+                    <form action="#" class="sportsSearchForm">
+                        <label for="sportsQuery"></label>
+                        <input type="text" class="js-query" placeholder=" &nbsp; Enter a sports search term">
+                        <button type="submit">Search</button>
+                    </form>
+                </div>
             </div>
         </div>
-        <div class="row separator"></div>
+        <!--        <div class="row separator"></div>-->
         <div class="row">
             <!--            <div class="col-5-plus">-->
             <div class="col-6">
                 <div class="Entertainment">
-
                 </div>
-                <form action="#" class="entertainmentSearchForm">
-                    <label for="entertainmentQuery"></label>
-                    <input type="text" class="js-query" placeholder=" &nbsp; Enter an entertainment search term">
-                    <button type="submit">Search</button>
-                </form>
                 <div id="moreEntertainment" class="showMore">See More</div>
+                <div class="searchBar">
+                    <form action="#" class="entertainmentSearchForm">
+                        <label for="entertainmentQuery"></label>
+                        <input type="text" class="js-query" placeholder=" &nbsp; Enter an entertainment search term">
+                        <button type="submit">Search</button>
+                    </form>
+                </div>
             </div>
             <!--            <div class="col-1-no-mobile middleBuffer"></div>-->
             <!--            <div class="col-5-plus">-->
             <div class="col-6">
                 <div class="Financial">
-
                 </div>
-                <form action="#" class="financialSearchForm">
-                    <label for="financialQuery"></label>
-                    <input type="text" class="js-query" placeholder=" &nbsp; Enter a financial search term">
-                    <button type="submit">Search</button>
-                </form>
                 <div id="moreFinancial" class="showMore">See More</div>
+                <div class="searchBar">
+                    <form action="#" class="financialSearchForm">
+                        <label for="financialQuery"></label>
+                        <input type="text" class="js-query" placeholder=" &nbsp; Enter a financial search term">
+                        <button type="submit">Search</button>
+                    </form>
+                </div>
             </div>
         </div>
         <div class="row">
             <h2>Events</h2>
-            <div class="events col-12">Please wait a moment as the list of events is collected and tidied up.</div>
-            <form action="#" class="eventsSearchForm">
-                <label for="eventsQuery"></label>
-                <input type="text" class="js-query" placeholder=" &nbsp; Enter an events search term">
-                <button type="submit">Search</button>
-            </form>
-            <div id="moreEvents" class="showMore">See More</div>
+            <div class="events col-12">Please wait a moment as the location is found and the list of events is collected and tidied up.</div>
+            <div id="moreEvents" class="showMore col-12">See More</div>
+            <div class="searchBar col-12">
+                <form action="#" class="eventsSearchForm">
+                    <label for="eventsQuery"></label>
+                    <input type="text" class="js-query" placeholder=" &nbsp; Enter an events search term">
+                    <button type="submit">Search</button>
+                </form>
+            </div>
         </div>
         <!--
             <form action="#" class="eventsSearchForm">

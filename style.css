@@ -7,7 +7,7 @@ font-family: 'Raleway', sans-serif;
 
 body {
     margin: 120px 2%;
-    font-size: 20px;
+    font-size: 22px;
     font-family: 'Montserrat', sans-serif;
     font-weight: 400;
     line-height: 1.5;
@@ -27,28 +27,27 @@ header {
 h1 {
     font-family: 'Raleway', sans-serif;
     text-align: center;
-    font-size: 48px;
+    font-size: 40px;
     font-weight: 700;
 }
 
 #logo {
-    max-width: 200px;
+    max-width: 10%;
     position: fixed;
     top: 10px;
     opacity: .7;
     z-index: 3;
 }
 
-
 #tempBox {
     margin: auto;
     /*    display: block;*/
-    background-color: firebrick;
+    /*    background-color: firebrick;*/
 }
 
 #temperature {
-    font-size: 72px;
-    background-color: aquamarine;
+    font-size: 60px;
+    /*    background-color: aquamarine;*/
     text-align: center;
     width: 100%;
     display: inline-block;
@@ -83,35 +82,25 @@ img {
 */
 
 div {
-    border: 1px solid red;
+    border: 1px dashed aliceblue;
     /*    overflow: auto;*/
     /*    padding: 10px;*/
 }
 
-/*SEARCH BOX - INNER SHADOWS*/
-
-/* ########################################################################################## ################3 */
-
 .News,
 .Sports,
 .Entertainment,
-.Financial,
-.events {
-    /*    float: left;*/
-    /*
-    position: relative;
-    left: 5%;
-    width: 45%;
-*/
-    background-color: yellow;
-    /*
-    height: 1000px;
-    overflow: auto;
-*/
+.Financial {
+    /*    background-color: yellow;*/
     height: 500px;
     overflow: hidden;
+    margin: 20px auto 5px auto;
 }
 
+.events {
+    height: 400px;
+    overflow: hidden;
+}
 
 
 .middleBuffer {
@@ -127,28 +116,37 @@ div {
 #tempBox,
 .mainInfo,
 .forecast {
-    height: 200px;
+    height: 160px;
     overflow: hidden;
 }
 
 .newsHeader {
-    position: absolute;
+    /*    position: absolute;*/
     padding: 0px 20px;
     /*    width: 100%;*/
     background-color: aqua;
 }
 
-.weather,
-.events,
-.Events,
-.holidays {
-    /*
-    float: right;
-    position: relative;
-    right: 5%;
-    width: 45%;
-*/
-    background-color: pink;
+.searchBar {
+    background-color: darkseagreen;
+}
+
+input {
+    width: 50%;
+    box-shadow: 2px 2px 2px black inset;
+    /* ADJUST COLOR ONCE COLOR PALATTE FINALIZED */
+    height: 35px;
+    margin: 5px 5%;
+}
+
+form button {
+    min-width: 150px;
+    height: 35px;
+    border-radius: 20px;
+}
+
+.weatherContainer {
+    margin: 20px auto;
 }
 
 .News img,
@@ -164,11 +162,12 @@ div {
     border: 5px ridge cornflowerblue;
     background-color: cornflowerblue;
     cursor: pointer;
+    margin-bottom: 20px;
 }
 
 .seeMore {
     /*    height: 1000px;*/
-    overflow: scroll;
+    overflow: auto;
     /*
     border: 10px pink dashed;
     border-radius: 100px;
