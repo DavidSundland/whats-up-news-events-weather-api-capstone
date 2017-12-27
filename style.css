@@ -56,13 +56,28 @@ footer {
 }
 
 .left {
-    position: absolute;
-    left: 7%;
+    float: left;
+    padding: 10px 30px;
 }
 
 .right {
-    position: absolute;
-    right: 7%;
+    float: right;
+    padding: 10px 30px;
+}
+
+@media (max-width: 1170px) {
+    .right {
+        float: left;
+    }
+    .left,
+    .right {
+        padding-bottom: 0;
+    }
+    footer {
+        position: relative;
+        margin-top: 40px;
+        margin-bottom: 0;
+    }
 }
 
 h1 {
@@ -73,6 +88,38 @@ h1 {
     color: white;
     text-shadow: 2px 2px 4px #202020;
 }
+
+@media (max-width: 1000px) {
+    h1 {
+        font-size: 32px;
+    }
+}
+
+@media (max-width: 630px) {
+    .hideNarrow {
+        display: none;
+    }
+    body {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 500px) {
+    h1 {
+        font-size: 24px;
+        padding-top: 10px;
+    }
+    body {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 400px) {
+    .hideNarrowest {
+        display: none;
+    }
+}
+
 
 a {
     text-decoration: none;
@@ -85,6 +132,12 @@ a {
     top: 10px;
     /*    opacity: .7;*/
     z-index: 3;
+}
+
+@media (max-width: 750px) {
+    #logo {
+        display: none;
+    }
 }
 
 #tempBox {
@@ -100,6 +153,12 @@ a {
     width: 100%;
     display: inline-block;
     padding: 20px 0;
+}
+
+@media (max-width: 830px) {
+    #temperature {
+        font-size: 48px;
+    }
 }
 
 .secondary {
@@ -143,10 +202,12 @@ img {
 
 .next {
     float: right;
+    padding-left: 10px;
 }
 
 .prev {
     float: left;
+    padding-right: 10px;
 }
 
 .weatherContainer {
@@ -197,6 +258,7 @@ img {
     height: 400px;
     overflow: hidden;
     border-bottom: 3px ridge #025868;
+    padding: 10px 5%;
 }
 
 .eventsBox {

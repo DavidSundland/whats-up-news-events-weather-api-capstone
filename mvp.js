@@ -35,9 +35,9 @@ function getDate(country) {
     console.log("in getDate");
     let headingDate;
     if (country === 'us' || country === 'US') {
-        headingDate = MonthNames[TODAY.getMonth()] + " " + TODAY.getDate().toString() + ", " + TODAY.getFullYear() + ",";
+        headingDate = MonthNames[TODAY.getMonth()] + " " + TODAY.getDate().toString() + ", " + TODAY.getFullYear();
     } else {
-        headingDate = TODAY.getDate().toString() + " " + MonthNames[TODAY.getMonth()] + " " + TODAY.getFullYear() + ",";
+        headingDate = TODAY.getDate().toString() + " " + MonthNames[TODAY.getMonth()] + " " + TODAY.getFullYear();
     }
     $('.insert-date').html(headingDate);
     $('.insert-month').html(MonthNames[TODAY.getMonth()]);
