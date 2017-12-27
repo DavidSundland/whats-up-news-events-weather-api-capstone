@@ -1,5 +1,7 @@
 /* http://paletton.com/ */
 
+/* http://paletton.com/#uid=33m0u0krxvNh9H2ml-hvyr3z8lg */
+
 /* https://www.w3schools.com/cssref/tryit.asp?filename=trycss3_image_gallery */
 
 /*
@@ -25,6 +27,7 @@ button {
     width: 50px;
     text-align: center;
     color: white;
+    margin: 8px;
 }
 
 header {
@@ -37,6 +40,29 @@ header {
     left: 0;
     top: 0;
     z-index: 2;
+}
+
+footer {
+    position: fixed;
+    background-color: #A91000;
+    border-top: 10px inset #A91000;
+    padding-top: 10px;
+    padding-bottom: 30px;
+    width: 100%;
+    margin: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 2;
+}
+
+.left {
+    position: absolute;
+    left: 7%;
+}
+
+.right {
+    position: absolute;
+    right: 7%;
 }
 
 h1 {
@@ -76,11 +102,11 @@ a {
     padding: 20px 0;
 }
 
-.secondaryInfo {
+.secondary {
     font-size: .8em;
 }
 
-.tertiaryInfo {
+.tertiary {
     font-size: .6em;
 }
 
@@ -113,6 +139,14 @@ img {
     overflow: hidden;
     border-radius: 25px;
     margin-top: 35px;
+}
+
+.next {
+    float: right;
+}
+
+.prev {
+    float: left;
 }
 
 .weatherContainer {
@@ -170,6 +204,7 @@ img {
     border: 5px ridge #025868;
     border-radius: 25px;
     margin: 20px auto;
+    padding-bottom: 20px;
 }
 
 
@@ -186,6 +221,7 @@ input {
     /* ADJUST COLOR ONCE COLOR PALATTE FINALIZED */
     height: 35px;
     margin: 5px 5% 10px 5%;
+    padding-left: 10px;
 }
 
 /*

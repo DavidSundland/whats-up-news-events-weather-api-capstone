@@ -105,7 +105,7 @@ function querySubmit() {
         const queryTarget = $(event.currentTarget).find('.js-query');
         searchTerm = queryTarget.val();
         queryTarget.val(""); // clear out the input
-        $(".newsSearchForm input").attr("placeholder", " Enter a new search item");
+        $(".newsSearchForm input").attr("placeholder", " Enter a news search term to snap");
         getNews(searchTerm, newsSources, "News", "relevancy", "first");
     });
     $('.sportsSearchForm').submit(event => {
@@ -113,7 +113,7 @@ function querySubmit() {
         const queryTarget = $(event.currentTarget).find('.js-query');
         searchTerm = queryTarget.val();
         queryTarget.val(""); // clear out the input
-        $(".sportsSearchForm input").attr("placeholder", " Enter a new search item");
+        $(".sportsSearchForm input").attr("placeholder", " Enter a sports search term to snap");
         getNews(searchTerm, sportsSources, "Sports", "relevancy", "first");
     });
     $('.entertainmentSearchForm').submit(event => {
@@ -121,7 +121,7 @@ function querySubmit() {
         const queryTarget = $(event.currentTarget).find('.js-query');
         searchTerm = queryTarget.val();
         queryTarget.val(""); // clear out the input
-        $(".entertainmentSearchForm input").attr("placeholder", " Enter a new search item");
+        $(".entertainmentSearchForm input").attr("placeholder", " Enter an entertainment search term to snap");
         getNews(searchTerm, entertainmentSources, "Entertainment", "relevancy", "first");
     });
     $('.financialSearchForm').submit(event => {
@@ -129,7 +129,7 @@ function querySubmit() {
         const queryTarget = $(event.currentTarget).find('.js-query');
         searchTerm = queryTarget.val();
         queryTarget.val(""); // clear out the input
-        $(".financialSearchForm input").attr("placeholder", " Enter a new search item");
+        $(".financialSearchForm input").attr("placeholder", " Enter a financial search term to snap");
         getNews(searchTerm, financialSources, "Financial", "relevancy", "first");
     });
     $('.eventsSearchForm').submit(event => {
@@ -138,7 +138,7 @@ function querySubmit() {
         const queryTarget = $(event.currentTarget).find('.js-query');
         eventfulQuery = queryTarget.val();
         queryTarget.val(""); // clear out the input
-        $(".eventsSearchForm input").attr("placeholder", " Enter a new search item");
+        $(".eventsSearchForm input").attr("placeholder", " Enter an events search term to snap");
         let counter = 1;
         let maxCount = 6; // Maximum number of times to run testEventfulApi
         let distance = callPlaceBased.distance;
@@ -156,46 +156,46 @@ function seeMore() {
     console.log("in seeMore");
     $("#moreNews").click(function () {
         $(".News").toggleClass("seeMore");
-        if ($("#moreNews").html() === "Scroll Articles") {
+        if ($("#moreNews").html() === "Scroll News Articles") {
             $("#moreNews").html("Remove Scrolling");
         } else {
             $(".News").animate({
                 scrollTop: $('#NewsTop')
             });
-            $("#moreNews").html("Scroll Articles");
+            $("#moreNews").html("Scroll News Articles");
         }
     });
     $("#moreSports").click(function () {
         $(".Sports").toggleClass("seeMore");
-        if ($("#moreSports").html() === "Scroll Articles") {
+        if ($("#moreSports").html() === "Scroll Sports Articles") {
             $("#moreSports").html("Remove Scrolling");
         } else {
             $(".Sports").animate({
                 scrollTop: $('#SportsTop')
             });
-            $("#moreSports").html("Scroll Articles");
+            $("#moreSports").html("Scroll Sports Articles");
         }
     });
     $("#moreEntertainment").click(function () {
         $(".Entertainment").toggleClass("seeMore");
-        if ($("#moreEntertainment").html() === "Scroll Articles") {
+        if ($("#moreEntertainment").html() === "Scroll Entertainment Articles") {
             $("#moreEntertainment").html("Remove Scrolling");
         } else {
             $(".Entertainment").animate({
                 scrollTop: $('#EntertainmentTop')
             });
-            $("#moreEntertainment").html("Scroll Articles");
+            $("#moreEntertainment").html("Scroll Entertainment Articles");
         }
     });
     $("#moreFinancial").click(function () {
         $(".Financial").toggleClass("seeMore");
-        if ($("#moreFinancial").html() === "Scroll Articles") {
+        if ($("#moreFinancial").html() === "Scroll Financial Articles") {
             $("#moreFinancial").html("Remove Scrolling");
         } else {
             $(".Financial").animate({
                 scrollTop: $('#FinancialTop')
             });
-            $("#moreFinancial").html("Scroll Articles");
+            $("#moreFinancial").html("Scroll Financial Articles");
         }
     });
     $("#moreWeather").click(function () {
@@ -216,10 +216,10 @@ function seeMore() {
     });
     $("#moreEvents").click(function () {
         $(".events").toggleClass("seeMore");
-        if ($("#moreEvents").html() === "See More") {
+        if ($("#moreEvents").html() === "Scroll Events") {
             $("#moreEvents").html("Remove Scrolling");
         } else {
-            $("#moreEvents").html("See More");
+            $("#moreEvents").html("Scroll Events");
         }
     });
     $('.News').on('click', '#NewsNext', function () {
@@ -358,15 +358,15 @@ function getTheNews(sources, searchTerm, startDate, endDate, section, sortBy, ca
             }
             if (result.totalResults > getTheNews.pageNumber * 20 && getTheNews.pageNumber === 1) { // 20 results are returned per page
                 buttonId = section + 'Next';
-                $('.' + section).append(`<div class="row next"><button id="${buttonId}">Load More Results</button></div>`);
+                $('.' + section).append(`<div class="row"><span class = "next">More Results<button id="${buttonId}">Snap</button></span></div>`);
                 //                console.log("In if, result.totalResults: ", result.totalResults, "page number: ", getTheNews.pageNumber, "button: ", buttonId);
             } else if (result.totalResults > getTheNews.pageNumber * 20) {
                 buttonId = section + 'Next';
                 buttonPrev = section + 'Prev';
-                $('.' + section).append(`<div class="row nextPrev"><button id="${buttonPrev}">Load Previous Results</button><button id="${buttonId}">Load More Results</button></div>`);
+                $('.' + section).append(`<div class="row"><span class = "prev"><button id="${buttonPrev}">Snap</button>Previous Results</span><span class = "next">More Results<button id="${buttonId}">Snap</button></span></div>`);
             } else if (getTheNews.pageNumber !== 1) {
                 buttonPrev = section + 'Prev';
-                $('.' + section).append(`<div class="row nextPrev"><button id="${buttonPrev}">Load Previous Results</button></div>`);
+                $('.' + section).append(`<div class="row"><span class = "prev"><button id="${buttonPrev}">Snap</button>Previous Results</span>`);
             } // note - remaining possibility is 1st page but # results <= 20, in which case don't have prev or next button
         })
         .fail(function (jqXHR, error, errorThrown) {
@@ -650,12 +650,12 @@ function displayEventful(data, pageNumber) {
         }
         //    console.log("About to if.  total_items: ", data.total_items, "total items alternative: ", data.events.total_items);
         if (Number(data.page_count) > pageNumber && pageNumber === 1) {
-            $('.events').append('<div class="row next"><button id="eventsNext">Load More Results</button></div>');
+            $('.events').append('<div class="row"><span class = "next">More Results<button id="eventsNext">Snap</button></span></div>');
             console.log("In if");
         } else if (Number(data.page_count) > pageNumber) {
-            $('.events').append('<div class="row nextPrev"><button id="eventsPrev">Load Previous Results</button><button id="eventsNext">Load More Results</button></div>');
+            $('.events').append('<div class="row"><span class = "prev"><button id="eventsPrev">Snap</button>Previous Results</span><span class = "next">More Results<button id="eventsNext">Snap</button></span></div>');
         } else if (pageNumber !== 1) {
-            $('.events').append('<div class="row nextPrev"><button id="eventsPrev">Load Previous Results</button></div>');
+            $('.events').append('<div class="row"><span class = "prev"><button id="eventsPrev">Snap</button>Previous Results</span></div>');
         } // note - remaining possibility is 1st page but # results <= 20, in which case don't have prev or next button
     }
 }
