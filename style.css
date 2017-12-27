@@ -172,11 +172,13 @@ img {
     margin: 20px auto;
 }
 
-/*
-.searchBar {
-    background-color: darkseagreen;
+
+form {
+    width: 100%;
+    display: inline-block;
+    text-align: center;
 }
-*/
+
 
 input {
     width: 50%;
