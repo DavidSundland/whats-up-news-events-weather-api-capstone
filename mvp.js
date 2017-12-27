@@ -200,18 +200,18 @@ function seeMore() {
     });
     $("#moreWeather").click(function () {
         $(".mainInfo").toggleClass("seeMore");
-        if ($("#moreWeather").html() === "Show More") {
+        if ($("#moreWeather").html() === "Scroll Weather") {
             $("#moreWeather").html("Remove Scrolling");
         } else {
-            $("#moreWeather").html("Show More");
+            $("#moreWeather").html("Scroll Weather");
         }
     });
     $("#moreForecast").click(function () {
         $(".forecast").toggleClass("seeMore");
-        if ($("#moreForecast").html() === "Show More") {
+        if ($("#moreForecast").html() === "Scroll Forecast") {
             $("#moreForecast").html("Remove Scrolling");
         } else {
-            $("#moreForecast").html("Show More");
+            $("#moreForecast").html("Scroll Forecast");
         }
     });
     $("#moreEvents").click(function () {

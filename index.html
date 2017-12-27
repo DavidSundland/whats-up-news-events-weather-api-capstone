@@ -17,28 +17,30 @@
             <h1>Snapshot - <span class="insert-date ">Today's</span> Edition</h1>
         </header>
         <div class="row weatherContainer">
-            <h2 class="col-12">Weather</h2>
-            <div class="col-6">
-                <div class="weather row">
-                    <h3>Now</h3>
-                    <div id="weather">
-                        <div id="tempBox" class="col-5">
-                            <span id="temperature">44°F</span>
-                        </div>
-                        <div class="mainInfo col-7">
-                            <p>Broken Clouds</p>
-                            <p>Wind 4 mph from the south.</p>
-                            <p>Humidity: 41%</p>
+            <h2 class="row weatherHeader">Weather</h2>
+            <div class="row">
+                <div class="col-6">
+                    <div class="weather row">
+                        <h3>Now</h3>
+                        <div id="weather">
+                            <div id="tempBox" class="col-5">
+                                <span id="temperature">44°F</span>
+                            </div>
+                            <div class="mainInfo col-7">
+                                <p>Broken Clouds</p>
+                                <p>Wind 4 mph from the south.</p>
+                                <p>Humidity: 41%</p>
+                            </div>
                         </div>
                     </div>
+                    <div id="moreWeather" class="showMore row">Scroll Weather</div>
                 </div>
-                <div id="moreWeather" class="showMore row">Show More</div>
-            </div>
-            <div class="col-6">
-                <h3>Forecast</h3>
-                <div class="forecast">Please wait a moment as the location is found and the results load.
+                <div class="col-6">
+                    <h3>Forecast</h3>
+                    <div class="forecast">Please wait a moment as the location is found and the results load.
+                    </div>
+                    <div id="moreForecast" class="showMore">Scroll Forecast</div>
                 </div>
-                <div id="moreForecast" class="showMore">Show More</div>
             </div>
         </div>
 
@@ -46,7 +48,7 @@
             <form action="#" class="newLocation">
                 <label for="newLocation"></label>
                 <input type="text" class="js-query" placeholder=" &nbsp; Address of new location">
-                <button type="submit"></button>
+                <button type="submit">Snap</button>
                 <!-- ADD CONTENT BACK TO BUTTON?   ---------------------------------------------------------------------->
             </form>
 
@@ -62,7 +64,7 @@
                     <form action="#" class="newsSearchForm">
                         <label for="newsQuery"></label>
                         <input type="text" class="js-query" placeholder=" &nbsp; Enter a news search term">
-                        <button type="submit">Search</button>
+                        <button type="submit">Snap</button>
                     </form>
                 </div>
             </div>
@@ -76,7 +78,7 @@
                     <form action="#" class="sportsSearchForm">
                         <label for="sportsQuery"></label>
                         <input type="text" class="js-query" placeholder=" &nbsp; Enter a sports search term">
-                        <button type="submit">Search</button>
+                        <button type="submit">Snap</button>
                     </form>
                 </div>
             </div>
@@ -92,7 +94,7 @@
                     <form action="#" class="entertainmentSearchForm">
                         <label for="entertainmentQuery"></label>
                         <input type="text" class="js-query" placeholder=" &nbsp; Enter an entertainment search term">
-                        <button type="submit">Search</button>
+                        <button type="submit">Snap</button>
                     </form>
                 </div>
             </div>
@@ -106,20 +108,22 @@
                     <form action="#" class="financialSearchForm">
                         <label for="financialQuery"></label>
                         <input type="text" class="js-query" placeholder=" &nbsp; Enter a financial search term">
-                        <button type="submit">Search</button>
+                        <button type="submit">Snap</button>
                     </form>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <h2>Events</h2>
+        <div class="row eventsBox">
+            <h2 class="row eventsHeader">Events</h2>
             <div class="events col-12">Please wait a moment as the location is found and the list of events is collected and tidied up.</div>
-            <div id="moreEvents" class="showMore col-12">See More</div>
+            <div id="moreEvents" class="col-12">
+                <div class="showMore">Scroll Events</div>
+            </div>
             <div class="searchBar col-12">
                 <form action="#" class="eventsSearchForm">
                     <label for="eventsQuery"></label>
                     <input type="text" class="js-query" placeholder=" &nbsp; Enter an events search term">
-                    <button type="submit">Search</button>
+                    <button type="submit">Snap</button>
                 </form>
             </div>
         </div>

@@ -8,7 +8,7 @@ font-family: 'Raleway', sans-serif;
 */
 
 body {
-    margin: 120px 2%;
+    margin: 140px 2%;
     font-size: 22px;
     font-family: 'Montserrat', sans-serif;
     font-weight: 400;
@@ -23,12 +23,15 @@ button {
     border-radius: 50%;
     height: 50px;
     width: 50px;
+    text-align: center;
+    color: white;
 }
 
 header {
     height: 120px;
     position: fixed;
-    background-color: #FDBB23;
+    background-color: #A91000;
+    border-bottom: 10px outset #A91000;
     width: 100%;
     margin: 0;
     left: 0;
@@ -109,11 +112,15 @@ img {
     height: 600px;
     overflow: hidden;
     border-radius: 25px;
+    margin-top: 35px;
 }
 
-.events {
-    height: 400px;
+.weatherContainer {
+    background-color: #333534;
+    border: 5px ridge #025868;
     overflow: hidden;
+    border-radius: 25px;
+    margin: 20px auto;
 }
 
 /*
@@ -130,16 +137,39 @@ img {
 #tempBox,
 .mainInfo,
 .forecast {
-    height: 160px;
+    height: 150px;
+    border: 3px ridge #025868;
     overflow: hidden;
 }
 
-.newsHeader {
+.forecast {
+    padding: 20px;
+}
+
+.newsHeader,
+.weatherHeader,
+.eventsHeader {
     /*    position: absolute;*/
-    padding: 1px 20px;
+    padding: 10px 20px;
+    margin 0 auto;
     /*    width: 100%;*/
     background-color: #D89603;
+    border-radius: 25px 25px 0px 0px;
     color: black;
+}
+
+
+.events {
+    height: 400px;
+    overflow: hidden;
+    border-bottom: 3px ridge #025868;
+}
+
+.eventsBox {
+    background-color: #333534;
+    border: 5px ridge #025868;
+    border-radius: 25px;
+    margin: 20px auto;
 }
 
 /*
@@ -153,7 +183,7 @@ input {
     box-shadow: 2px 2px 2px black inset;
     /* ADJUST COLOR ONCE COLOR PALATTE FINALIZED */
     height: 35px;
-    margin: 5px 5%;
+    margin: 5px 5% 10px 5%;
 }
 
 /*
@@ -163,10 +193,6 @@ form button {
     border-radius: 20px;
 }
 */
-
-.weatherContainer {
-    margin: 20px auto;
-}
 
 .News img,
 .Sports img,
