@@ -156,35 +156,46 @@ function seeMore() {
     console.log("in seeMore");
     $("#moreNews").click(function () {
         $(".News").toggleClass("seeMore");
-        if ($("#moreNews").html() === "See More") {
+        if ($("#moreNews").html() === "Scroll Articles") {
             $("#moreNews").html("Remove Scrolling");
         } else {
-            window.location.hash = "NewsName";
-            $("#moreNews").html("See More");
+            $(".News").animate({
+                scrollTop: $('#NewsTop')
+            });
+            $("#moreNews").html("Scroll Articles");
         }
     });
     $("#moreSports").click(function () {
         $(".Sports").toggleClass("seeMore");
-        if ($("#moreSports").html() === "See More") {
+        if ($("#moreSports").html() === "Scroll Articles") {
             $("#moreSports").html("Remove Scrolling");
         } else {
-            $("#moreSports").html("See More");
+            $(".Sports").animate({
+                scrollTop: $('#SportsTop')
+            });
+            $("#moreSports").html("Scroll Articles");
         }
     });
     $("#moreEntertainment").click(function () {
         $(".Entertainment").toggleClass("seeMore");
-        if ($("#moreEntertainment").html() === "See More") {
+        if ($("#moreEntertainment").html() === "Scroll Articles") {
             $("#moreEntertainment").html("Remove Scrolling");
         } else {
-            $("#moreEntertainment").html("See More");
+            $(".Entertainment").animate({
+                scrollTop: $('#EntertainmentTop')
+            });
+            $("#moreEntertainment").html("Scroll Articles");
         }
     });
     $("#moreFinancial").click(function () {
         $(".Financial").toggleClass("seeMore");
-        if ($("#moreFinancial").html() === "See More") {
+        if ($("#moreFinancial").html() === "Scroll Articles") {
             $("#moreFinancial").html("Remove Scrolling");
         } else {
-            $("#moreFinancial").html("See More");
+            $(".Financial").animate({
+                scrollTop: $('#FinancialTop')
+            });
+            $("#moreFinancial").html("Scroll Articles");
         }
     });
     $("#moreWeather").click(function () {
@@ -333,9 +344,9 @@ function getTheNews(sources, searchTerm, startDate, endDate, section, sortBy, ca
         .done(function (result) {
             console.log(sources, "result = ", result);
             //            runFunction(result);
-            jumpName = section + "Name";
+            jumpName = section + "Top";
             const results = result.articles.map((item, index) => renderNews(item, section));
-            $('.' + section).html(`<div class = "newsHeader" name = "${jumpName}"><h2>${section}</h2></div>`);
+            $('.' + section).html(`<div class = "newsHeader" id = "${jumpName}"><h2>${section}</h2></div>`);
             if (results.length === 0) {
                 $('.' + section).append(`<div class="row"><img src='https://lapita.net/wp-content/uploads/2017/10/%E0%B8%95%E0%B8%B4%E0%B8%94%E0%B8%9B%E0%B8%B1%E0%B8%8D%E0%B8%AB%E0%B8%B2.jpg'><span class="description">Well, this is embarrassing!  We found a grand total of zero (yes, zero!) results.  Sigh.</span></div>`);
             } else {
@@ -379,7 +390,7 @@ function renderNews(result, section) {
         return; // If no image, have empty return (don't bother printing to screen)
     }
     result["urlToImage"] = result["urlToImage"].replace("http:", "https:");
-    return `<div class="row"><img src='${result["urlToImage"]}'><span class="title"><a href='${result["url"]}' target='_blank'>${result["title"]}</a></span>, by <span class="author">${result["author"]}</span?>. <span class="description">${result["description"]}</span></div>`;
+    return `<div class="row"><img src='${result["urlToImage"]}'><p class = "articleText"><span class="title"><a href='${result["url"]}' target='_blank'>${result["title"]}</a></span>, by <span class="author">${result["author"]}</span>. ${result["description"]}</p></div>`;
 }
 
 //function displayNews(data) {
@@ -433,10 +444,10 @@ function renderNews(result, section) {
 
 function getPlaceBased() {
     console.log("in getPlaceBased");
-    if (getPlaceBased.lat === undefined) {
-        getPlaceBased.lat = "";
-        getPlaceBased.lon = ""; // if lat undefined, then both undefined
-    }
+    //    if (getPlaceBased.lat === undefined) {
+    //        getPlaceBased.lat = "";
+    //        getPlaceBased.lon = ""; // if lat undefined, then both undefined
+    //    }
 
     if (!navigator.geolocation) {
         console.log("in !navigator.geolocation");
@@ -460,7 +471,7 @@ function getPlaceBased() {
     }
     console.log("about to run navigator");
     navigator.geolocation.getCurrentPosition(success, error, {
-        //        timeout: 5000 // If don't succeed in getting position within 5 seconds, give up
+        timeout: 10000 // If don't succeed in getting position within 10 seconds, give up
     });
 }
 
@@ -952,11 +963,13 @@ function renderWeatherForecast(result, country) {
     return returnHtml;
 }
 
-$(getNews("", newsSources, "News", "", "first"));
-$(getNews("", sportsSources, "Sports", "", "first"));
-$(getNews("", entertainmentSources, "Entertainment", "", "first"));
-$(getNews("", financialSources, "Financial", "", "first"));
-$(getPlaceBased);
-$(querySubmit);
-$(seeMore);
-$(getLatLongFromAddress);
+$(function () {
+    getPlaceBased();
+    getNews("", newsSources, "News", "", "first");
+    getNews("", sportsSources, "Sports", "", "first");
+    getNews("", entertainmentSources, "Entertainment", "", "first");
+    getNews("", financialSources, "Financial", "", "first");
+    querySubmit();
+    seeMore();
+    getLatLongFromAddress();
+});

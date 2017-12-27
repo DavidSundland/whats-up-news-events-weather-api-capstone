@@ -1,5 +1,7 @@
 /* http://paletton.com/ */
 
+/* https://www.w3schools.com/cssref/tryit.asp?filename=trycss3_image_gallery */
+
 /*
 font-family: 'Montserrat', sans-serif;
 font-family: 'Raleway', sans-serif;
@@ -11,12 +13,22 @@ body {
     font-family: 'Montserrat', sans-serif;
     font-weight: 400;
     line-height: 1.5;
+    background-color: #202020;
+    color: #bdbaba;
+}
+
+button {
+    cursor: pointer;
+    background-color: #FD3823;
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
 }
 
 header {
     height: 120px;
     position: fixed;
-    background-color: bisque;
+    background-color: #FDBB23;
     width: 100%;
     margin: 0;
     left: 0;
@@ -29,13 +41,20 @@ h1 {
     text-align: center;
     font-size: 40px;
     font-weight: 700;
+    color: white;
+    text-shadow: 2px 2px 4px #202020;
+}
+
+a {
+    text-decoration: none;
+    color: #5CB2C2;
 }
 
 #logo {
     max-width: 10%;
     position: fixed;
     top: 10px;
-    opacity: .7;
+    /*    opacity: .7;*/
     z-index: 3;
 }
 
@@ -81,20 +100,15 @@ img {
 }
 */
 
-div {
-    border: 1px dashed aliceblue;
-    /*    overflow: auto;*/
-    /*    padding: 10px;*/
-}
-
 .News,
 .Sports,
 .Entertainment,
 .Financial {
-    /*    background-color: yellow;*/
-    height: 500px;
+    background-color: #025868;
+    border: 5px ridge #025868;
+    height: 600px;
     overflow: hidden;
-    margin: 20px auto 5px auto;
+    border-radius: 25px;
 }
 
 .events {
@@ -102,12 +116,12 @@ div {
     overflow: hidden;
 }
 
-
+/*
 .middleBuffer {
     background-color: black;
-    /*    height: 1000px;*/
     height: 500px;
 }
+*/
 
 .separator {
     height: 25px;
@@ -122,14 +136,17 @@ div {
 
 .newsHeader {
     /*    position: absolute;*/
-    padding: 0px 20px;
+    padding: 1px 20px;
     /*    width: 100%;*/
-    background-color: aqua;
+    background-color: #D89603;
+    color: black;
 }
 
+/*
 .searchBar {
     background-color: darkseagreen;
 }
+*/
 
 input {
     width: 50%;
@@ -139,11 +156,13 @@ input {
     margin: 5px 5%;
 }
 
+/*
 form button {
     min-width: 150px;
     height: 35px;
     border-radius: 20px;
 }
+*/
 
 .weatherContainer {
     margin: 20px auto;
@@ -156,13 +175,24 @@ form button {
     width: 100%;
 }
 
+.articleText {
+    padding: 0 20px 30px 20px;
+}
+
+.title {
+    font-size: 1.2em;
+}
+
+.author {
+    font-style: italic;
+}
 
 .showMore {
     text-align: center;
-    border: 5px ridge cornflowerblue;
-    background-color: cornflowerblue;
+    border: 5px outset #19879C;
+    background-color: #19879C;
     cursor: pointer;
-    margin-bottom: 20px;
+    margin: 20px 0;
 }
 
 .seeMore {
