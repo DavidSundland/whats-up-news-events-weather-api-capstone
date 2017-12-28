@@ -9,6 +9,7 @@
 // git add . ; git commit -m 'REPLACE-ME'; git pull origin master; git push --set-upstream origin master
 // https://davidsundland.github.io/whats-up-news-events-weather-api-capstone/
 
+// file:///C:/Python27/MyPrograms/JavaScriptClass/DavidSundland/BrowserWidth.html
 
 // JavaScript file for Thinkful Capstone 1
 
@@ -138,6 +139,7 @@ function querySubmit() {
         const queryTarget = $(event.currentTarget).find('.js-query');
         eventfulQuery = queryTarget.val();
         queryTarget.val(""); // clear out the input
+        $(".events").html("Please wait a moment as the list of events is collected and tidied up.");
         $(".eventsSearchForm input").attr("placeholder", " Enter an events search term to snap");
         let counter = 1;
         let maxCount = 6; // Maximum number of times to run testEventfulApi
@@ -219,37 +221,66 @@ function seeMore() {
         if ($("#moreEvents").html() === "Scroll Events") {
             $("#moreEvents").html("Remove Scrolling");
         } else {
+            $(".events").animate({
+                scrollTop: $('#eventsTop')
+            });
             $("#moreEvents").html("Scroll Events");
         }
     });
     $('.News').on('click', '#NewsNext', function () {
+        $(".News").animate({
+            scrollTop: $('#NewsTop')
+        });
         getNews("", newsSources, "News", "", "next");
     });
     $('.Sports').on('click', '#SportsNext', function () {
+        $(".Sports").animate({
+            scrollTop: $('#SportsTop')
+        });
         getNews("", sportsSources, "Sports", "", "next");
     });
     $('.Entertainment').on('click', '#EntertainmentNext', function () {
+        $(".Entertainment").animate({
+            scrollTop: $('#EntertainmentTop')
+        });
         getNews("", entertainmentSources, "Entertainment", "", "next");
     });
     $('.Financial').on('click', '#FinancialNext', function () {
+        $(".Financial").animate({
+            scrollTop: $('#NewsTop')
+        });
         getNews("", financialSources, "Financial", "", "next");
     });
     $('.News').on('click', '#NewsPrev', function () {
+        $(".News").animate({
+            scrollTop: $('#NewsTop')
+        });
         getNews("", newsSources, "News", "", "prev");
     });
     $('.Sports').on('click', '#SportsPrev', function () {
+        $(".Sports").animate({
+            scrollTop: $('#SportsTop')
+        });
         getNews("", sportsSources, "Sports", "", "prev");
     });
     $('.Entertainment').on('click', '#EntertainmentPrev', function () {
+        $(".Entertainment").animate({
+            scrollTop: $('#EntertainmentTop')
+        });
         getNews("", entertainmentSources, "Entertainment", "", "prev");
     });
     $('.Financial').on('click', '#FinancialPrev', function () {
+        $(".Financial").animate({
+            scrollTop: $('#NewsTop')
+        });
         getNews("", financialSources, "Financial", "", "prev");
     });
     $('.events').on('click', '#eventsPrev', function () {
+        $(".events").html("Please wait as the information is collected and tidied.");
         getEventfulApi(GLOBALLAT, GLOBALLONG, callPlaceBased.distance, callPlaceBased.eventfulStartDate, callPlaceBased.eventfulEndDate, "", "prev");
     });
     $('.events').on('click', '#eventsNext', function () {
+        $(".events").html("Please wait as the information is collected and tidied.");
         getEventfulApi(GLOBALLAT, GLOBALLONG, callPlaceBased.distance, callPlaceBased.eventfulStartDate, callPlaceBased.eventfulEndDate, "", "next");
     });
 }
@@ -348,7 +379,7 @@ function getTheNews(sources, searchTerm, startDate, endDate, section, sortBy, ca
             const results = result.articles.map((item, index) => renderNews(item, section));
             $('.' + section).html(`<div class = "newsHeader" id = "${jumpName}"><h2>${section}</h2></div>`);
             if (results.length === 0) {
-                $('.' + section).append(`<div class="row"><img src='https://lapita.net/wp-content/uploads/2017/10/%E0%B8%95%E0%B8%B4%E0%B8%94%E0%B8%9B%E0%B8%B1%E0%B8%8D%E0%B8%AB%E0%B8%B2.jpg'><span class="description">Well, this is embarrassing!  We found a grand total of zero (yes, zero!) results.  Sigh.</span></div>`);
+                $('.' + section).append(`<div class="row"><img src='https://lapita.net/wp-content/uploads/2017/10/%E0%B8%95%E0%B8%B4%E0%B8%94%E0%B8%9B%E0%B8%B1%E0%B8%8D%E0%B8%AB%E0%B8%B2.jpg'><p class = "articleText">Well, this is embarrassing!  We found a grand total of zero (yes, zero!) results.  Sigh.</p></div>`);
             } else {
                 for (i = 0; i < results.length; i++) {
                     if (results[i] !== undefined) {
@@ -390,7 +421,8 @@ function renderNews(result, section) {
         return; // If no image, have empty return (don't bother printing to screen)
     }
     result["urlToImage"] = result["urlToImage"].replace("http:", "https:");
-    return `<div class="row"><img src='${result["urlToImage"]}'><p class = "articleText"><span class="title"><a href='${result["url"]}' target='_blank'>${result["title"]}</a></span>, by <span class="author">${result["author"]}</span>. ${result["description"]}</p></div>`;
+    return `<div class="row"><img src='${result["urlToImage"]}' alt="Image not found" onerror="this.onerror=null;this.src='http://i.cdn.turner.com/cnn/interactive/2017/12/specials/year-in-pictures/media/images/yip2017/100_98_GettyImages-856941896.jpg';" /><p class = "articleText"><span class="title"><a href='${result["url"]}' target='_blank'>${result["title"]}</a></span>, by <span class="author">${result["author"]}</span>. ${result["description"]}</p></div>`;
+    //    return `<div class="row"><img src='${result["urlToImage"]}'><p class = "articleText"><span class="title"><a href='${result["url"]}' target='_blank'>${result["title"]}</a></span>, by <span class="author">${result["author"]}</span>. ${result["description"]}</p></div>`;
 }
 
 //function displayNews(data) {
@@ -637,7 +669,7 @@ function displayEventful(data, pageNumber) {
         $('.events').html(`<p>Don't you hate it when absolutely nothing is happening?  We found no Eventful events (none!) within 128 miles of your location today.</p>`);
     } else {
         const results = data.events.event.map((item, index) => renderEventful(item));
-        $('.events').html(""); // clear out old results, if applicable.
+        $('.events').html("<span id = 'eventsTop'></span>"); // clear out old results, if applicable. Add a target for animated scrolling.
         //    console.log(results);
         for (i = results.length - 1; i >= 0; i--) { // run events loop backwards, since stored in reverse chrono order
             if (results[i] !== undefined) { // renderEventful will run an empty return if events are of too poor quality
@@ -800,9 +832,9 @@ function displayWeather(data, country) {
     //    } else if (data.weatherObservation.weatherCondition === "n/a") {
     //        data.weatherObservation.weatherCondition = data.weatherObservation.clouds;
     //    }
-    let sunrise = new Date(data.sys.sunrise);
+    let sunrise = new Date(data.sys.sunrise * 1000);
     let sunriseTime = sunrise.toLocaleTimeString();
-    let sunset = new Date(data.sys.sunset);
+    let sunset = new Date(data.sys.sunset * 1000);
     let sunsetTime = sunset.toLocaleTimeString();
     let windDirection = degreesToCardinal(Number(data.wind.deg));
     if (country === 'us' || country === 'US' || country === 'gb' || country === 'GB') {

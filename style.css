@@ -30,6 +30,11 @@ button {
     margin: 8px;
 }
 
+button:hover {
+    background-color: #A91000;
+    font-weight: 700;
+}
+
 header {
     height: 120px;
     position: fixed;
@@ -46,8 +51,7 @@ footer {
     position: fixed;
     background-color: #A91000;
     border-top: 10px inset #A91000;
-    padding-top: 10px;
-    padding-bottom: 30px;
+    padding: 10px 0;
     width: 100%;
     margin: 0;
     left: 0;
@@ -57,12 +61,14 @@ footer {
 
 .left {
     float: left;
-    padding: 10px 30px;
+    padding: 5px 20px 5px 7%;
+    width: 49%;
 }
 
 .right {
     float: right;
-    padding: 10px 30px;
+    padding: 5px 7% 5px 20px;
+    width: 49%;
 }
 
 @media (max-width: 1170px) {
@@ -124,6 +130,11 @@ h1 {
 a {
     text-decoration: none;
     color: #5CB2C2;
+}
+
+a:hover {
+    color: #aee7f2;
+    text-shadow: 0 0 1px white;
 }
 
 #logo {
@@ -319,6 +330,12 @@ form button {
     background-color: #19879C;
     cursor: pointer;
     margin: 20px 0;
+}
+
+.showMore:hover {
+    border: 5px outset #5CB2C2;
+    background-color: #5CB2C2;
+    color: white;
 }
 
 .seeMore {
