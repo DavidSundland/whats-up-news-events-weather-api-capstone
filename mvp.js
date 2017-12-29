@@ -1001,10 +1001,11 @@ function clearLanding() {
         //        $(".landingPageFrame").slideUp(1000);
         //        $(".landingPage").delay(1000).slideUp(1000);
         //        $(".fadeToBlack").delay(2500).fadeOut(2500);
+        $("#logo").attr("src", "https://github.com/DavidSundland/whats-up-news-events-weather-api-capstone/blob/master/images/snapshot_logo.gif");
         $(".fadeToBlack ").fadeIn(1200);
         $(".landingPage").delay(1200).fadeOut(1);
         $(".landingPageFrame").delay(1200).fadeOut(1);
-        window.location.hash = 'weather';
+        window.location.hash = 'top';
         $(".fadeToBlack").fadeOut(2500);
     });
 }
