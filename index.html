@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Snapshot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="grid.css" />
     <link rel="stylesheet" type="text/css" href="style.css " />
     <link href="https://fonts.googleapis.com/css?family=Kanit|Montserrat|Open+Sans:600|Quicksand|Raleway|Roboto:700" rel="stylesheet">
@@ -27,9 +28,6 @@
                                 <span id="temperature">44°F</span>
                             </div>
                             <div class="mainInfo col-7">
-                                <p>Broken Clouds</p>
-                                <p>Wind 4 mph from the south.</p>
-                                <p>Humidity: 41%</p>
                             </div>
                         </div>
                     </div>
@@ -58,7 +56,7 @@
             <div class="col-6">
                 <div class="News">
                 </div>
-                <div id="moreNews" class="showMore">Scroll News Articles</div>
+                <div id="moreNews" class="showMore">Scroll News</div>
                 <div class="searchBar">
                     <form action="#" class="newsSearchForm">
                         <label for="newsQuery"></label>
@@ -72,7 +70,7 @@
             <div class="col-6">
                 <div class="Sports">
                 </div>
-                <div id="moreSports" class="showMore">Scroll Sports Articles</div>
+                <div id="moreSports" class="showMore">Scroll Sports</div>
                 <div class="searchBar">
                     <form action="#" class="sportsSearchForm">
                         <label for="sportsQuery"></label>
@@ -88,7 +86,7 @@
             <div class="col-6">
                 <div class="Entertainment">
                 </div>
-                <div id="moreEntertainment" class="showMore">Scroll Entertainment Articles</div>
+                <div id="moreEntertainment" class="showMore">Scroll Entertainment</div>
                 <div class="searchBar">
                     <form action="#" class="entertainmentSearchForm">
                         <label for="entertainmentQuery"></label>
@@ -102,7 +100,7 @@
             <div class="col-6">
                 <div class="Financial">
                 </div>
-                <div id="moreFinancial" class="showMore">Scroll Financial Articles</div>
+                <div id="moreFinancial" class="showMore">Scroll Financial</div>
                 <div class="searchBar">
                     <form action="#" class="financialSearchForm">
                         <label for="financialQuery"></label>
@@ -139,8 +137,31 @@
             <p class="js-holiday-results"></p>
         </div>
 -->
+        <div class="landingPage">
+            <div class = "landingHeader">
+                <h1>Snapshot</h1>
+            </div>
+            <h2>Welcome to Snapshot!</h2>
+            <p>Snapshot gives you a quick glance at what is happening today - weather, news, and local events - in one compact package.  Snapshot:</p>
+            <ul> <li>Determines your location to retrieve weather and events information.</li>
+            <li>If your browser doesn't support geolocation, you decline geolocation, or you want to retrieve information for a different area, you can manually enter a location.</li>
+            <li>Today's top stories from news, sports, entertainment, and financial publications are displayed, sorted initially by popularity.</li>
+            <li>You can enter your own search term for each article feed.</li>
+            <li>Only the top stories are initially displayed; if you want to see more, click on the "Scroll..." button to scroll through all of the articles on each topic.</li>
+            <li>When you're ready to proceed, click Snap!</li>
+            </ul>
+        </div>
+        <div class="landingPageFrame">
+            <button id="doneLanding">Snap</button>
+        </div>
+        <div class="fadeToBlack">
 
-        <footer class="secondary col-12"><span class="left">Page created by David Sundland.  All rights reserved.</span><span class="right">Follow David on Github: <a href="https://github.com/DavidSundland" target="_none">https://github.com/DavidSundland</a></span></footer>
+        </div>
+
+        <footer>
+            <div class="left">© David Sundland</div>
+            <div class="right"><a href="https://github.com/DavidSundland" target="_none"><i class="fa fa-github" aria-hidden="true"></i></a><a href="https://www.linkedin.com/in/david-sundland" target="_none"><i class="fa fa-linkedin" aria-hidden="true"></i></a><a href="mailto:dsundland@gmail.com"><i class="fa fa-envelope-o" aria-hidden="true"></i></a></div>
+        </footer>
 
     </main>
 

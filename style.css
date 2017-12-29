@@ -4,6 +4,10 @@
 
 /* https://www.w3schools.com/cssref/tryit.asp?filename=trycss3_image_gallery */
 
+/* http://jsfiddle.net/wellcaffeinated/8Frb6/   - HEIGHT PROPORTIONATE TO WIDTH */
+
+/* https://github.com/DavidSundland/whats-up-news-events-weather-api-capstone/blob/master/images/polaroid_background.jpg?raw=true */
+
 /*
 font-family: 'Montserrat', sans-serif;
 font-family: 'Raleway', sans-serif;
@@ -17,6 +21,89 @@ body {
     line-height: 1.5;
     background-color: #202020;
     color: #bdbaba;
+}
+
+header {
+    height: 120px;
+    position: fixed;
+    background-color: #A91000;
+    border-bottom: 10px outset #A91000;
+    width: 100%;
+    margin: 0;
+    left: 0;
+    top: 0;
+    z-index: 2;
+}
+
+.landingPage {
+    background-color: black;
+    position: fixed;
+    top: 5%;
+    left: 5%;
+    width: 90%;
+    height: 75%;
+    z-index: 1100;
+    border: 5px white outset;
+    overflow: auto;
+    font-size: 1.1em;
+}
+
+.landingPage h2,
+.landingPage p,
+.landingPage ul {
+    padding: 0 10%;
+}
+
+.landingPage h2 {
+    color: #D89603;
+}
+
+.landingPage p {
+    color: #5CB2C2;
+}
+
+button#doneLanding {
+    position: absolute;
+    bottom: 5%;
+    margin: 0 49%;
+    /* see if can find better option */
+    display: inline-block;
+    height: 80px;
+    width: 80px;
+}
+
+.landingPageFrame {
+    background: url("images/polaroid_background.jpg");
+    background-repeat: repeat;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 1000;
+}
+
+.fadeToBlack {
+    z-index: 1200;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    display: none;
+}
+
+.landingHeader {
+    height: 80px;
+    position: relative;
+    margin-top: -30px;
+    background-color: #A91000;
+    border-bottom: 10px outset #A91000;
+    width: 100%;
+    margin: 0;
+    left: 0;
+    top: 0;
 }
 
 button {
@@ -35,28 +122,24 @@ button:hover {
     font-weight: 700;
 }
 
-header {
-    height: 120px;
-    position: fixed;
-    background-color: #A91000;
-    border-bottom: 10px outset #A91000;
-    width: 100%;
-    margin: 0;
-    left: 0;
-    top: 0;
-    z-index: 2;
-}
-
 footer {
-    position: fixed;
+    /*    position: fixed;*/
     background-color: #A91000;
     border-top: 10px inset #A91000;
     padding: 10px 0;
     width: 100%;
     margin: 0;
+    overflow: auto;
+    /*
     left: 0;
-    bottom: 0;
+ bottom: 0;
+*/
     z-index: 2;
+}
+
+footer i {
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .left {
@@ -69,8 +152,10 @@ footer {
     float: right;
     padding: 5px 7% 5px 20px;
     width: 49%;
+    text-align: right;
 }
 
+/*
 @media (max-width: 1170px) {
     .right {
         float: left;
@@ -85,6 +170,7 @@ footer {
         margin-bottom: 0;
     }
 }
+*/
 
 h1 {
     font-family: 'Raleway', sans-serif;
@@ -142,7 +228,7 @@ a:hover {
     position: fixed;
     top: 10px;
     /*    opacity: .7;*/
-    z-index: 3;
+    z-index: 103;
 }
 
 @media (max-width: 750px) {
@@ -248,7 +334,8 @@ img {
     overflow: hidden;
 }
 
-.forecast {
+.forecast,
+.mainInfo {
     padding: 20px;
 }
 
@@ -280,6 +367,15 @@ img {
     padding-bottom: 20px;
 }
 
+/*
+.even {
+    background-color: #424141;
+}
+*/
+
+.odd {
+    background-color: #424242;
+}
 
 form {
     width: 100%;
@@ -329,7 +425,8 @@ form button {
     border: 5px outset #19879C;
     background-color: #19879C;
     cursor: pointer;
-    margin: 20px 0;
+    margin: 20px auto;
+    width: 80%;
 }
 
 .showMore:hover {

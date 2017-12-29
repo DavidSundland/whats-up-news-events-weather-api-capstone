@@ -158,46 +158,46 @@ function seeMore() {
     console.log("in seeMore");
     $("#moreNews").click(function () {
         $(".News").toggleClass("seeMore");
-        if ($("#moreNews").html() === "Scroll News Articles") {
+        if ($("#moreNews").html() === "Scroll News") {
             $("#moreNews").html("Remove Scrolling");
         } else {
             $(".News").animate({
                 scrollTop: $('#NewsTop')
             });
-            $("#moreNews").html("Scroll News Articles");
+            $("#moreNews").html("Scroll News");
         }
     });
     $("#moreSports").click(function () {
         $(".Sports").toggleClass("seeMore");
-        if ($("#moreSports").html() === "Scroll Sports Articles") {
+        if ($("#moreSports").html() === "Scroll Sports") {
             $("#moreSports").html("Remove Scrolling");
         } else {
             $(".Sports").animate({
                 scrollTop: $('#SportsTop')
             });
-            $("#moreSports").html("Scroll Sports Articles");
+            $("#moreSports").html("Scroll Sports");
         }
     });
     $("#moreEntertainment").click(function () {
         $(".Entertainment").toggleClass("seeMore");
-        if ($("#moreEntertainment").html() === "Scroll Entertainment Articles") {
+        if ($("#moreEntertainment").html() === "Scroll Entertainment") {
             $("#moreEntertainment").html("Remove Scrolling");
         } else {
             $(".Entertainment").animate({
                 scrollTop: $('#EntertainmentTop')
             });
-            $("#moreEntertainment").html("Scroll Entertainment Articles");
+            $("#moreEntertainment").html("Scroll Entertainment");
         }
     });
     $("#moreFinancial").click(function () {
         $(".Financial").toggleClass("seeMore");
-        if ($("#moreFinancial").html() === "Scroll Financial Articles") {
+        if ($("#moreFinancial").html() === "Scroll Financial") {
             $("#moreFinancial").html("Remove Scrolling");
         } else {
             $(".Financial").animate({
                 scrollTop: $('#FinancialTop')
             });
-            $("#moreFinancial").html("Scroll Financial Articles");
+            $("#moreFinancial").html("Scroll Financial");
         }
     });
     $("#moreWeather").click(function () {
@@ -379,7 +379,7 @@ function getTheNews(sources, searchTerm, startDate, endDate, section, sortBy, ca
             const results = result.articles.map((item, index) => renderNews(item, section));
             $('.' + section).html(`<div class = "newsHeader" id = "${jumpName}"><h2>${section}</h2></div>`);
             if (results.length === 0) {
-                $('.' + section).append(`<div class="row"><img src='https://lapita.net/wp-content/uploads/2017/10/%E0%B8%95%E0%B8%B4%E0%B8%94%E0%B8%9B%E0%B8%B1%E0%B8%8D%E0%B8%AB%E0%B8%B2.jpg'><p class = "articleText">Well, this is embarrassing!  We found a grand total of zero (yes, zero!) results.  Sigh.</p></div>`);
+                $('.' + section).append(`<div class="row"><img src='https://github.com/DavidSundland/whats-up-news-events-weather-api-capstone/blob/master/images/embarrassed.jpg?raw=true'><p class = "articleText">Well, this is embarrassing!  We found a grand total of zero (yes, zero!) results.  Sigh.</p></div>`);
             } else {
                 for (i = 0; i < results.length; i++) {
                     if (results[i] !== undefined) {
@@ -421,7 +421,7 @@ function renderNews(result, section) {
         return; // If no image, have empty return (don't bother printing to screen)
     }
     result["urlToImage"] = result["urlToImage"].replace("http:", "https:");
-    return `<div class="row"><img src='${result["urlToImage"]}' alt="Image not found" onerror="this.onerror=null;this.src='http://i.cdn.turner.com/cnn/interactive/2017/12/specials/year-in-pictures/media/images/yip2017/100_98_GettyImages-856941896.jpg';" /><p class = "articleText"><span class="title"><a href='${result["url"]}' target='_blank'>${result["title"]}</a></span>, by <span class="author">${result["author"]}</span>. ${result["description"]}</p></div>`;
+    return `<div class="row"><img src='${result["urlToImage"]}' alt="Image not found" onerror="this.onerror=null;this.src='https://github.com/DavidSundland/whats-up-news-events-weather-api-capstone/blob/master/images/image_not_found.jpg?raw=true';" /><p class = "articleText"><span class="title"><a href='${result["url"]}' target='_blank'>${result["title"]}</a></span>, by <span class="author">${result["author"]}</span>. ${result["description"]}</p></div>`;
     //    return `<div class="row"><img src='${result["urlToImage"]}'><p class = "articleText"><span class="title"><a href='${result["url"]}' target='_blank'>${result["title"]}</a></span>, by <span class="author">${result["author"]}</span>. ${result["description"]}</p></div>`;
 }
 
@@ -867,11 +867,11 @@ function displayWeather(data, country) {
                 <span id="temperature">${temperature}</span>
             </div>
             <div class="mainInfo col-7">
-                <p>${titleCase(data.weather[0].description)}</p>
-                <p>Wind ${windSpeed} from the ${windDirection}.</p>
-                <p>Humidity: ${data.main.humidity}%</p>
-                <p>Sunrise: ${sunriseTime}</p>
-                <p>Sunset: ${sunsetTime}</p>
+                ${titleCase(data.weather[0].description)}<br>
+Wind ${windSpeed} from the ${windDirection}.<br>
+Humidity: ${data.main.humidity}%<br>
+Sunrise: ${sunriseTime}<br>
+                Sunset: ${sunsetTime}
             </div>
         </div>
         `);
@@ -995,8 +995,23 @@ function renderWeatherForecast(result, country) {
     return returnHtml;
 }
 
+function clearLanding() {
+    $("#doneLanding").click(function () {
+        //        alert("clicked");
+        //        $(".landingPageFrame").slideUp(1000);
+        //        $(".landingPage").delay(1000).slideUp(1000);
+        //        $(".fadeToBlack").delay(2500).fadeOut(2500);
+        $(".fadeToBlack ").fadeIn(1200);
+        $(".landingPage").delay(1200).fadeOut(1);
+        $(".landingPageFrame").delay(1200).fadeOut(1);
+        window.location.hash = 'weather';
+        $(".fadeToBlack").fadeOut(2500);
+    });
+}
+
 $(function () {
     getPlaceBased();
+    clearLanding();
     getNews("", newsSources, "News", "", "first");
     getNews("", sportsSources, "Sports", "", "first");
     getNews("", entertainmentSources, "Entertainment", "", "first");
