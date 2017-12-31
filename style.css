@@ -72,6 +72,13 @@ button#doneLanding {
     width: 80px;
 }
 
+@media (max-width: 800px) {
+    button#doneLanding {
+        height: 100px;
+        width: 100px;
+    }
+}
+
 .landingPageFrame {
     background: url("images/polaroid_background.jpg");
     background-repeat: repeat;
@@ -115,6 +122,13 @@ button {
     text-align: center;
     color: white;
     margin: 8px;
+}
+
+@media (max-width: 800px) {
+    button {
+        height: 60px;
+        width: 60px;
+    }
 }
 
 button:hover {
@@ -224,7 +238,7 @@ a:hover {
 }
 
 #logo {
-    max-width: 10%;
+    max-width: 9%;
     position: fixed;
     top: 10px;
     /*    opacity: .7;*/
@@ -250,6 +264,7 @@ a:hover {
     width: 100%;
     display: inline-block;
     padding: 20px 0;
+    color: #FFD576;
 }
 
 @media (max-width: 830px) {
