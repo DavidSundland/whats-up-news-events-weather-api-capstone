@@ -19,8 +19,8 @@ let newsSources = 'the-washington-post,associated-press,al-jazeera-english,bbc-n
 let sportsSources = 'talksport,bleacher-report,nfl-news,nhl-news,the-sport-bible';
 let entertainmentSources = 'entertainment-weekly,mtv-news';
 let financialSources = 'financial-post,financial-times,fortune,business-insider';
-let GLOBALLAT = "38.89";
-let GLOBALLONG = "-77.034";
+//let GLOBALLAT = "38.89";
+//let GLOBALLONG = "-77.034";
 let TODAY = new Date();
 
 
@@ -81,13 +81,11 @@ function getLatLongFromAddress() {
             'address': address
         }, function (results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
-                var latitude = results[0].geometry.location.lat();
-                var longitude = results[0].geometry.location.lng();
-                GLOBALLAT = latitude;
-                GLOBALLONG = longitude;
+                getPlaceBased.lat = results[0].geometry.location.lat();
+                getPlaceBased.lon = results[0].geometry.location.lng();
                 $(".newLocation input").attr("placeholder", titleCase(address) + " submitted"); // Put address in search box as placeholder so search term is shown on page
-                callWeather(latitude, longitude);
-                callEvents(latitude, longitude, "");
+                callWeather(getPlaceBased.lat, getPlaceBased.lon);
+                callEvents(getPlaceBased.lat, getPlaceBased.lon, "");
             } else {
                 alert("Uh-oh, Google did not like the address which you submitted!");
                 $(".newLocation input").attr("placeholder", "Type a new location to snap");
@@ -136,7 +134,7 @@ function querySubmit() { // For search term entered for any news feed
         queryTarget.val(""); // clear out the input
         $(".events").html("Please wait a moment as the list of events is collected and tidied up.");
         $(".eventsSearchForm input").attr("placeholder", titleCase(eventfulQuery) + " submitted");
-        callEvents(GLOBALLAT, GLOBALLONG, eventfulQuery);
+        callEvents(getPlaceBased.lat, getPlaceBased.lon, eventfulQuery);
     });
 }
 
@@ -262,11 +260,11 @@ function seeMore() {
     });
     $('.events').on('click', '#eventsPrev', function () {
         $(".events").html("Please wait as the information is collected and tidied.");
-        getEventfulApi(GLOBALLAT, GLOBALLONG, callEvents.distance, callEvents.startDate, callEvents.endDate, "", "prev");
+        getEventfulApi(getPlaceBased.lat, getPlaceBased.lon, callEvents.distance, callEvents.startDate, callEvents.endDate, "", "prev");
     });
     $('.events').on('click', '#eventsNext', function () {
         $(".events").html("Please wait as the information is collected and tidied.");
-        getEventfulApi(GLOBALLAT, GLOBALLONG, callEvents.distance, callEvents.startDate, callEvents.endDate, "", "next");
+        getEventfulApi(getPlaceBased.lat, getPlaceBased.lon, callEvents.distance, callEvents.startDate, callEvents.endDate, "", "next");
     });
 }
 
@@ -408,6 +406,10 @@ function renderNews(result, section) {
 }
 
 function getPlaceBased() {
+    if (getPlaceBased.lat === undefined) { // first time function run
+        getPlaceBased.lat = "38.89"; // assign DC coords as default in case geoloc fails
+        getPlaceBased.lon = "-77.034";
+    }
     if (!navigator.geolocation) {
         console.log("in !navigator.geolocation");
         navNoGo();
@@ -422,12 +424,10 @@ function getPlaceBased() {
 
     function success(position) {
         console.log("in getPlaceBased success");
-        let userLat = position.coords.latitude;
-        let userLong = position.coords.longitude;
-        GLOBALLAT = userLat;
-        GLOBALLONG = userLong;
-        callWeather(userLat, userLong);
-        callEvents(userLat, userLong, "");
+        getPlaceBased.lat = position.coords.latitude;
+        getPlaceBased.lon = position.coords.longitude;
+        callWeather(getPlaceBased.lat, getPlaceBased.lon);
+        callEvents(getPlaceBased.lat, getPlaceBased.lon, "");
     }
     console.log("about to run navigator");
     navigator.geolocation.getCurrentPosition(success, error, {
@@ -439,7 +439,7 @@ function navNoGo() {
     console.log("in navNoGo");
     alert("Uh-oh! We could not automatically determine your location, so place-based results are defaulting to Washingon, DC. You can manually enter a different location if you'd like.")
     console.log("Geolocation is not supported by this browser.");
-    callEvents(GLOBALLAT, GLOBALLONG, "");
+    callEvents(getPlaceBased.lat, getPlaceBased.lon, "");
 }
 
 function callWeather(userLat, userLong) {
