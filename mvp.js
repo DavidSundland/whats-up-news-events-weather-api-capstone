@@ -1,28 +1,20 @@
-// TO-DO:  GET RID OF UNNECESSARY PUSH.  CLEAN UP DATES.  CONSOLIDATE FUNCTIONS.  FURTHER CLEAN-UP OF EVENTFUL* (INCLUDING DOING SOMETHING WITH 'NULL' RESULTS, POSSIBLY SKIPPING CRAP RESULTS, AND ADJUSTING NUMBER OF RESULTS).  MAKE SURE "net::ERR_CONNECTION_TIMED_OUT" IS NOT A CONTINUING PROBLEM. REARRANGE PAGE ORDER.  ADD FOOTER
+// JavaScript file for Thinkful Capstone 1
+
 // *EVENTFUL NOTE - EVENTS DO HAVE UNIQUE ID AND URL.  COULD RUN WITH 4 MILE (OR WHATEVER) DISTANCE, SEE IF THERE ARE ENOUGH RESULTS, AND IF NOT, RUN AGAIN, AVOIDING REDUNCANCIES LIKE IN DC SCRAPING....
-// EVENTFUL - IF DESCRIPTION AND TITLE NULL (OR REDUNDANT), IMMEDIATELY RETURN, WITH A VALUE LIKE 'SKIP' FOR EASY CULLING LATER
-// LOOK AT DARK SKY API
-
-
-// CHECK SECURITY STATUS VIA GIT.  GET RID OF HOLIDAYS?  CLEAN UP HTML STRUCTURE.  KILL UNNECESSARY HTML ONCE STRUCTURE CLEAN.  SHRINK WEATHER DISPLAY, MAKE SURE RESPONSIVE.
 
 // git add . ; git commit -m 'REPLACE-ME'; git pull origin master; git push --set-upstream origin master
 // https://davidsundland.github.io/whats-up-news-events-weather-api-capstone/
 
 // file:///C:/Python27/MyPrograms/JavaScriptClass/DavidSundland/BrowserWidth.html
 
-// JavaScript file for Thinkful Capstone 1
-
-// https://www.w3schools.com/jsref/prop_win_innerheight.asp - BROWSER WINDOW WIDTH
-
 const NEWSURL = 'https://newsapi.org/v2/everything';
 const NEWSAPI = '5fbeb324e35042e09cc7df22185fe8e6';
 const EVENTFULURL = 'https://api.eventful.com/json/events/search';
-const HOLIDAYURL = 'https://holidayapi.com/v1/holidays';
+const HOLIDAYURL = 'http://holidayapi.com/v1/holidays'; // NOT AVAILABLE AS HTTPS, UNFORTUNATELY
 const WEATHERURL = 'https://api.geonames.org/findNearByWeatherJSON';
 const WEATHERFORECASTURL = 'https://api.openweathermap.org/data/2.5/forecast';
 const MonthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-const MONTHNAMES = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
+const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 let newsSources = 'the-washington-post,associated-press,al-jazeera-english,bbc-news,the-new-york-times,politico,the-economist';
 let sportsSources = 'talksport,bleacher-report,nfl-news,nhl-news,the-sport-bible';
 let entertainmentSources = 'entertainment-weekly,mtv-news';
@@ -32,8 +24,7 @@ let GLOBALLONG = "-77.034";
 let TODAY = new Date();
 
 
-function getDate(country) {
-    console.log("in getDate");
+function getDate(country) { // Displays today's date in header
     let headingDate;
     if (country === 'us' || country === 'US') {
         headingDate = MonthNames[TODAY.getMonth()] + " " + TODAY.getDate().toString() + ", " + TODAY.getFullYear();
@@ -45,9 +36,7 @@ function getDate(country) {
 }
 
 function titleCase(str) { // Capitalize first letter in every word of a string, make all others lowercase
-    //    console.log("in titleCase");
     words = str.toLowerCase().split(' ');
-
     for (var i = 0; i < words.length; i++) {
         var letters = words[i].split('');
         letters[0] = letters[0].toUpperCase();
@@ -57,7 +46,6 @@ function titleCase(str) { // Capitalize first letter in every word of a string, 
 }
 
 function sentenceCase(str) { // Capitalize first letter in every sentence, make all others lowercase
-    //    console.log("in sentenceCase");
     sentences = str.toLowerCase().split('. ');
     for (var i = 0; i < sentences.length; i++) {
         var letters = sentences[i].split('');
@@ -67,46 +55,54 @@ function sentenceCase(str) { // Capitalize first letter in every sentence, make 
     return sentences.join('. ');
 }
 
+function textCleanup(text, maxLength) {
+    text.replace(/\<p\>/g, " ").replace(/\<\/p\>/g, " ").replace(/\<br\>/g, "").replace(/\<hr\>/g, "").replace(/\<b\>/g, "").replace(/\<\/b\>/g, "").replace(/\<strong\>/g, "").replace(/\<\/strong\>/g, ""); // Remove HTML tags that are commonly found within results
+    text.replace(/\_+/g, '_ ').replace(/[\_\s]+/g, '_ ').replace(/\-/g, '- ').replace(/[\-\s]/g, '- ').replace(/\s+/g, ' '); // Remove abusive use of underscores, hyphens, & white space
+    if (text.length > maxLength) {
+        text = text.substring(0, maxLength) + "..."; // shorten excessive descriptions
+    }
+    killSpaces = text.replace(/\s/g, ''); // Create copy of text w/ no white space...
+    if (/[A-Z]{10,}/.exec(killSpaces)) // If result has 10 or more capital letters in a row, let's eliminate that ALL CAPS abuse
+    {
+        text = sentenceCase(text);
+    }
+    return text;
+}
+
 function getLatLongFromAddress() {
-    console.log("getLatLongFromAddress started");
     var geocoder = new google.maps.Geocoder();
     let address;
-    //    var address = "3645 13th st nw washington dc";
     $('.newLocation').submit(event => {
-        //        console.log("New location submitted");
         event.preventDefault();
         const queryTarget = $(event.currentTarget).find('.js-query');
         address = queryTarget.val();
-        //        console.log("Location submitted: ", address);
         queryTarget.val(""); // clear out the input
-        $(".newLocation input").attr("placeholder", address); // Put address in search box as placeholder so search term is shown on page
         geocoder.geocode({
             'address': address
         }, function (results, status) {
-
             if (status == google.maps.GeocoderStatus.OK) {
                 var latitude = results[0].geometry.location.lat();
                 var longitude = results[0].geometry.location.lng();
                 GLOBALLAT = latitude;
                 GLOBALLONG = longitude;
-                //                console.log("Lat: " + latitude + ", Long: " + longitude);
-                callPlaceBased(latitude, longitude);
+                $(".newLocation input").attr("placeholder", titleCase(address) + " submitted"); // Put address in search box as placeholder so search term is shown on page
+                callWeather(latitude, longitude);
+                callEvents(latitude, longitude, "");
             } else {
-                alert("Uh-oh, Google did not like the address which you entered!");
+                alert("Uh-oh, Google did not like the address which you submitted!");
+                $(".newLocation input").attr("placeholder", "Type a new location to snap");
             }
         });
     });
 }
 
-
-function querySubmit() {
-    console.log("newsQuerySubmit");
+function querySubmit() { // For search term entered for any news feed
     $('.newsSearchForm').submit(event => {
         event.preventDefault();
         const queryTarget = $(event.currentTarget).find('.js-query');
         searchTerm = queryTarget.val();
         queryTarget.val(""); // clear out the input
-        $(".newsSearchForm input").attr("placeholder", " Enter a news search term to snap");
+        $(".newsSearchForm input").attr("placeholder", titleCase(searchTerm) + " submitted");
         getNews(searchTerm, newsSources, "News", "relevancy", "first");
     });
     $('.sportsSearchForm').submit(event => {
@@ -114,7 +110,7 @@ function querySubmit() {
         const queryTarget = $(event.currentTarget).find('.js-query');
         searchTerm = queryTarget.val();
         queryTarget.val(""); // clear out the input
-        $(".sportsSearchForm input").attr("placeholder", " Enter a sports search term to snap");
+        $(".sportsSearchForm input").attr("placeholder", titleCase(searchTerm) + " submitted");
         getNews(searchTerm, sportsSources, "Sports", "relevancy", "first");
     });
     $('.entertainmentSearchForm').submit(event => {
@@ -122,7 +118,7 @@ function querySubmit() {
         const queryTarget = $(event.currentTarget).find('.js-query');
         searchTerm = queryTarget.val();
         queryTarget.val(""); // clear out the input
-        $(".entertainmentSearchForm input").attr("placeholder", " Enter an entertainment search term to snap");
+        $(".entertainmentSearchForm input").attr("placeholder", titleCase(searchTerm) + " submitted");
         getNews(searchTerm, entertainmentSources, "Entertainment", "relevancy", "first");
     });
     $('.financialSearchForm').submit(event => {
@@ -130,32 +126,21 @@ function querySubmit() {
         const queryTarget = $(event.currentTarget).find('.js-query');
         searchTerm = queryTarget.val();
         queryTarget.val(""); // clear out the input
-        $(".financialSearchForm input").attr("placeholder", " Enter a financial search term to snap");
+        $(".financialSearchForm input").attr("placeholder", titleCase(searchTerm) + " submitted");
         getNews(searchTerm, financialSources, "Financial", "relevancy", "first");
     });
     $('.eventsSearchForm').submit(event => {
-        console.log("eventsSearchForm triggered");
         event.preventDefault();
         const queryTarget = $(event.currentTarget).find('.js-query');
         eventfulQuery = queryTarget.val();
         queryTarget.val(""); // clear out the input
         $(".events").html("Please wait a moment as the list of events is collected and tidied up.");
-        $(".eventsSearchForm input").attr("placeholder", " Enter an events search term to snap");
-        let counter = 1;
-        let maxCount = 6; // Maximum number of times to run testEventfulApi
-        let distance = callPlaceBased.distance;
-        console.log("Coupla items pulled from other function: ", distance, callPlaceBased.eventfulStartDate);
-        //        distance = testEventfulApi(GLOBALLAT, GLOBALLONG, distance, callPlaceBased.eventfulStartDate, callPlaceBased.eventfulEndDate, eventfulQuery, counter, maxCount);
-        //        if (distance === undefined) {
-        //            $('.events').html(`<p>Don't you hate it when absolutely nothing is happening?  We found no Eventful events (none!) within 128 miles of your location today.</p>`);
-        //        } else {
-        getEventfulApi(GLOBALLAT, GLOBALLONG, distance, callPlaceBased.eventfulStartDate, callPlaceBased.eventfulEndDate, eventfulQuery, "first");
-        //        }
+        $(".eventsSearchForm input").attr("placeholder", titleCase(eventfulQuery) + " submitted");
+        callEvents(GLOBALLAT, GLOBALLONG, eventfulQuery);
     });
 }
 
 function seeMore() {
-    console.log("in seeMore");
     $("#moreNews").click(function () {
         $(".News").toggleClass("seeMore");
         if ($("#moreNews").html() === "Scroll News") {
@@ -277,26 +262,24 @@ function seeMore() {
     });
     $('.events').on('click', '#eventsPrev', function () {
         $(".events").html("Please wait as the information is collected and tidied.");
-        getEventfulApi(GLOBALLAT, GLOBALLONG, callPlaceBased.distance, callPlaceBased.eventfulStartDate, callPlaceBased.eventfulEndDate, "", "prev");
+        getEventfulApi(GLOBALLAT, GLOBALLONG, callEvents.distance, callEvents.startDate, callEvents.endDate, "", "prev");
     });
     $('.events').on('click', '#eventsNext', function () {
         $(".events").html("Please wait as the information is collected and tidied.");
-        getEventfulApi(GLOBALLAT, GLOBALLONG, callPlaceBased.distance, callPlaceBased.eventfulStartDate, callPlaceBased.eventfulEndDate, "", "next");
+        getEventfulApi(GLOBALLAT, GLOBALLONG, callEvents.distance, callEvents.startDate, callEvents.endDate, "", "next");
     });
 }
 
 function getNews(searchTerm, sources, category, sortBy, call) {
-    //    console.log("in getNews");
     let endDate = TODAY.getFullYear().toString() + '-' + (TODAY.getMonth() + 1).toString() + '-' + TODAY.getDate().toString(); // getMonth returns month value from 0 to 11...
     let before = new Date(TODAY);
-    let beforeDifference = 0; // TEST PAGE WITH RESULTS FROM TODAY ONLY; IF NOT ENOUGH RESULTS, CHANGE INCREMENT
+    let beforeDifference = 0; // Results from today only (future update of app could have option for multiple days)
     before.setDate(TODAY.getDate() - beforeDifference);
     let startDate = before.getFullYear().toString() + '-' + (before.getMonth() + 1).toString() + '-' + before.getDate().toString();
     getTheNews(sources, searchTerm, startDate, endDate, category, sortBy, call);
 }
 
 function getTheNews(sources, searchTerm, startDate, endDate, section, sortBy, call) { // Documentation - https://newsapi.org/docs
-    console.log("in getTheNews");
     if (getTheNews.pageNumber === undefined) { // if undefined, then first time function has been run
         getTheNews.pageNumber = 1;
         getTheNews.newsQuery = "";
@@ -373,7 +356,7 @@ function getTheNews(sources, searchTerm, startDate, endDate, section, sortBy, ca
             type: "GET"
         })
         .done(function (result) {
-            console.log(sources, "result = ", result);
+            console.log(section, " result = ", result);
             //            runFunction(result);
             jumpName = section + "Top";
             const results = result.articles.map((item, index) => renderNews(item, section));
@@ -408,7 +391,6 @@ function getTheNews(sources, searchTerm, startDate, endDate, section, sortBy, ca
 }
 
 function renderNews(result, section) {
-    //    console.log("In renderNews");
     if (result["author"] === null) {
         result["author"] = result["source"]["name"];
     }
@@ -420,67 +402,12 @@ function renderNews(result, section) {
     if (result["urlToImage"] === null || result["urlToImage"] === undefined || result["urlToImage"].length < 6) {
         return; // If no image, have empty return (don't bother printing to screen)
     }
-    result["urlToImage"] = result["urlToImage"].replace("http:", "https:");
+    result["urlToImage"] = result["urlToImage"].replace("http:", "https:"); // Pics from non-secure sites cause problems...
+    // Return will include results AND default image if the API image causes problems (typically a security error)
     return `<div class="row"><img src='${result["urlToImage"]}' alt="Image not found" onerror="this.onerror=null;this.src='https://github.com/DavidSundland/whats-up-news-events-weather-api-capstone/blob/master/images/image_not_found.jpg?raw=true';" /><p class = "articleText"><span class="title"><a href='${result["url"]}' target='_blank'>${result["title"]}</a></span>, by <span class="author">${result["author"]}</span>. ${result["description"]}</p></div>`;
-    //    return `<div class="row"><img src='${result["urlToImage"]}'><p class = "articleText"><span class="title"><a href='${result["url"]}' target='_blank'>${result["title"]}</a></span>, by <span class="author">${result["author"]}</span>. ${result["description"]}</p></div>`;
 }
 
-//function displayNews(data) {
-//    console.log("In displayNews");
-//    console.log(data);
-//    const results = data.articles.map((item, index) => renderNews(item));
-//    console.log("News Results:", results);
-//}
-
-//function displaySports(data) {
-//    console.log("In displaySports");
-//    console.log(data);
-//    const results = data.articles.map((item, index) => renderSports(item));
-//    console.log("Sports Results:", results);
-//}
-//
-//function renderSports(result) {
-//    console.log("In renderSports");
-//    let returnArray = [];
-//    returnArray.push(`${result["title"]}'`); // OTHER AVAILABLE INFO:  (author), description, (publishedAt (time)), (source[id]), source[name] (publication name), url, urlToImage
-//    return returnArray;
-//}
-//
-//function displayEntertainment(data) {
-//    console.log("In displayEntertainment");
-//    console.log(data);
-//    const results = data.articles.map((item, index) => renderEntertainment(item));
-//    console.log("Entertainment Results:", results);
-//}
-//
-//function renderEntertainment(result) {
-//    console.log("In renderEntertainment");
-//    let returnArray = [];
-//    returnArray.push(`${result["title"]}'`); // OTHER AVAILABLE INFO:  (author), description, (publishedAt (time)), (source[id]), source[name] (publication name), url, urlToImage
-//    return returnArray;
-//}
-//
-//function displayFinancial(data) {
-//    console.log("In displayFinancial");
-//    console.log(data);
-//    const results = data.articles.map((item, index) => renderFinancial(item));
-//    console.log("News Results:", results);
-//}
-//
-//function renderFinancial(result) {
-//    console.log("In renderFinancial");
-//    let returnArray = [];
-//    returnArray.push(`${result["title"]}'`); // OTHER AVAILABLE INFO:  (author), description, (publishedAt (time)), (source[id]), source[name] (publication name), url, urlToImage
-//    return returnArray;
-//}
-
 function getPlaceBased() {
-    console.log("in getPlaceBased");
-    //    if (getPlaceBased.lat === undefined) {
-    //        getPlaceBased.lat = "";
-    //        getPlaceBased.lon = ""; // if lat undefined, then both undefined
-    //    }
-
     if (!navigator.geolocation) {
         console.log("in !navigator.geolocation");
         navNoGo();
@@ -499,11 +426,12 @@ function getPlaceBased() {
         let userLong = position.coords.longitude;
         GLOBALLAT = userLat;
         GLOBALLONG = userLong;
-        callPlaceBased(userLat, userLong);
+        callWeather(userLat, userLong);
+        callEvents(userLat, userLong, "");
     }
     console.log("about to run navigator");
     navigator.geolocation.getCurrentPosition(success, error, {
-        timeout: 10000 // If don't succeed in getting position within 10 seconds, give up
+        timeout: 15000 // If don't succeed in getting position within 15 seconds, give up
     });
 }
 
@@ -511,36 +439,12 @@ function navNoGo() {
     console.log("in navNoGo");
     alert("Uh-oh! We could not automatically determine your location, so place-based results are defaulting to Washingon, DC. You can manually enter a different location if you'd like.")
     console.log("Geolocation is not supported by this browser.");
-    callPlaceBased(GLOBALLAT, GLOBALLONG);
+    callEvents(GLOBALLAT, GLOBALLONG, "");
 }
 
-function callPlaceBased(userLat, userLong) {
-    console.log("in callPlaceBased");
-    callPlaceBased.eventfulStartDate = TODAY.getFullYear().toString() + (TODAY.getMonth() + 1).toString() + TODAY.getDate().toString() + "00"; // eventful date format is:  YYYYMMDD00
-    callPlaceBased.eventfulEndDate = callPlaceBased.eventfulStartDate; // for first call, only search for today
-    let eventfulQuery = ""; // search all events initially
-    callPlaceBased.distance = 4; // Initial search distance for Eventful (4 miles - a reasonable distance for a big city)
-    let counter = 1;
-    let maxCount = 6; // Maximum number of times to run testEventfulApi
-    //    console.log("before call, distance = ", callPlaceBased.distance, "All variables = ", userLat, userLong, callPlaceBased.distance, callPlaceBased.eventfulStartDate, callPlaceBased.eventfulEndDate, eventfulQuery, counter, maxCount);
-    //    callPlaceBased.distance = testEventfulApi(userLat, userLong, callPlaceBased.distance, callPlaceBased.eventfulStartDate, callPlaceBased.eventfulEndDate, eventfulQuery, counter, maxCount);
-    //    console.log("after call, distance = ", callPlaceBased.distance)
-    //    if (callPlaceBased.distance === undefined) {
-    //        $('.events').html(`<p>Don't you hate it when absolutely nothing is happening?  We found no Eventful events (none!) within ${callPlaceBased.distance} miles of your location today.</p>`);
-    //    } else {
-    getEventfulApi(userLat, userLong, callPlaceBased.distance, callPlaceBased.eventfulStartDate, callPlaceBased.eventfulEndDate, eventfulQuery, "first");
-    //    }
-    //    try { Geonames site was yielding security issues, so went alternative route
-    //        $.getJSON // Get the user's country code; use that to pull holidays & determine whether to use metric or outdated measurements for weather
-    //        (
-    //            '//ws.geonames.org/countryCode', {
-    //                lat: userLat,
-    //                lng: userLong,
-    //                username: 'dsundland',
-    //                type: 'JSON'
-    //            },
+function callWeather(userLat, userLong) {
     try {
-        $.getJSON // Get the user's country code; use that to pull holidays & determine whether to use metric or outdated measurements for weather
+        $.getJSON // Get the user's country code; use that to determine whether to use metric or outdated measurements for weather (also had been used for holidays before security issues (non-https API) killed holidays functionality)
         (
             'https://maps.googleapis.com/maps/api/geocode/json', {
                 latlng: userLat + "," + userLong,
@@ -571,50 +475,12 @@ function callPlaceBased(userLat, userLong) {
     }
 }
 
-function testEventfulApi(lat, long, distance, eventStartDate, eventEndDate, eventfulQuery, counter, maxCount) { // Since Eventful might not pull many results within 4 miles, test to determine necessary distance
-    console.log("in testEventfulApi.  deets:", lat, long, distance, eventStartDate, eventEndDate, counter, maxCount);
-    let query = {
-        app_key: 'Jsr6ndZBQLW9qdLL',
-        keywords: eventfulQuery,
-        location: lat + ',' + long,
-        //        location: "39.597462" + ',' + "-111.439893",  // FOR TESTING - LOCATION IN REMOTE PART OF UTAH
-        //        keywords: 'happiness',
-        date: eventStartDate + "-" + eventEndDate, // Could be This%20Week, Future, Today, or date in form YYYYMMDD00-YYYYMMDD00
-        ex_category: 'other,sales,business', // Excluded categories
-        within: distance
-    };
-    let result = $.ajax({
-            url: EVENTFULURL,
-            data: query,
-            dataType: "jsonp",
-            type: "GET"
-        })
-        .done(function (result) {
-            if ((result.events === null || result.events === undefined) && counter < maxCount) {
-                console.log("In testEVent if, and result.events =", result.events);
-                distance *= 2;
-                counter++;
-                testEventfulApi(lat, long, distance, eventStartDate, eventEndDate, eventfulQuery, counter, maxCount); // keep running test until # results found or maxCount reached
-            } else if (result.events.event.length < 5 && counter < maxCount) {
-                console.log("In testEvent else if, and result.events = ", result.events);
-                distance *= 2;
-                counter++;
-                testEventfulApi(lat, long, distance, eventStartDate, eventEndDate, eventfulQuery, counter, maxCount); // keep running test until # results found or maxCount reached
-            } else {
-                if (result.events === null || result.events === undefined) { // if the test has not yielded any results, return nothing
-                    console.log("result.events was null");
-                    return;
-                } else {
-                    console.log("supposedly, result.events was ", result.events, "and distance was", distance);
-                    return distance;
-                }
-            }
-        })
-        .fail(function (jqXHR, error, errorThrown) {
-            console.log(jqXHR);
-            console.log(error);
-            console.log(errorThrown);
-        });
+function callEvents(userLat, userLong, query) {
+    callEvents.startDate = TODAY.getFullYear().toString() + (TODAY.getMonth() + 1).toString() + TODAY.getDate().toString() + "00"; // eventful date format is:  YYYYMMDD00
+    callEvents.endDate = callEvents.startDate; // for this edition of app, only search for today
+    callEvents.distance = 4; // Initial search distance for Eventful (4 miles - a reasonable distance for a big city)
+    let test;
+    getEventfulApi(userLat, userLong, callEvents.distance, callEvents.startDate, callEvents.endDate, query, "first");
 }
 
 function getEventfulApi(lat, long, distance, eventStartDate, eventEndDate, searchTerm, call) {
@@ -622,6 +488,7 @@ function getEventfulApi(lat, long, distance, eventStartDate, eventEndDate, searc
     if (getEventfulApi.pageNumber === undefined) { // if undefined, then first time function has been run
         getEventfulApi.pageNumber = 1;
         getEventfulApi.query = "";
+        getEventfulApi.counter = 1;
     } else if (call === "first") {
         getEventfulApi.pageNumber = 1;
     } else if (call === "next") {
@@ -653,8 +520,18 @@ function getEventfulApi(lat, long, distance, eventStartDate, eventEndDate, searc
             type: "GET"
         })
         .done(function (result) {
-            console.log("getEventfulApi done result = ", result);
-            displayEventful(result, getEventfulApi.pageNumber);
+            console.log("getEventfulApi done result = ", result, "result number = ", Number(result.total_items));
+            if (Number(result.total_items) < 5 && getEventfulApi.counter <= 4) {
+                distance *= 3;
+                getEventfulApi.counter++;
+                $(".events").append("."); // show that computer is working
+                getEventfulApi(lat, long, distance, eventStartDate, eventEndDate, searchTerm, call) // try again w/ bigger distance
+            } else {
+                getEventfulApi.counter = 1;
+                $(".events").append("."); // show that computer is working
+                callEvents.distance = distance; // store value used for next/prev queries
+                displayEventful(result, getEventfulApi.pageNumber);
+            }
         })
         .fail(function (jqXHR, error, errorThrown) {
             console.log(jqXHR);
@@ -692,26 +569,12 @@ function displayEventful(data, pageNumber) {
     }
 }
 
-function textCleanup(text, maxLength) {
-    //    console.log("in textCleanup");
-    text.replace(/\<p\>/g, " ").replace(/\<\/p\>/g, " ").replace(/\<br\>/g, "").replace(/\<hr\>/g, "").replace(/\<b\>/g, "").replace(/\<\/b\>/g, "").replace(/\<strong\>/g, "").replace(/\<\/strong\>/g, ""); // Remove HTML tags that are commonly found within results
-    text.replace(/\_+/g, '_').replace(/\-/g, '-').replace(/\s+/g, ' '); // Remove abusive use of underscores, hyphens, & white space
-    if (text.length > maxLength) {
-        text = text.substring(0, maxLength) + "..."; // shorten excessive descriptions
-    }
-    killSpaces = text.replace(/\s/g, ''); // Create copy of text w/ no white space...
-    if (/[A-Z]{10,}/.exec(killSpaces)) // If result has 10 or more capital letters in a row, let's eliminate that ALL CAPS abuse
-    {
-        text = sentenceCase(text);
-    }
-    return text;
-}
-
 function renderEventful(result) {
     //    console.log("In renderEventful", result);
     if ((result["title"] === null || result["title"].length < 5) && (result["description"] === null || result["description"].length < 5)) {
         return; // if there is no title or description, or if both are preposterously short, return with no value (skip the event)
     }
+    $(".events").append("."); // show that computer is working
     let maxDescription = 200;
     let maxTitle = 150;
     let killSpaces;
@@ -761,26 +624,25 @@ function getHolidaysApi(countryCode) { // CAN'T USE?  API NOT SECURE
         });
 }
 
-function displayHolidays(data) { // CAN'T USE?  API NOT SECURE
-    console.log("in displayHolidays");
-    let killMultiDay;
-    let arrayNoDuplicates = []; // For multi-day holidays, Holiday API lists same holiday multiple times. Eliminate duplicates.
-    data.holidays.forEach(function (oneHoliday) {
-        killMultiDay = /[a-zA-Z]+\s+[Dd]ay\s+of\s+([a-zA-Z]+)/.exec(oneHoliday.name); // Use RegEx to eliminate multiple instances of holiday (First Day of..., etc.)
-        if (killMultiDay !== null) {
-            oneHoliday.name = killMultiDay[1];
-        }
-        if (arrayNoDuplicates.indexOf(oneHoliday.name) === -1) {
-            arrayNoDuplicates.push(oneHoliday.name);
-        }
-    });
-    for (i = 0; i < arrayNoDuplicates.length; i++) {
-        $('.js-holiday-results').append(`<a href='https://www.google.fi/search?q=${arrayNoDuplicates[i]}' target='_blank'>${arrayNoDuplicates[i]}</a><br>`);
-    }
-}
+//function displayHolidays(data) { // Can't use at this point - API not secure
+//    console.log("in displayHolidays");
+//    let killMultiDay;
+//    let arrayNoDuplicates = []; // For multi-day holidays, Holiday API lists same holiday multiple times. Eliminate duplicates.
+//    data.holidays.forEach(function (oneHoliday) {
+//        killMultiDay = /[a-zA-Z]+\s+[Dd]ay\s+of\s+([a-zA-Z]+)/.exec(oneHoliday.name); // Use RegEx to eliminate multiple instances of holiday (First Day of..., etc.)
+//        if (killMultiDay !== null) {
+//            oneHoliday.name = killMultiDay[1];
+//        }
+//        if (arrayNoDuplicates.indexOf(oneHoliday.name) === -1) {
+//            arrayNoDuplicates.push(oneHoliday.name);
+//        }
+//    });
+//    for (i = 0; i < arrayNoDuplicates.length; i++) {
+//        $('.js-holiday-results').append(`<a href='https://www.google.fi/search?q=${arrayNoDuplicates[i]}' target='_blank'>${arrayNoDuplicates[i]}</a><br>`);
+//    }
+//}
 
 function getWeatherAPI(lat, long, country) {
-    console.log("in getWeatherAPI");
     var query = {
         lat: lat,
         lon: long,
@@ -792,20 +654,8 @@ function getWeatherAPI(lat, long, country) {
             dataType: "jsonp",
             type: "GET"
         })
-        //    const query = {
-        //        lat: lat,
-        //        lng: long,
-        //        username: 'dsundland'
-        //    };
-        //    var result = $.ajax({
-        //            url: WEATHERURL,  // FOR INFO ABOUT WEATHER RESULTS: //forum.geonames.org/gforum/posts/list/28.page
-        //            data: query,
-        //            dataType: "jsonp",
-        //            type: "GET"
-        //        })
         .done(function (result) {
             displayWeather(result, country);
-            //            console.log(result, result.main.humidity, result.main.temp, result.wind.deg, result.wind.speed, result.weather[0].description);
         })
         .fail(function (jqXHR, error, errorThrown) {
             console.log(jqXHR);
@@ -815,23 +665,9 @@ function getWeatherAPI(lat, long, country) {
 }
 
 function displayWeather(data, country) {
-    console.log("in displayWeather", data, country);
     let windSpeed;
     let windTest;
     let temperature;
-    //    let weatherCollectionDate;
-    //    let weatherCollectionDateTime = new Date(data.weatherObservation.datetime + " UTC");
-    //    let timeZone = /(\([A-Za-z\s]+\))/.exec(weatherCollectionDateTime.toString());
-    //    if (timeZone === null) {
-    //        timeZone = "";
-    //    }
-    //    let weatherCollectionTime = weatherCollectionDateTime.getHours() + ":" + weatherCollectionDateTime.getMinutes() + " " + timeZone[0]; // timeZone is returning an array, so get first element
-    //    console.log("timeZone: ", timeZone, weatherCollectionTime);
-    //    if (data.weatherObservation.weatherCondition === "n/a" && data.weatherObservation.clouds === "n/a") {
-    //        data.weatherObservation.weatherCondition = "Clear skies";
-    //    } else if (data.weatherObservation.weatherCondition === "n/a") {
-    //        data.weatherObservation.weatherCondition = data.weatherObservation.clouds;
-    //    }
     let sunrise = new Date(data.sys.sunrise * 1000);
     let sunriseTime = sunrise.toLocaleTimeString();
     let sunset = new Date(data.sys.sunset * 1000);
@@ -856,10 +692,8 @@ function displayWeather(data, country) {
     }
     if (country === 'us' || country === 'US') {
         temperature = (Math.round(Number(data.main.temp - 273.15) * 9 / 5 + 32)).toString() + "°F";
-        //        weatherCollectionDate = MonthNames[weatherCollectionDateTime.getMonth()] + " " + weatherCollectionDateTime.getDate;
     } else {
         temperature = (Math.round(Number(data.main.temp) - 273.15)).toString() + "°C";
-        //        weatherCollectionDate = weatherCollectionDateTime.getDate + " " + MonthNames[weatherCollectionDateTime.getMonth()];
     }
     $("#weather").html(`
         <div class="weather">
@@ -875,10 +709,7 @@ Sunrise: ${sunriseTime}<br>
             </div>
         </div>
         `);
-    //    $("#stationName").html(data.weatherObservation.stationName);
-    //    $("#weatherDateTime").html(weatherCollectionTime);
 }
-
 
 function degreesToCardinal(windDir) {
     if (windDir >= 348.75 || windDir <= 11.25) {
@@ -917,7 +748,6 @@ function degreesToCardinal(windDir) {
 }
 
 function getWeatherForecastApi(lat, long, country) {
-    console.log("in getWeatherForecastApi");
     var query = {
         lat: lat,
         lon: long,
@@ -940,7 +770,6 @@ function getWeatherForecastApi(lat, long, country) {
 }
 
 function displayWeatherForecast(data, country) {
-    console.log("in displayWeatherForecast");
     const results = data.list.map((item, index) => renderWeatherForecast(item, country));
     $(".forecast").html("");
     for (i = 0; i < results.length; i++) {
@@ -952,7 +781,6 @@ function displayWeatherForecast(data, country) {
 }
 
 function renderWeatherForecast(result, country) {
-    //    console.log("in renderWeatherForecast, result: ", result);
     let temperature;
     let weatherDate;
     let weatherTime;
@@ -966,30 +794,19 @@ function renderWeatherForecast(result, country) {
     } else {
         weatherTime = "eve";
     }
-    //    let weatherTime = weatherDateTime.getHours() + ":" + weatherDateTime.getMinutes();
     if (country === 'us' || country === 'US') {
         temperature = (Math.round(Number(result.main.temp - 273.15) * 9 / 5 + 32)).toString() + "°F";
         //        weatherDate = MonthNames[weatherDateTime.getMonth()] + " " + weatherDateTime.getDate();
     } else {
         temperature = (Math.round(Number(result.main.temp) - 273.15)).toString() + "°C";
-        //        weatherDate = weatherDateTime.getDate() + " " + MonthNames[weatherDateTime.getMonth()];
     }
     if (weatherDateTime.getDate() === TODAY.getDate()) { // Don't need to compare full date, because forecast is only for next 5 days
         weatherDate = "Today,";
     } else if (weatherDateTime.getDate() === TODAY.getDate() + 1) {
         weatherDate = "Tomorrow";
     } else {
-        weatherDate = weatherDateTime.toLocaleDateString() + ",";
+        weatherDate = days[weatherDateTime.getDay()];
     }
-    //    let weatherTimeLong = weatherDateTime.toLocaleTimeString();
-    //    let timeParts = weatherTimeLong.split(":");
-    //    let weatherTime;
-    //    if (weatherTimeLong.indexOf("M") === -1) { // if the time does not include "AM" or "PM"
-    //        weatherTime = timeParts[0] + timeParts[1]; // get rid of secons
-    //    } else {
-    //
-    //        weatherTime = timeParts[0] + ":" + timeParts[1] + timeParts[2].split(' ')[1] // Get rid of seconds, but keep AM or PM
-    //    }
     let description = result["weather"]["0"]["description"];
     let returnHtml = `${weatherDate} ${weatherTime} - ${temperature}, ${description}<br>`;
     return returnHtml;
@@ -1001,7 +818,7 @@ function clearLanding() {
         //        $(".landingPageFrame").slideUp(1000);
         //        $(".landingPage").delay(1000).slideUp(1000);
         //        $(".fadeToBlack").delay(2500).fadeOut(2500);
-        $("#logo").attr("src", "https://github.com/DavidSundland/whats-up-news-events-weather-api-capstone/blob/master/images/snapshot_logo.gif");
+        $("#logo").attr("src", "https://github.com/DavidSundland/whats-up-news-events-weather-api-capstone/blob/master/images/snapshot_logo.gif?raw=true");
         $(".fadeToBlack ").fadeIn(1200);
         $(".landingPage").delay(1200).fadeOut(1);
         $(".landingPageFrame").delay(1200).fadeOut(1);

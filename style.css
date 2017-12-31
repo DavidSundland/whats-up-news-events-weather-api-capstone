@@ -228,7 +228,7 @@ a:hover {
     position: fixed;
     top: 10px;
     /*    opacity: .7;*/
-    z-index: 103;
+    z-index: 1300;
 }
 
 @media (max-width: 750px) {
