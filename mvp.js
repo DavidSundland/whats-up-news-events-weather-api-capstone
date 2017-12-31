@@ -439,12 +439,13 @@ function navNoGo() {
     console.log("in navNoGo");
     alert("Uh-oh! We could not automatically determine your location, so place-based results are defaulting to Washingon, DC. You can manually enter a different location if you'd like.")
     console.log("Geolocation is not supported by this browser.");
+    callWeather(getPlaceBased.lat, getPlaceBased.lon);
     callEvents(getPlaceBased.lat, getPlaceBased.lon, "");
 }
 
 function callWeather(userLat, userLong) {
     try {
-        $.getJSON // Get the user's country code; use that to determine whether to use metric or outdated measurements for weather (also had been used for holidays before security issues (non-https API) killed holidays functionality)
+        $.getJSON // Get country code & place name
         (
             'https://maps.googleapis.com/maps/api/geocode/json', {
                 latlng: userLat + "," + userLong,
@@ -452,14 +453,25 @@ function callWeather(userLat, userLong) {
                 sensor: false
             },
             function (result) {
-                //                console.log("Google attempt: ", result);
+                console.log("Google attempt: ", result);
                 let countryCode;
+                let placeName = ""; // if place name not found, leave blank
+                // information in results varies, must loop through to find desired info
+                console.log("length = ", result["results"][0]["address_components"].length);
                 for (i = 0; i < result["results"][0]["address_components"].length; i++) {
-                    if (result["results"][0]["address_components"][i]["types"][0] === "country") { // Location of country code in array varies, depending on amount of info about that location
+                    console.log(result["results"][0]["address_components"][i]["types"]);
+                    if (result["results"][0]["address_components"][i]["types"][0] === "locality") {
+                        placeName = result["results"][0]["address_components"][i]["long_name"];
+                        console.log("placeName found - ", placeName);
+                    }
+                    if (result["results"][0]["address_components"][i]["types"][0] === "country") {
                         countryCode = result["results"][0]["address_components"][i]["short_name"];
-                        break;
+                        console.log("countryCode found - ", countryCode);
+                        break; // country code always after locality in results; once found, exit loop
                     }
                 }
+                $('.eventsHeader').html("Events - " + placeName);
+                $('.weatherHeader').html("Weather - " + placeName);
                 //                getHolidaysApi(countryCode);
                 getDate(countryCode);
                 getWeatherAPI(userLat, userLong, countryCode); // //api.geonames.org/findNearByWeatherJSON?lat=43&lng=-2&username=demo
@@ -808,7 +820,7 @@ function renderWeatherForecast(result, country) {
         weatherDate = days[weatherDateTime.getDay()];
     }
     let description = result["weather"]["0"]["description"];
-    let returnHtml = `${weatherDate} ${weatherTime} - ${temperature}, ${description}<br>`;
+    let returnHtml = `${weatherDate} ${weatherTime}: ${temperature}, ${description}<br>`;
     return returnHtml;
 }
 
