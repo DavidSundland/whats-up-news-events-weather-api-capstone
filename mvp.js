@@ -13,6 +13,7 @@ const EVENTFULURL = 'https://api.eventful.com/json/events/search';
 const HOLIDAYURL = 'http://holidayapi.com/v1/holidays'; // NOT AVAILABLE AS HTTPS, UNFORTUNATELY
 const WEATHERURL = 'https://api.geonames.org/findNearByWeatherJSON';
 const WEATHERFORECASTURL = 'https://api.openweathermap.org/data/2.5/forecast';
+const GOOGLEAPI = 'AIzaSyAa9jFz1GClkj8pW9ytY6tB70hVFj1RGYQ';
 const MonthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 let newsSources = 'the-washington-post,associated-press,al-jazeera-english,bbc-news,the-new-york-times,politico,the-economist';
@@ -449,7 +450,7 @@ function callWeather(userLat, userLong) {
         (
             'https://maps.googleapis.com/maps/api/geocode/json', {
                 latlng: userLat + "," + userLong,
-                key: "AIzaSyAa9jFz1GClkj8pW9ytY6tB70hVFj1RGYQ",
+                key: GOOGLEAPI,
                 sensor: false
             },
             function (result) {

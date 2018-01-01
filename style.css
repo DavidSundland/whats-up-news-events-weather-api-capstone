@@ -62,21 +62,22 @@ header {
     color: #5CB2C2;
 }
 
+.landingPage strong {
+    color: #c3f1f9;
+}
+
+li {
+    margin-bottom: 6px;
+}
 button#doneLanding {
     position: absolute;
     bottom: 5%;
     margin: 0 49%;
     /* see if can find better option */
     display: inline-block;
+    font-size: 1em;
     height: 80px;
     width: 80px;
-}
-
-@media (max-width: 800px) {
-    button#doneLanding {
-        height: 100px;
-        width: 100px;
-    }
 }
 
 .landingPageFrame {
@@ -144,6 +145,7 @@ footer {
     width: 100%;
     margin: 0;
     overflow: auto;
+    margin-top: 60px;
     /*
     left: 0;
  bottom: 0;
