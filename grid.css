@@ -62,8 +62,7 @@
 
 /* Non-mobile, grid */
 
-@media only screen and (min-width: 800px) {
-    /* set for 800 or 640? */
+@media only screen and (min-width: 640px) {
     .col-1-no-mobile {
         display: inline-block;
         width: 8.33%;

@@ -1,20 +1,7 @@
-/* http://paletton.com/ */
-
-/* http://paletton.com/#uid=33m0u0krxvNh9H2ml-hvyr3z8lg */
-
-/* https://www.w3schools.com/cssref/tryit.asp?filename=trycss3_image_gallery */
-
-/* http://jsfiddle.net/wellcaffeinated/8Frb6/   - HEIGHT PROPORTIONATE TO WIDTH */
-
-/* https://github.com/DavidSundland/whats-up-news-events-weather-api-capstone/blob/master/images/polaroid_background.jpg?raw=true */
-
-/*
-font-family: 'Montserrat', sans-serif;
-font-family: 'Raleway', sans-serif;
-*/
+/* Color palette - http://paletton.com/#uid=33m0u0krxvNh9H2ml-hvyr3z8lg */
 
 body {
-    margin: 140px 2%;
+    margin: 140px 2% 0 2%;
     font-size: 22px;
     font-family: 'Montserrat', sans-serif;
     font-weight: 400;
@@ -33,6 +20,15 @@ header {
     left: 0;
     top: 0;
     z-index: 2;
+}
+
+@media only screen and (min-width: 640px) {
+    body {
+        margin: 20px;
+    }
+    header {
+        position: static;
+    }
 }
 
 .landingPage {
@@ -69,6 +65,7 @@ header {
 li {
     margin-bottom: 6px;
 }
+
 button#doneLanding {
     position: absolute;
     bottom: 5%;
@@ -346,7 +343,7 @@ img {
 #tempBox,
 .mainInfo,
 .forecast {
-    height: 150px;
+    height: 165px;
     border: 3px ridge #025868;
     overflow: hidden;
 }
