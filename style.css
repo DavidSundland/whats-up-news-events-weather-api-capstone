@@ -24,8 +24,13 @@ header {
 
 @media only screen and (max-width: 640px) {
     body {
-        margin-left: 40px;
-        margin-right: 40px;
+        margin: 0px 40px;
+    }
+    header {
+        position: static;
+        margin: 0px -40px;
+        width: calc(100% + 80px);
+        height: 70px;
     }
 }
 
@@ -150,11 +155,15 @@ footer {
     margin: 0;
     overflow: auto;
     margin-top: 60px;
-    /*
-    left: 0;
- bottom: 0;
-*/
     z-index: 2;
+}
+
+@media only screen and (max-width: 640px) {
+    footer {
+        margin-right: -40px;
+        margin-left: -40px;
+        width: calc(100% + 80px);
+    }
 }
 
 footer i {
