@@ -40,9 +40,12 @@ This app's functionality includes:
 * User can opt to see results for a different location.
 * Searches for the day's most popular articles about news, sports, business, and entertainment.
 * Ability for user to enter a keyword for article and event searches.
-* Non-secure (http:) images are converted to secure (https:); resultant images which do not display are
+* To reduce page clutter while showing large numbers of results, only a portion of results is initially shown, and user can unlock or lock scrolling for those results.
+* Buttons for previous and next results only appear if previous or next results have actually been retrieved.
 * Events which have no title or subject are skipped, events which have a subject but no title use the subject as the title.
 * Results for events are cleaned up - excessive spaces, hyphens, and underscores are removed, user-created tags are removed, and excessive use of CAPS are converted to title case or sentence case.
+* Units (metric or Imperial) and date format (m d, y vs d m y) are based on country code.
+* Error handling has been provided for contingencies such as unsuccessful geolocation, no results found, error in displaying an image, or submission of erroneous address.
 
 ## Technology
 * HTML
@@ -50,7 +53,7 @@ This app's functionality includes:
 * JavaScript
 * jQuery
 
-* The app uses the JavaScript getCurrentPosition method to determine user's location, and passes coordinates to <a href="http://ws.geonames.org/">Geo Names</a> to get the country code.
+* The app uses the JavaScript getCurrentPosition method to determine user's location, and passes coordinates to <a href="https://maps.googleapis.com">Google Maps</a> to get the country code.  The Google Maps API is also used to obtain coordinates from a user-entered address.
 * The app uses AJAX JSON calls to the <a href="https://newsapi.org">News API</a> to return news results.
 * The app uses AJAX JSON calls to the <a href="http://api.eventful.com/">Eventful</a> API to return a list of events.
 * The app uses AJAX JSON calls to the <a href="http://api.openweathermap.org/">Open Weather Map</a> APIs to get weather information.

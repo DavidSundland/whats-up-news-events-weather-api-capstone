@@ -123,6 +123,100 @@ button#doneLanding {
     top: 0;
 }
 
+h1 {
+    font-family: 'Raleway', sans-serif;
+    text-align: center;
+    font-size: 40px;
+    font-weight: 700;
+    color: white;
+    text-shadow: 2px 2px 4px #202020;
+}
+
+@media (max-width: 1000px) {
+    h1 {
+        font-size: 32px;
+    }
+}
+
+@media (max-width: 630px) {
+    .hideNarrow {
+        display: none;
+    }
+    body {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 500px) {
+    h1 {
+        font-size: 24px;
+        padding-top: 10px;
+    }
+    body {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 400px) {
+    .hideNarrowest {
+        display: none;
+    }
+}
+
+a {
+    text-decoration: none;
+    color: #5CB2C2;
+}
+
+a:hover {
+    color: #aee7f2;
+    text-shadow: 0 0 1px white;
+}
+
+#logo {
+    max-width: 9%;
+    position: fixed;
+    top: 10px;
+    /*    opacity: .7;*/
+    z-index: 1300;
+}
+
+@media (max-width: 750px) {
+    #logo {
+        display: none;
+    }
+}
+
+#tempBox {
+    margin: auto;
+    /*    display: block;*/
+    /*    background-color: firebrick;*/
+}
+
+#temperature {
+    font-size: 60px;
+    /*    background-color: aquamarine;*/
+    text-align: center;
+    width: 100%;
+    display: inline-block;
+    padding: 20px 0;
+    color: #FFD576;
+}
+
+@media (max-width: 1000px) {
+    #temperature {
+        font-size: 48px;
+    }
+}
+
+.secondary {
+    font-size: .8em;
+}
+
+.tertiary {
+    font-size: .6em;
+}
+
 button {
     cursor: pointer;
     background-color: #FD3823;
@@ -184,137 +278,6 @@ footer i {
     text-align: right;
 }
 
-/*
-@media (max-width: 1170px) {
-    .right {
-        float: left;
-    }
-    .left,
-    .right {
-        padding-bottom: 0;
-    }
-    footer {
-        position: relative;
-        margin-top: 40px;
-        margin-bottom: 0;
-    }
-}
-*/
-
-h1 {
-    font-family: 'Raleway', sans-serif;
-    text-align: center;
-    font-size: 40px;
-    font-weight: 700;
-    color: white;
-    text-shadow: 2px 2px 4px #202020;
-}
-
-@media (max-width: 1000px) {
-    h1 {
-        font-size: 32px;
-    }
-}
-
-@media (max-width: 630px) {
-    .hideNarrow {
-        display: none;
-    }
-    body {
-        font-size: 20px;
-    }
-}
-
-@media (max-width: 500px) {
-    h1 {
-        font-size: 24px;
-        padding-top: 10px;
-    }
-    body {
-        font-size: 16px;
-    }
-}
-
-@media (max-width: 400px) {
-    .hideNarrowest {
-        display: none;
-    }
-}
-
-
-a {
-    text-decoration: none;
-    color: #5CB2C2;
-}
-
-a:hover {
-    color: #aee7f2;
-    text-shadow: 0 0 1px white;
-}
-
-#logo {
-    max-width: 9%;
-    position: fixed;
-    top: 10px;
-    /*    opacity: .7;*/
-    z-index: 1300;
-}
-
-@media (max-width: 750px) {
-    #logo {
-        display: none;
-    }
-}
-
-#tempBox {
-    margin: auto;
-    /*    display: block;*/
-    /*    background-color: firebrick;*/
-}
-
-#temperature {
-    font-size: 60px;
-    /*    background-color: aquamarine;*/
-    text-align: center;
-    width: 100%;
-    display: inline-block;
-    padding: 20px 0;
-    color: #FFD576;
-}
-
-@media (max-width: 1000px) {
-    #temperature {
-        font-size: 48px;
-    }
-}
-
-.secondary {
-    font-size: .8em;
-}
-
-.tertiary {
-    font-size: .6em;
-}
-
-/*
-.forecast {
-    column-count: 2;
-    font-size: .8em;
-}*/
-
-/*
-img {
-    max-width: 60%;
-    float: left;
-}
-*/
-
-/*
-.forecastDate {
-    font-size: .8em;
-}
-*/
-
 .News,
 .Sports,
 .Entertainment,
@@ -344,13 +307,6 @@ img {
     border-radius: 25px;
     margin: 20px auto;
 }
-
-/*
-.middleBuffer {
-    background-color: black;
-    height: 500px;
-}
-*/
 
 .separator {
     height: 25px;
@@ -397,12 +353,6 @@ img {
     padding-bottom: 20px;
 }
 
-/*
-.even {
-    background-color: #424141;
-}
-*/
-
 .odd {
     background-color: #424242;
 }
@@ -422,14 +372,6 @@ input {
     margin: 5px 5% 10px 5%;
     padding-left: 10px;
 }
-
-/*
-form button {
-    min-width: 150px;
-    height: 35px;
-    border-radius: 20px;
-}
-*/
 
 .News img,
 .Sports img,
@@ -466,10 +408,5 @@ form button {
 }
 
 .seeMore {
-    /*    height: 1000px;*/
     overflow: auto;
-    /*
-    border: 10px pink dashed;
-    border-radius: 100px;
-    */
 }

@@ -1,11 +1,6 @@
 // JavaScript file for Thinkful Capstone 1
-
-// *EVENTFUL NOTE - EVENTS DO HAVE UNIQUE ID AND URL.  COULD RUN WITH 4 MILE (OR WHATEVER) DISTANCE, SEE IF THERE ARE ENOUGH RESULTS, AND IF NOT, RUN AGAIN, AVOIDING REDUNCANCIES LIKE IN DC SCRAPING....
-
 // git add . ; git commit -m 'REPLACE-ME'; git pull origin master; git push --set-upstream origin master
 // https://davidsundland.github.io/whats-up-news-events-weather-api-capstone/
-
-// file:///C:/Python27/MyPrograms/JavaScriptClass/DavidSundland/BrowserWidth.html
 
 const NEWSURL = 'https://newsapi.org/v2/everything';
 const NEWSAPI = '5fbeb324e35042e09cc7df22185fe8e6';
@@ -20,8 +15,6 @@ let newsSources = 'the-washington-post,associated-press,al-jazeera-english,bbc-n
 let sportsSources = 'talksport,bleacher-report,nfl-news,nhl-news,the-sport-bible';
 let entertainmentSources = 'entertainment-weekly,mtv-news';
 let financialSources = 'financial-post,financial-times,fortune,business-insider';
-//let GLOBALLAT = "38.89";
-//let GLOBALLONG = "-77.034";
 let TODAY = new Date();
 
 
@@ -355,8 +348,6 @@ function getTheNews(sources, searchTerm, startDate, endDate, section, sortBy, ca
             type: "GET"
         })
         .done(function (result) {
-            console.log(section, " result = ", result);
-            //            runFunction(result);
             jumpName = section + "Top";
             const results = result.articles.map((item, index) => renderNews(item, section));
             $('.' + section).html(`<div class = "newsHeader" id = "${jumpName}"><h2>${section}</h2></div>`);
@@ -372,7 +363,6 @@ function getTheNews(sources, searchTerm, startDate, endDate, section, sortBy, ca
             if (result.totalResults > getTheNews.pageNumber * 20 && getTheNews.pageNumber === 1) { // 20 results are returned per page
                 buttonId = section + 'Next';
                 $('.' + section).append(`<div class="row"><span class = "next">More Results<button id="${buttonId}">Snap</button></span></div>`);
-                //                console.log("In if, result.totalResults: ", result.totalResults, "page number: ", getTheNews.pageNumber, "button: ", buttonId);
             } else if (result.totalResults > getTheNews.pageNumber * 20) {
                 buttonId = section + 'Next';
                 buttonPrev = section + 'Prev';
@@ -412,32 +402,27 @@ function getPlaceBased() {
         getPlaceBased.lon = "-77.034";
     }
     if (!navigator.geolocation) {
-        console.log("in !navigator.geolocation");
         navNoGo();
         return;
     }
 
     function error() {
-        console.log("in getPlaceBased error");
         navNoGo();
         return;
     }
 
     function success(position) {
-        console.log("in getPlaceBased success");
         getPlaceBased.lat = position.coords.latitude;
         getPlaceBased.lon = position.coords.longitude;
         callWeather(getPlaceBased.lat, getPlaceBased.lon);
         callEvents(getPlaceBased.lat, getPlaceBased.lon, "");
     }
-    console.log("about to run navigator");
     navigator.geolocation.getCurrentPosition(success, error, {
         timeout: 15000 // If don't succeed in getting position within 15 seconds, give up
     });
 }
 
 function navNoGo() {
-    console.log("in navNoGo");
     alert("Uh-oh! We could not automatically determine your location, so place-based results are defaulting to Washingon, DC. You can manually enter a different location if you'd like.")
     console.log("Geolocation is not supported by this browser.");
     callWeather(getPlaceBased.lat, getPlaceBased.lon);
@@ -454,36 +439,29 @@ function callWeather(userLat, userLong) {
                 sensor: false
             },
             function (result) {
-                console.log("Google attempt: ", result);
                 let countryCode;
                 let placeName = ""; // if place name not found, leave blank
                 // information in results varies, must loop through to find desired info
-                console.log("length = ", result["results"][0]["address_components"].length);
                 for (i = 0; i < result["results"][0]["address_components"].length; i++) {
-                    console.log(result["results"][0]["address_components"][i]["types"]);
                     if (result["results"][0]["address_components"][i]["types"][0] === "locality") {
                         placeName = result["results"][0]["address_components"][i]["long_name"];
-                        console.log("placeName found - ", placeName);
                     }
                     if (result["results"][0]["address_components"][i]["types"][0] === "country") {
                         countryCode = result["results"][0]["address_components"][i]["short_name"];
-                        console.log("countryCode found - ", countryCode);
                         break; // country code always after locality in results; once found, exit loop
                     }
                 }
                 $('.eventsHeader').html("Events - " + placeName);
                 $('.weatherHeader').html("Weather - " + placeName);
-                //                getHolidaysApi(countryCode);
                 getDate(countryCode);
-                getWeatherAPI(userLat, userLong, countryCode); // //api.geonames.org/findNearByWeatherJSON?lat=43&lng=-2&username=demo
+                getWeatherAPI(userLat, userLong, countryCode);
                 getWeatherForecastApi(userLat, userLong, countryCode);
             }
         );
     } catch (err) {
         console.log("Geonames country code threw error: ", err);
-        //        getHolidaysApi("US");
         getDate("US");
-        getWeatherAPI(userLat, userLong, "US"); // //api.geonames.org/findNearByWeatherJSON?lat=43&lng=-2&username=demo
+        getWeatherAPI(userLat, userLong, "US");
         getWeatherForecastApi(userLat, userLong, "US");
     }
 }
@@ -497,7 +475,6 @@ function callEvents(userLat, userLong, query) {
 }
 
 function getEventfulApi(lat, long, distance, eventStartDate, eventEndDate, searchTerm, call) {
-    console.log("In getEventfulApi.  Passed values: ", lat, long, distance, eventStartDate, eventEndDate, searchTerm, call);
     if (getEventfulApi.pageNumber === undefined) { // if undefined, then first time function has been run
         getEventfulApi.pageNumber = 1;
         getEventfulApi.query = "";
@@ -533,15 +510,12 @@ function getEventfulApi(lat, long, distance, eventStartDate, eventEndDate, searc
             type: "GET"
         })
         .done(function (result) {
-            console.log("getEventfulApi done result = ", result, "result number = ", Number(result.total_items));
             if (Number(result.total_items) < 5 && getEventfulApi.counter <= 4) {
                 distance *= 3;
                 getEventfulApi.counter++;
-                $(".events").append("."); // show that computer is working
                 getEventfulApi(lat, long, distance, eventStartDate, eventEndDate, searchTerm, call) // try again w/ bigger distance
             } else {
                 getEventfulApi.counter = 1;
-                $(".events").append("."); // show that computer is working
                 callEvents.distance = distance; // store value used for next/prev queries
                 displayEventful(result, getEventfulApi.pageNumber);
             }
@@ -554,13 +528,11 @@ function getEventfulApi(lat, long, distance, eventStartDate, eventEndDate, searc
 }
 
 function displayEventful(data, pageNumber) {
-    console.log("In displayEventful.  Data received:", data);
     if (data.total_items === "0") {
         $('.events').html(`<p>Don't you hate it when absolutely nothing is happening?  We found no Eventful events (none!) within 128 miles of your location today.</p>`);
     } else {
         const results = data.events.event.map((item, index) => renderEventful(item));
         $('.events').html("<span id = 'eventsTop'></span>"); // clear out old results, if applicable. Add a target for animated scrolling.
-        //    console.log(results);
         for (i = results.length - 1; i >= 0; i--) { // run events loop backwards, since stored in reverse chrono order
             if (results[i] !== undefined) { // renderEventful will run an empty return if events are of too poor quality
                 if (i % 2 === 0) { // alternate classes so that background colors can alternate
@@ -570,10 +542,8 @@ function displayEventful(data, pageNumber) {
                 }
             }
         }
-        //    console.log("About to if.  total_items: ", data.total_items, "total items alternative: ", data.events.total_items);
         if (Number(data.page_count) > pageNumber && pageNumber === 1) {
             $('.events').append('<div class="row"><span class = "next">More Results<button id="eventsNext">Snap</button></span></div>');
-            console.log("In if");
         } else if (Number(data.page_count) > pageNumber) {
             $('.events').append('<div class="row"><span class = "prev"><button id="eventsPrev">Snap</button>Previous Results</span><span class = "next">More Results<button id="eventsNext">Snap</button></span></div>');
         } else if (pageNumber !== 1) {
@@ -583,11 +553,9 @@ function displayEventful(data, pageNumber) {
 }
 
 function renderEventful(result) {
-    //    console.log("In renderEventful", result);
     if ((result["title"] === null || result["title"].length < 5) && (result["description"] === null || result["description"].length < 5)) {
         return; // if there is no title or description, or if both are preposterously short, return with no value (skip the event)
     }
-    $(".events").append("."); // show that computer is working
     let maxDescription = 200;
     let maxTitle = 150;
     let killSpaces;
@@ -598,7 +566,6 @@ function renderEventful(result) {
         maxTitle += 50; // If there is no description, allow longer title
         result["description"] = "";
     } else {
-        //        console.log("in renderEventful description else, result['description'] = ", result["description"]);
         result["description"] = textCleanup(result["description"], maxDescription);
     }
     if (result["title"] !== null) {
@@ -607,53 +574,8 @@ function renderEventful(result) {
     let dateTime = new Date(result.start_time);
     let date = dateTime.toLocaleDateString();
     let time = dateTime.toLocaleTimeString();
-    //    console.log("venue name: ", result.venue_name, "venue address: ", result.venue_address);
     return `<a href='${result.url}' target='_blank'>${result.title}</a>. ${result.description} At ${result.venue_name} - ${result.venue_address}, ${result.city_name}, ${result.region_abbr}.  Start time: ${time}. Date: ${date}.`;
 }
-
-function getHolidaysApi(countryCode) { // CAN'T USE?  API NOT SECURE
-    console.log("in getHolidaysApi");
-    var month = TODAY.getMonth() + 1; // getMonth returns month value from 0 to 11; Holidays API expects values from 1 to 12
-    var year = TODAY.getFullYear() - 1; // NOTE - must pay to get current and future holidays; past holidays are free
-    var query = {
-        country: countryCode,
-        year: year,
-        month: month,
-        key: '20a52b19-23d9-494c-918d-9df670c747c4'
-    };
-    var result = $.ajax({
-            url: HOLIDAYURL,
-            data: query,
-            dataType: "json",
-            type: "GET"
-        })
-        .done(function (result) {
-            displayHolidays(result);
-        })
-        .fail(function (jqXHR, error, errorThrown) {
-            console.log("jqXHR:", jqXHR);
-            console.log("error:", error);
-            console.log("errorThrown:", errorThrown);
-        });
-}
-
-//function displayHolidays(data) { // Can't use at this point - API not secure
-//    console.log("in displayHolidays");
-//    let killMultiDay;
-//    let arrayNoDuplicates = []; // For multi-day holidays, Holiday API lists same holiday multiple times. Eliminate duplicates.
-//    data.holidays.forEach(function (oneHoliday) {
-//        killMultiDay = /[a-zA-Z]+\s+[Dd]ay\s+of\s+([a-zA-Z]+)/.exec(oneHoliday.name); // Use RegEx to eliminate multiple instances of holiday (First Day of..., etc.)
-//        if (killMultiDay !== null) {
-//            oneHoliday.name = killMultiDay[1];
-//        }
-//        if (arrayNoDuplicates.indexOf(oneHoliday.name) === -1) {
-//            arrayNoDuplicates.push(oneHoliday.name);
-//        }
-//    });
-//    for (i = 0; i < arrayNoDuplicates.length; i++) {
-//        $('.js-holiday-results').append(`<a href='https://www.google.fi/search?q=${arrayNoDuplicates[i]}' target='_blank'>${arrayNoDuplicates[i]}</a><br>`);
-//    }
-//}
 
 function getWeatherAPI(lat, long, country) {
     var query = {
@@ -789,7 +711,6 @@ function displayWeatherForecast(data, country) {
         if (results[i] !== undefined) {
             $(".forecast").append(results[i]);
         }
-        //        console.log(results[i]);
     }
 }
 
@@ -827,10 +748,6 @@ function renderWeatherForecast(result, country) {
 
 function clearLanding() {
     $("#doneLanding").click(function () {
-        //        alert("clicked");
-        //        $(".landingPageFrame").slideUp(1000);
-        //        $(".landingPage").delay(1000).slideUp(1000);
-        //        $(".fadeToBlack").delay(2500).fadeOut(2500);
         $("#logo").attr("src", "https://github.com/DavidSundland/whats-up-news-events-weather-api-capstone/blob/master/images/snapshot_logo.gif?raw=true");
         $(".fadeToBlack ").fadeIn(1200);
         $(".landingPage").delay(1200).fadeOut(1);
@@ -840,7 +757,7 @@ function clearLanding() {
     });
 }
 
-$(function () {
+$(function () {  // run the functions upon page load
     getPlaceBased();
     clearLanding();
     getNews("", newsSources, "News", "", "first");
