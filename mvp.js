@@ -714,16 +714,22 @@ function displayWeatherForecast(data, country) {
     }
 }
 
+// MAINTENANCE NOTE - if morn/midday/eve is broken, API may have changed (presently showing weather every 3 hours, but times shown shifts...)
 function renderWeatherForecast(result, country) {
     let temperature;
     let weatherDate;
     let weatherTime;
+    let skiptimes = [0,1,2,3,4,5,6,10,11,15,16,17,21,22,23];
+    let morning = [7,8,9];
+    let midday = [12,13,14];
+    let evening = [18,19,20];
     let weatherDateTime = new Date(result.dt_txt + " UTC");
-    if (weatherDateTime.getHours() === 1 || weatherDateTime.getHours() === 4 || weatherDateTime.getHours() === 10 || weatherDateTime.getHours() === 16 || weatherDateTime.getHours() === 22) {
+    console.log(weatherDateTime.getHours());  // uncomment this if morn/midday/eve breaks
+    if (skiptimes.indexOf(weatherDateTime.getHours()) !== -1) {
         return; // skip unwanted values; return undefined
-    } else if (weatherDateTime.getHours() === 7) {
+    } else if (morning.indexOf(weatherDateTime.getHours()) !== -1) {
         weatherTime = "morn";
-    } else if (weatherDateTime.getHours() === 13) {
+    } else if (midday.indexOf(weatherDateTime.getHours()) !== -1) {
         weatherTime = "noon";
     } else {
         weatherTime = "eve";

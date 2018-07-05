@@ -1,7 +1,7 @@
 /* Color palette - http://paletton.com/#uid=33m0u0krxvNh9H2ml-hvyr3z8lg */
 
 body {
-    margin: 140px 2% 0 2%;
+/*    margin: 140px 2% 0 2%;*/
     font-size: 22px;
     font-family: 'Montserrat', sans-serif;
     font-weight: 400;
@@ -22,6 +22,10 @@ header {
     z-index: 2;
 }
 
+main {
+    margin: 140px 2% 0 2%;
+
+}
 @media only screen and (max-width: 640px) {
     body {
         margin: 0px 40px;
