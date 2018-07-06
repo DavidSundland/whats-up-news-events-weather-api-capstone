@@ -719,21 +719,22 @@ function renderWeatherForecast(result, country) {
     let temperature;
     let weatherDate;
     let weatherTime;
-    let skiptimes = [0,1,2,3,4,5,6,10,11,15,16,17,21,22,23];
+//    let skiptimes = [0,1,2,3,4,5,6,10,11,15,16,17,21,22,23];  // superfluous, but leaving in place for reference
     let morning = [7,8,9];
     let midday = [12,13,14];
     let evening = [18,19,20];
     let weatherDateTime = new Date(result.dt_txt + " UTC");
-    console.log(weatherDateTime.getHours());  // uncomment this if morn/midday/eve breaks
-    if (skiptimes.indexOf(weatherDateTime.getHours()) !== -1) {
-        return; // skip unwanted values; return undefined
-    } else if (morning.indexOf(weatherDateTime.getHours()) !== -1) {
+//    console.log(weatherDateTime.getHours());  // uncomment this if morn/midday/eve breaks
+    if (morning.indexOf(weatherDateTime.getHours()) !== -1) {
         weatherTime = "morn";
     } else if (midday.indexOf(weatherDateTime.getHours()) !== -1) {
         weatherTime = "noon";
-    } else {
+    } else if (evening.indexOf(weatherDateTime.getHours()) !== -1) {
         weatherTime = "eve";
+    } else {
+        return; // if not one of pre-selected times, return undefined
     }
+
     if (country === 'us' || country === 'US') {
         temperature = (Math.round(Number(result.main.temp - 273.15) * 9 / 5 + 32)).toString() + "°F";
         //        weatherDate = MonthNames[weatherDateTime.getMonth()] + " " + weatherDateTime.getDate();
