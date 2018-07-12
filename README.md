@@ -29,8 +29,18 @@ The main page:
 
 ## Working Prototye
 A live example of the project can be found at https://davidsundland.github.io/whats-up-news-events-weather-api-capstone/
+
+
+### Screenshot of landing page:
+
 ![landing page](https://github.com/DavidSundland/whats-up-news-events-weather-api-capstone/blob/master/github-images/landing_page_screenshot.png?raw=true)
+
+### Screenshot of results page before user interaction:
+
 ![results page](https://github.com/DavidSundland/whats-up-news-events-weather-api-capstone/blob/master/github-images/primary_page_screenshot.png?raw=true)
+
+### Screensot of results page after user interaction:
+
 ![results page after user interaction](https://github.com/DavidSundland/whats-up-news-events-weather-api-capstone/blob/master/github-images/screenshot_after_user_interaction.png?raw=true)
 
 
