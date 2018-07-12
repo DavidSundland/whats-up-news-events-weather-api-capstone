@@ -33,17 +33,6 @@ main {
     margin: 170px 2% 0 2%;
 
 }
-@media only screen and (max-width: 640px) {
-    body {
-        margin: 0px 40px;
-    }
-    header {
-        position: static;
-        margin: 0px -40px;
-        width: calc(100% + 80px);
-        height: 70px;
-    }
-}
 
 .landingPage {
     background-color: black;
@@ -90,15 +79,6 @@ button#doneLanding {
     transform: translate(-50%, 0);
 }
 
-@media only screen and (max-width: 640px) {
-    .landingPage {
-        font-size: .9em;
-    }
-    button#doneLanding {
-        height: 70px;
-        width: 70px;
-    }
-}
 
 .landingPageFrame {
     background: url("images/polaroid_background.jpg");
@@ -144,38 +124,6 @@ h1 {
     color: white;
     text-shadow: 2px 2px 4px #202020;
 }
-
-@media (max-width: 1000px) {
-    h1 {
-        font-size: 32px;
-    }
-}
-
-@media (max-width: 630px) {
-    .hideNarrow {
-        display: none;
-    }
-    body {
-        font-size: 20px;
-    }
-}
-
-@media (max-width: 500px) {
-    h1 {
-        font-size: 24px;
-        padding-top: 10px;
-    }
-    body {
-        font-size: 16px;
-    }
-}
-
-@media (max-width: 400px) {
-    .hideNarrowest {
-        display: none;
-    }
-}
-
 a {
     text-decoration: none;
     color: #5CB2C2;
@@ -194,12 +142,6 @@ a:hover {
     z-index: 1300;
 }
 
-@media (max-width: 750px) {
-    #logo {
-        display: none;
-    }
-}
-
 #tempBox {
     margin: auto;
     /*    display: block;*/
@@ -216,11 +158,6 @@ a:hover {
     color: #FFD576;
 }
 
-@media (max-width: 1000px) {
-    #temperature {
-        font-size: 48px;
-    }
-}
 
 .secondary {
     font-size: .8em;
@@ -241,13 +178,6 @@ button {
     margin: 8px;
 }
 
-@media (max-width: 800px) {
-    button {
-        height: 60px;
-        width: 60px;
-    }
-}
-
 button:hover {
     background-color: #A91000;
     font-weight: 700;
@@ -263,14 +193,6 @@ footer {
     overflow: auto;
     margin-top: 60px;
     z-index: 2;
-}
-
-@media only screen and (max-width: 640px) {
-    footer {
-        margin-right: -40px;
-        margin-left: -40px;
-        width: calc(100% + 80px);
-    }
 }
 
 footer i {
@@ -426,4 +348,73 @@ input {
 
 .seeMore {
     overflow: auto;
+}
+
+
+/* **************************************************** MEDIA QUERIES **************************************************************************** */
+
+@media (max-width: 1000px) {
+    h1 {
+        font-size: 32px;
+    }
+    #temperature {
+        font-size: 48px;
+    }
+}
+
+@media (max-width: 800px) {
+    button {
+        height: 60px;
+        width: 60px;
+    }
+}
+
+@media (max-width: 750px) {
+    #logo {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 640px) {
+    body {
+        margin: 0px 40px;
+        font-size: 20px;
+    }
+    header {
+        position: static;
+        margin: 0px -40px;
+        width: calc(100% + 80px);
+        height: 70px;
+    }
+    .hideNarrow {
+        display: none;
+    }
+    .landingPage {
+        font-size: .9em;
+    }
+    button#doneLanding {
+        height: 70px;
+        width: 70px;
+    }
+    footer {
+        margin-right: -40px;
+        margin-left: -40px;
+        width: calc(100% + 80px);
+    }
+}
+
+@media (max-width: 500px) {
+    h1 {
+        font-size: 24px;
+        padding-top: 10px;
+    }
+    body {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 400px) {
+    .hideNarrowest {
+        display: none;
+    }
 }
